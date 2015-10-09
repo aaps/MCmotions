@@ -4,10 +4,13 @@ from quarry.net.proxy import DownstreamFactory, Bridge
 
 import time
 import base64
+import sys, getopt
 
 
 class QuietBridge(Bridge):
     quiet_mode = False
+    
+
     recording = False
     start_time = time.time()
 
@@ -20,7 +23,8 @@ class QuietBridge(Bridge):
 
         if not self.recording and string == '/start':
             self.start_time = time.time()
-            print 'startrecord'
+            self.dumpfile.write('startrecord\n')
+            
             self.recording = True
             message = "Recording now !"
             self.downstream.send_packet("chat_message", self.write_chat(message, "downstream"))
@@ -52,7 +56,7 @@ class QuietBridge(Bridge):
         buff.save()
         if self.recording:
             seconds = round(time.time() - self.start_time,2)
-            print 'spawnplayer|' + str(seconds) + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack_uuid()) + '|' + str(buff.unpack('iii')) + '|' +  str(buff.unpack('bb'))+ '|' +  str(buff.unpack('h'))
+            self.dumpfile.write('spawnplayer|' + str(seconds) + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack_uuid()) + '|' + str(buff.unpack('iii')) + '|' +  str(buff.unpack('bb'))+ '|' +  str(buff.unpack('h')) + '\n')
             buff.restore()
         self.downstream.send_packet("spawn_player", buff.read())
 
@@ -65,7 +69,7 @@ class QuietBridge(Bridge):
             theposition = str(buff.unpack('iii'))
             # theposition = (float(theposition[0])/32,float(theposition[1])/32, float(theposition[2])/32)
 
-            print 'spawnobject|' + str(seconds) + '|' + theid + '|' + thetype + '|' + theposition + '|' +  str(buff.unpack('bb'))
+            self.dumpfile.write('spawnobject|' + str(seconds) + '|' + theid + '|' + thetype + '|' + theposition + '|' +  str(buff.unpack('bb')) + '\n')
             buff.restore()
         self.downstream.send_packet("spawn_object", buff.read())
 
@@ -73,7 +77,7 @@ class QuietBridge(Bridge):
         buff.save()
         if self.recording:
             seconds = round(time.time() - self.start_time,2)
-            print 'spawnmob|' + str(seconds) + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack('B')) + '|' + str(buff.unpack('iii')) + '|' +  str(buff.unpack('bbb')) + '|' +  str(buff.unpack('hhh'))
+            self.dumpfile.write('spawnmob|' + str(seconds) + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack('B')) + '|' + str(buff.unpack('iii')) + '|' +  str(buff.unpack('bbb')) + '|' +  str(buff.unpack('hhh')) + '\n')
             buff.restore()
         self.downstream.send_packet("spawn_mob", buff.read())
 
@@ -122,7 +126,7 @@ class QuietBridge(Bridge):
         buff.save()
         if self.recording:
             seconds = round(time.time() - self.start_time,2)
-            print 'entity|' + str(seconds) + '|' + str(buff.unpack_varint())
+            self.dumpfile.write( 'entity|' + str(seconds) + '|' + str(buff.unpack_varint()) + '\n')
             buff.restore()
         self.downstream.send_packet("entity", buff.read())
 
@@ -131,7 +135,7 @@ class QuietBridge(Bridge):
         buff.save()
         if self.recording:
             seconds = round(time.time() - self.start_time,2)
-            print 'entityrelmove|' + str(seconds) + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack('bbb')) + '|' + str(buff.unpack('?'))
+            self.dumpfile.write( 'entityrelmove|' + str(seconds) + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack('bbb')) + '|' + str(buff.unpack('?'))+ '\n')
             buff.restore()
         self.downstream.send_packet("entity_relative_move", buff.read())
 
@@ -140,7 +144,7 @@ class QuietBridge(Bridge):
         
         if self.recording:
             seconds = round(time.time() - self.start_time,2)
-            print 'entitylook|' + str(seconds) + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack('bb')) + '|' + str(buff.unpack('?'))
+            self.dumpfile.write( 'entitylook|' + str(seconds) + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack('bb')) + '|' + str(buff.unpack('?'))+ '\n')
             buff.restore()
         self.downstream.send_packet("entity_look", buff.read())
 
@@ -148,7 +152,7 @@ class QuietBridge(Bridge):
         buff.save()
         if self.recording:
             seconds = round(time.time() - self.start_time,2)
-            print 'entitylookandrelmove|' + str(seconds) + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack('bbb')) + '|' + str(buff.unpack('bb')) + '|' + str(buff.unpack('?'))
+            self.dumpfile.write( 'entitylookandrelmove|' + str(seconds) + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack('bbb')) + '|' + str(buff.unpack('bb')) + '|' + str(buff.unpack('?')) + '\n')
             buff.restore()
         self.downstream.send_packet("entity_look_and_relative_move", buff.read())
    
@@ -156,7 +160,7 @@ class QuietBridge(Bridge):
         buff.save()
         if self.recording:   
             seconds = round(time.time() - self.start_time,2)
-            print 'entityteleport|' + str(seconds) + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack('iii')) + '|' + str(buff.unpack('bb')) + '|' + str(buff.unpack('?'))
+            self.dumpfile.write( 'entityteleport|' + str(seconds) + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack('iii')) + '|' + str(buff.unpack('bb')) + '|' + str(buff.unpack('?'))+ '\n')
             
             buff.restore()
         self.downstream.send_packet("entity_teleport", buff.read())
@@ -165,7 +169,7 @@ class QuietBridge(Bridge):
         buff.save()
         if self.recording:
             seconds = round(time.time() - self.start_time,2)
-            print 'entityvelocity|' + str(seconds) + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack('hhh'))
+            self.dumpfile.write( 'entityvelocity|' + str(seconds) + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack('hhh'))+ '\n')
             buff.restore()
         self.downstream.send_packet("entity_velocity", buff.read())
 
@@ -173,7 +177,7 @@ class QuietBridge(Bridge):
         buff.save()
         if self.recording:   
             seconds = round(time.time() - self.start_time,2)
-            print 'entityheadlook|' + str(seconds) + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack('b'))
+            self.dumpfile.write( 'entityheadlook|' + str(seconds) + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack('b'))+ '\n')
             buff.restore()
         self.downstream.send_packet("entity_head_look", buff.read())
 
@@ -181,7 +185,7 @@ class QuietBridge(Bridge):
         buff.save()
         if self.recording:
             seconds = round(time.time() - self.start_time,2)
-            print 'entitystatus|' + str(seconds) + '|' + str(buff.unpack('i')) + '|' + str(buff.unpack('b'))
+            self.dumpfile.write( 'entitystatus|' + str(seconds) + '|' + str(buff.unpack('i')) + '|' + str(buff.unpack('b'))+ '\n')
             buff.restore()
         self.downstream.send_packet("entity_status", buff.read())
 
@@ -189,7 +193,7 @@ class QuietBridge(Bridge):
         buff.save()
         if self.recording:    
             seconds = round(time.time() - self.start_time,2)
-            print 'entityeffect|' + str(seconds) + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack('b')) + '|' + str(buff.unpack('b')) + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack('?'))
+            self.dumpfile.write( 'entityeffect|' + str(seconds) + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack('b')) + '|' + str(buff.unpack('b')) + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack('?'))+ '\n')
             buff.restore()
         self.downstream.send_packet("entity_effect", buff.read())
 
@@ -197,7 +201,7 @@ class QuietBridge(Bridge):
         buff.save()
         if self.recording:
             seconds = round(time.time() - self.start_time,2)
-            print 'rementityeffect|' + str(seconds) + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack('b'))
+            self.dumpfile.write( 'rementityeffect|' + str(seconds) + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack('b'))+ '\n')
             buff.restore()
         self.downstream.send_packet("remove_entity_effect", buff.read())
 
@@ -211,7 +215,7 @@ class QuietBridge(Bridge):
             seconds = round(time.time() - self.start_time,2)
             for aent in xrange(0,length):
                 entitys.append(buff.unpack_varint())
-            print 'destroyents|' + str(seconds) + '|' +  '|'.join(map(str, entitys))
+            self.dumpfile.write( 'destroyents|' + str(seconds) + '|' +  '|'.join(map(str, entitys))+ '\n')
             
             buff.restore()
         self.downstream.send_packet("destroy_entities", buff.read())
@@ -274,7 +278,7 @@ class QuietBridge(Bridge):
                 z = (xz & 0xF) + (chunkxz[1] * 16)
                 y = buff.unpack('B')
                 newid = buff.unpack_varint() >> 4
-                print 'Mblockchange|' + str(seconds) + '|' + str((x,z,y)) + '|' + str(newid)
+                self.dumpfile.write( 'Mblockchange|' + str(seconds) + '|' + str((x,z,y)) + '|' + str(newid)+ '\n')
             buff.restore()
             
         self.downstream.send_packet("multi_block_change", buff.read())
@@ -289,7 +293,7 @@ class QuietBridge(Bridge):
             seconds = round(time.time() - self.start_time,2)
       
             newid = buff.unpack_varint() >> 4
-            print 'blockchange|' + str(seconds) + '|' + str(xyz) + '|' + str(newid)
+            self.dumpfile.write( 'blockchange|' + str(seconds) + '|' + str(xyz) + '|' + str(newid)+ '\n')
             buff.restore()
 
         self.downstream.send_packet("block_change", buff.read())
@@ -304,7 +308,7 @@ class QuietBridge(Bridge):
             byteb = buff.unpack('B')
             blocktype = buff.unpack_varint()
             seconds = round(time.time() - self.start_time,2)
-            print 'blockaction|' + str(seconds) + '|' + str(xyz) + '|' + str(bytea) + '|' + str(byteb) 
+            self.dumpfile.write( 'blockaction|' + str(seconds) + '|' + str(xyz) + '|' + str(bytea) + '|' + str(byteb) + '\n')
             buff.restore()
 
         self.downstream.send_packet("block_action", buff.read())
@@ -321,7 +325,7 @@ class QuietBridge(Bridge):
 
                 stage = buff.unpack('b')
 
-                print 'blockbreak|' + str(seconds) + '|' + str(entid) + '|' + str(xyz) + '|' + str(stage) 
+                self.dumpfile.write( 'blockbreak|' + str(seconds) + '|' + str(entid) + '|' + str(xyz) + '|' + str(stage) + '\n')
 
             buff.restore()
         self.downstream.send_packet("block_break_animation", buff.read())
@@ -337,7 +341,7 @@ class QuietBridge(Bridge):
             data = buff.unpack('f')
             partcount = buff.unpack('i')
             
-            print 'particle|' + str(seconds) + '|' + str(partid) + '|' + str(longdist) + '|' + str(pos) + '|' + offset + '|' + data
+            self.dumpfile.write( 'particle|' + str(seconds) + '|' + str(partid) + '|' + str(longdist) + '|' + str(pos) + '|' + str(offset) + '|' + str(data) + '\n')
                 
 
             buff.restore()
@@ -379,20 +383,62 @@ class QuietDownstreamFactory(DownstreamFactory):
     bridge_class = QuietBridge
     motd = "Proxy Server"
 
+    def set_dumpfile(self,file):
+        self.bridge_class.dumpfile = file
 
-def main():
-   
+    def set_startstarted(self, booler):
+        self.bridge_class.recording = booler
+
+
+def main(argv):
+    
+    startstarted = False
+
+    try:
+        opts, args = getopt.getopt(argv,"",["sourceport=","destport=","destip=","started", "logfile="])
+        
+    except getopt.GetoptError:
+        print 'error: proxy_recorder.py --sourceport port --destport port --destip ip --logfile filename'
+        sys.exit(2)
+    for opt, arg in opts:
+        
+        destip = "localhost"
+        sourceport = 6677
+        destport = 25565
+        logfile = "session.log"
+        startstarted = False
+
+
+        if opt == '-h':
+            print 'proxy_recorder.py --sourceport port --destport port --destip ip --logfile filename'
+            sys.exit()
+
+        if opt == "--sourceport":
+            sourcepost = int(arg)
+        if opt == "--destport":
+            destport = int(arg)
+        if opt == "--destip":
+            destip = arg
+        if opt == "--logfile":
+            logfile = arg
+        if opt == "starstarted":
+            startstarted = True
+
+
 
     # Create factory
     factory = QuietDownstreamFactory()
+    factory.set_dumpfile(open(logfile, 'w'))
+    factory.set_startstarted(startstarted)
+
     factory.motd = "Proxy Server"
-    factory.connect_host = "localhost"
-    factory.connect_port = 25565
+    factory.connect_host = destip
+    factory.connect_port = destport
 
     # Listen
-    factory.listen("localhost", 6677)
+    factory.listen(destip, sourcepost)
     factory.run()
 
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1:])

@@ -16,7 +16,6 @@ sesnrtoget = 1
 currentses = 0
 lostcounter = []
 
-pp = pprint.PrettyPrinter(depth=6)
 f = open('session.json', 'w')
 
 origin = open('session.log', 'r')
