@@ -388,6 +388,7 @@ class QuietDownstreamFactory(DownstreamFactory):
 
     def set_startstarted(self, booler):
         self.bridge_class.recording = booler
+        # print self.bridge_class.recording
 
 
 def main(argv):
@@ -395,10 +396,10 @@ def main(argv):
     startstarted = False
 
     try:
-        opts, args = getopt.getopt(argv,"",["sourceport=","destport=","destip=","started", "logfile="])
+        opts, args = getopt.getopt(argv,"",["sourceport=","destport=","destip=","started=", "logfile="])
         
     except getopt.GetoptError:
-        print 'error: proxy_recorder.py --sourceport port --destport port --destip ip --logfile filename'
+        print 'error: proxy_recorder.py --started --sourceport port --destport port --destip ip --logfile filename'
         sys.exit(2)
     for opt, arg in opts:
         
@@ -406,29 +407,30 @@ def main(argv):
         sourceport = 6677
         destport = 25565
         logfile = "session.log"
-        startstarted = False
-
-
+        
         if opt == '-h':
-            print 'proxy_recorder.py --sourceport port --destport port --destip ip --logfile filename'
+            print 'proxy_recorder.py --started --sourceport port --destport port --destip ip --logfile filename'
             sys.exit()
 
         if opt == "--sourceport":
-            sourcepost = int(arg)
+            sourceport = int(arg)
         if opt == "--destport":
             destport = int(arg)
         if opt == "--destip":
             destip = arg
         if opt == "--logfile":
-            logfile = arg
-        if opt == "starstarted":
-            startstarted = True
+            logfile = arg + ".log"
+        if opt == "--started":
+            startstarted = False
+            if arg == "yes":
+                startstarted = True
 
 
 
     # Create factory
     factory = QuietDownstreamFactory()
     factory.set_dumpfile(open(logfile, 'w'))
+    
     factory.set_startstarted(startstarted)
 
     factory.motd = "Proxy Server"
@@ -436,7 +438,7 @@ def main(argv):
     factory.connect_port = destport
 
     # Listen
-    factory.listen(destip, sourcepost)
+    factory.listen(destip, sourceport)
     factory.run()
 
 

@@ -1,6 +1,6 @@
 #!/usr/bin/python -B
 
-import csv
+# import csv
 import operator
 import ast
 import json
@@ -8,17 +8,51 @@ import math
 import base64
 import struct
 import zlib
+import sys, getopt
+
 # import StringIO
+
+sourcefile = "default.log"
+destfile = "default.json"
+sesnrtoget = 0
+avgmiddle = False
+
+try:
+    opts, args = getopt.getopt(sys.argv[1:],"",["avgmiddle=","sourcefile=","destfile=","session=", "avgmiddle="])
+        
+except getopt.GetoptError:
+    print 'error: lister.py --avgmiddle --sourcefile filename --destfile filename --session sesnumber'
+    sys.exit(2)
+for opt, arg in opts:
+    # print opt
+    if opt == '-h':
+        print 'lister.py --avgmiddle --sourcefile filename --destfile filename --session sesnumber'
+        sys.exit()
+
+    if opt == "--sourcefile":
+        sourcefile = arg + ".log"
+
+    if opt == "--destfile":
+        destfile = arg + ".json"
+
+    if opt == "--session":
+        sesnrtoget = int(arg)
+
+    if opt == "--avgmiddle":
+        # print arg
+        if arg == 'yes':
+            avgmiddle = True
+
 
 allhistory = {}
 
-sesnrtoget = 1
+
 currentses = 0
 lostcounter = []
 
-f = open('session.json', 'w')
+f = open(destfile, 'w')
 
-origin = open('session.log', 'r')
+origin = open(sourcefile, 'r')
 
 total = origin.read()
 
@@ -26,9 +60,6 @@ aroflines = total.split('\n')
 
 chunks = []
 
-def fi(x,y):
-  
-  return min(y-x, y-x+2*math.pi, y-x-2*math.pi, key=abs)
 
 def fido(first, second):
     x=min(first[0]-second[0], first[0]-second[0]+2*math.pi, first[0]-second[0]-2*math.pi, key=abs)
@@ -36,12 +67,24 @@ def fido(first, second):
     z=min(first[2]-second[2], first[2]-second[2]+2*math.pi, first[2]-second[2]-2*math.pi, key=abs)
     return (x,y,z)
 
+offset = (0,0,0)
+if avgmiddle:
+    allposses = []
+    for line in aroflines:
+        row = line.split('|')
+        if 'spawn' in row[0] and sesnrtoget == currentses:
+            goodpos = ast.literal_eval(row[4])
+            goodpos = (float(goodpos[0])/32, float(goodpos[1])/32, float(goodpos[2])/32)
+            allposses.append(goodpos)
+
+    lentotal = len(allposses)
+    total = reduce(lambda x, y: (x[0] + y[0], x[1] + y[1], x[2] + y[2]), allposses)
+    offset = (total[0]/lentotal, total[1]/lentotal, total[2]/lentotal)
+    print 'offset:' + str(offset)
+
 for line in aroflines:
     
     row = line.split('|')
-    
-
-
 
     if row[0] == 'startrecord':
         
@@ -56,7 +99,7 @@ for line in aroflines:
         
         goodpos = (float(goodpos[0])/32, float(goodpos[1])/32, float(goodpos[2])/32)
         
-        mob = {int(row[2]):{'type':row[3],'positions':[{'time':float(row[1]),'pos':goodpos, 'yawpichhead': rawyawpichhead,'status':0,'alive':1}]}}
+        mob = {int(row[2]):{'type':row[3],'positions':[{'time':float(row[1]),'pos':tuple(map(operator.sub, goodpos, offset)), 'yawpichhead': rawyawpichhead,'status':0,'alive':1}]}}
 
         allhistory.update(mob)
 

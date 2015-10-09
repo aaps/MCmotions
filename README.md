@@ -15,11 +15,18 @@ A for now quite crude, minecraft recorder, cant yet have another server than loc
 Will dump a lot of traffic to standard out, use > to dump to file for later use, and for speed. (for now you will need to do: /start /status and /stop in minecraft to get this to record)
 This version will not record the position of the player that is connected via the proxy !
 
-NEW, it has commandline options:
+NEW, proxy has commandline options:
 --sourceport portnr (the port the proxy listens on)
 --destport the portnr of the server the proxy trys to ommect to
 --destip the ip the proxy trys to connect to
 --logfile the file the traffic is dumped to and that the lister used to make the propper formated file.
+
+lister has commandline options:
+--sourcefile filename (- extention) the name of the log file where the raw network dump recides
+--destfile filename (- extention) the json destination filename to import via blender
+--session sesnumber, if you have multyple recordings in one log file you can choose the session here, a session starts everytime you stop and start recording. default session 0 (crasy programmers start counting at 0)
+--avgmiddle yes/no, to pot the minecraft motions smack in the middle to the blender scene else it could be you have to search alot.
+
 
 lister !
 
@@ -32,16 +39,18 @@ A blender plugin that will take the json file and import it in animated blender 
 #ToDo:
 1
 good rotation of entitys, instead of the muck we have now !
-
-posibillity to start recording as soon as a player will connect to the proxy.
+get chunk data recorded in the right format
+posibillity to start recording as soon as a player connects to the proxy.
 
 2
-The ability to record the map/chunks
-The ability to record block changes !
+The ability to import the map/chunks
+import blockchnages (after map import is done)
+
 
 3
 recording the details, animations of blocks, particles, lightning, rain, etc
 recording of packets that are going to the server so the proxy connecting player is also recorded !
+
 
 
 #WARNING 

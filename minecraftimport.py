@@ -68,17 +68,34 @@ class DataImporter:
             elif mobtype == 54:
                 ob.name = "zombol"
                 mat.diffuse_color = (0.0,0.3,0.0)
+            elif mobtype == 55:
+                ob.name = "slime"
+                mat.diffuse_color = (0.5,1,0.5)
+            elif mobtype == 58:
+                ob.name = "enderman"
+                mat.diffuse_color = (0.5,0.0,0.5)
             elif mobtype == 90:
                 ob.name = "pig"
                 mat.diffuse_color = (0.5,0.4,0.4)
             elif mobtype == 65:
                 ob.name = "bat"
                 mat.diffuse_color = (1,0.5,0.2)
-            elif mobtype == 58:
-                ob.name = "enderman"
-                mat.diffuse_color = (0.5,0.0,0.5)
+            elif mobtype == 91:
+                ob.name = "sheep"
+                mat.diffuse_color = (1,1,1)
+            elif mobtype == 92:
+                ob.name = "cow"
+                mat.diffuse_color = (1,0.2,0.1)
+            elif mobtype == 94:
+                ob.name = "squid"
+                mat.diffuse_color = (0.2,0.2,1)
+            
+            elif mobtype == 101:
+                ob.name = "rabbit"
+                mat.diffuse_color = (0.5,0.1,0.05)
             else:
                 mat.diffuse_color = (0.0,0.0,0.0)
+                ob.name = str(mobtype)
 
             ob.active_material = mat
             frame_num = 0
@@ -95,7 +112,7 @@ class DataImporter:
                 ob.keyframe_insert("hide_render")
 
 
-                
+                # print(posses['time'])
                 frame_num = posses['time'] * 24
 
 
