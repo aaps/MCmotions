@@ -1,11 +1,5 @@
 #!/usr/bin/python -B
 
-"""
-"Quiet mode" example proxy
-
-Allows a client to turn on "quiet mode" which hides chat messages
-"""
-
 from quarry.net.proxy import DownstreamFactory, Bridge
 
 import time
@@ -146,7 +140,7 @@ class QuietBridge(Bridge):
         
         if self.recording:
             seconds = round(time.time() - self.start_time,2)
-            print 'entitylook|' + str(seconds) + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack('bbb')) + '|' + str(buff.unpack('?'))
+            print 'entitylook|' + str(seconds) + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack('bb')) + '|' + str(buff.unpack('?'))
             buff.restore()
         self.downstream.send_packet("entity_look", buff.read())
 
@@ -193,7 +187,6 @@ class QuietBridge(Bridge):
 
     def packet_downstream_entity_effect(self, buff):
         buff.save()
-        
         if self.recording:    
             seconds = round(time.time() - self.start_time,2)
             print 'entityeffect|' + str(seconds) + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack('b')) + '|' + str(buff.unpack('b')) + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack('?'))
@@ -225,43 +218,45 @@ class QuietBridge(Bridge):
 
     # block and chunk stuff
 
-    def packet_downstream_chunk_data(self, buff):
-        buff.save()
-        if self.recording:
-            chunkxy = buff.unpack('ii')
-            groundup = buff.unpack('?')
-            pribitmask = buff.unpack('H')
-            datalength = buff.unpack_varint()
-            contents = base64.b64encode(buff.buff)
+    # notyet doing this since i cant decode chunk data yet and it is a lot of data to record
+
+    # def packet_downstream_chunk_data(self, buff):
+    #     buff.save()
+    #     if self.recording:
+    #         chunkxy = buff.unpack('ii')
+    #         groundup = buff.unpack('?')
+    #         pribitmask = buff.unpack('H')
+    #         datalength = buff.unpack_varint()
+    #         contents = base64.b64encode(buff.buff)
             
-            print 'chunkdata|' + str(chunkxy) + '|' + str(groundup) + '|' + str(pribitmask) + '|' + str(datalength) + '|' + contents
+    #         print 'chunkdata|' + str(chunkxy) + '|' + str(groundup) + '|' + str(pribitmask) + '|' + str(datalength) + '|' + contents
 
-            buff.restore()
-        self.downstream.send_packet("chunk_data", buff.read())
+    #         buff.restore()
+    #     self.downstream.send_packet("chunk_data", buff.read())
 
-    def packet_downstream_map_chunk_bulk(self, buff):
-        buff.save()
-        if self.recording:
-            metaar = []
-            chunkar = []
-            nrchunks = buff.unpack_varint()
-            for index in xrange(0,nrchunks):
-                chunkxy = buff.unpack('ii')
-                pribitmask = buff.unpack('H')
-                datalength = buff.unpack_varint()
-                metaar.append( str(chunkxy) + '|' + str(pribitmask) + '|' + str(datalength))
-            for index in xrange(0,nrchunks):
-                chunkar.append(base64.b64encode(buff.buff))
+    # def packet_downstream_map_chunk_bulk(self, buff):
+    #     buff.save()
+    #     if self.recording:
+    #         metaar = []
+    #         chunkar = []
+    #         nrchunks = buff.unpack_varint()
+    #         for index in xrange(0,nrchunks):
+    #             chunkxy = buff.unpack('ii')
+    #             pribitmask = buff.unpack('H')
+    #             datalength = buff.unpack_varint()
+    #             metaar.append( str(chunkxy) + '|' + str(pribitmask) + '|' + str(datalength))
+    #         for index in xrange(0,nrchunks):
+    #             chunkar.append(base64.b64encode(buff.buff))
             
-            metalen = len(metaar)    
+    #         metalen = len(metaar)    
 
-            for index in xrange(0,metalen):
+    #         for index in xrange(0,metalen):
                 
-                print 'chunkdata|' + metaar[index] + '|' + chunkar[index]
+    #             print 'chunkdata|' + metaar[index] + '|' + chunkar[index]
 
 
-        buff.restore()
-        self.downstream.send_packet("map_chunk_bulk", buff.read())
+    #     buff.restore()
+    #     self.downstream.send_packet("map_chunk_bulk", buff.read())
 
     def packet_downstream_multi_block_change(self, buff):
         buff.save()
@@ -279,7 +274,7 @@ class QuietBridge(Bridge):
                 z = (xz & 0xF) + (chunkxz[1] * 16)
                 y = buff.unpack('B')
                 newid = buff.unpack_varint() >> 4
-                print 'blockchange|' + str(seconds) + '|' + str((x,z,y)) + '|' + str(newid)
+                print 'Mblockchange|' + str(seconds) + '|' + str((x,z,y)) + '|' + str(newid)
             buff.restore()
             
         self.downstream.send_packet("multi_block_change", buff.read())
@@ -289,16 +284,12 @@ class QuietBridge(Bridge):
        
         buff.save()
         if self.recording:
-            xzy = buff.unpack('q')
-            
-            x = xzy >> 38
-            y = (xzy >> 26) & 0xFFF
-            z = xzy & 0x8FFFFFF
+            xyz = self.unpack_blockposition(buff)
 
             seconds = round(time.time() - self.start_time,2)
       
             newid = buff.unpack_varint() >> 4
-            print 'blockchange|' + str(seconds) + '|' + str((x,z,y)) + '|' + str(newid)
+            print 'blockchange|' + str(seconds) + '|' + str(xyz) + '|' + str(newid)
             buff.restore()
 
         self.downstream.send_packet("block_change", buff.read())
@@ -306,16 +297,14 @@ class QuietBridge(Bridge):
     def packet_downstream_block_action(self, buff):
         buff.save()
         if self.recording:
-            xzy = buff.unpack('q')
+            xyz = self.unpack_blockposition(buff)
             
-            x = xzy >> 38
-            y = (xzy >> 26) & 0xFFF
-            z = xzy & 0x8FFFFFF
+           
             bytea = buff.unpack('B')
             byteb = buff.unpack('B')
             blocktype = buff.unpack_varint()
             seconds = round(time.time() - self.start_time,2)
-            print 'blockaction|' + str(seconds) + '|' + str((x,z,y)) + '|' + str(bytea) + '|' + str(byteb) 
+            print 'blockaction|' + str(seconds) + '|' + str(xyz) + '|' + str(bytea) + '|' + str(byteb) 
             buff.restore()
 
         self.downstream.send_packet("block_action", buff.read())
@@ -327,15 +316,12 @@ class QuietBridge(Bridge):
             
             seconds = round(time.time() - self.start_time,2)
             entid = buff.unpack_varint()
-            xzy = buff.unpack('q')
-        
-            x = xzy >> 38
-            y = (xzy >> 26) & 0xFFF
-            z = xzy & 0x8FFFFFF
+            xyz = self.unpack_blockposition(buff)
+            if xyz[0] < 33554431 and xyz[0] > -33554431 and xyz[2] < 33554431 and xyz[2] > -33554431:
 
-            stage = buff.unpack('b')
+                stage = buff.unpack('b')
 
-            print 'blockbreak|' + str(seconds) + '|' + str(entid) + '|' + str((x,z,y)) + '|' + str(stage) 
+                print 'blockbreak|' + str(seconds) + '|' + str(entid) + '|' + str(xyz) + '|' + str(stage) 
 
             buff.restore()
         self.downstream.send_packet("block_break_animation", buff.read())
@@ -360,8 +346,17 @@ class QuietBridge(Bridge):
 
     # helper functions
 
-    def unpack_position(self, buff):
-        pass
+    def unpack_blockposition(self, buff):
+        
+        xyz = buff.unpack('q')
+        
+        x = int(xyz >> 38)
+        y = int((xyz >> 26) & 0xFFF)
+        z = int(xyz & 0xFFFFFFF)
+
+        return (x,y,z)
+
+
 
     def write_chat(self, text, direction):
         if direction == "upstream":
