@@ -149,7 +149,7 @@ for line in aroflines:
         yawpichhead = yawpich[0], yawpich[1], lastlist['yawpichhead'][2]
         yawpichhead = fido( yawpichhead, lastlist['yawpichhead'])
         
-        allhistory[int(row[2])]['positions'].append({'time':float(row[1]),'pos':goodpos,'yawpichhead':yawpichhead,'status':0,'alive':lastlist['alive']})
+        allhistory[int(row[2])]['positions'].append({'time':float(row[1]),'pos':tuple(map(operator.sub, goodpos, offset)),'yawpichhead':yawpichhead,'status':0,'alive':lastlist['alive']})
 
     elif row[0] == 'entitystatus' and int(row[2]) in allhistory and sesnrtoget == currentses:
         
