@@ -11,8 +11,7 @@ Also a good idea minecraft !
 #Files !
 proxy_recorder !
 
-A for now quite crude, minecraft recorder, cant yet have another server than localhost, cant change port, or anything else.
-Will dump a lot of traffic to standard out, use > to dump to file for later use, and for speed. (for now you will need to do: /start /status and /stop in minecraft to get this to record)
+A for now quite crude, minecraft recorder.
 This version will not record the position of the player that is connected via the proxy !
 
 NEW, proxy has commandline options:
@@ -38,20 +37,20 @@ A blender plugin that will take the json file and import it in animated blender 
 
 #ToDo:
 1
+find out what entity velocity means to mobs so better movements.
 good rotation of entitys, instead of the muck we have now !
 get chunk data recorded in the right format
-posibillity to start recording as soon as a player connects to the proxy.
+
 
 2
 The ability to import the map/chunks
 import blockchnages (after map import is done)
 
-
 3
 recording the details, animations of blocks, particles, lightning, rain, etc
 recording of packets that are going to the server so the proxy connecting player is also recorded !
 
-
-
 #WARNING 
-This is a work in progress and without determination or the willingness to code. this code will only fustrate you !
+This is a work in progress and without determination or the willingness to code/debug. this code will only fustrate you !
+
+also the import into blender can take a long time !
