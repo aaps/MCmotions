@@ -106,8 +106,8 @@ class DataImporter:
                 ob.rotation_euler = (0, 0,(pi * posses['yawpichhead'][0] / 180) )
                 ob.hide = not bool(posses['alive'])
                 ob.hide_render = not bool(posses['alive'])
-                bpy.ops.anim.keyframe_insert(type='Location')
-                bpy.ops.anim.keyframe_insert(type='Rotation')
+                bpy.ops.anim.keyframe_insert(type='Location',confirm_success=False)
+                bpy.ops.anim.keyframe_insert(type='Rotation',confirm_success=False)
                 ob.keyframe_insert("hide")
                 ob.keyframe_insert("hide_render")
 

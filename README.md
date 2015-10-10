@@ -8,13 +8,8 @@ Blender for the plugin ;)
 
 Also a good idea minecraft !
 
-#Files !
-proxy_recorder !
-
-A for now quite crude, minecraft recorder.
-This version will not record the position of the player that is connected via the proxy !
-
-NEW, proxy has commandline options:
+#NEW
+proxy has commandline options:
 --sourceport portnr (the port the proxy listens on)
 --destport the portnr of the server the proxy trys to ommect to
 --destip the ip the proxy trys to connect to
@@ -24,7 +19,14 @@ lister has commandline options:
 --sourcefile filename (- extention) the name of the log file where the raw network dump recides
 --destfile filename (- extention) the json destination filename to import via blender
 --session sesnumber, if you have multyple recordings in one log file you can choose the session here, a session starts everytime you stop and start recording. default session 0 (crasy programmers start counting at 0)
---avgmiddle yes/no, to pot the minecraft motions smack in the middle to the blender scene else it could be you have to search alot.
+--avgmiddle yes/no, to put the minecraft motions coordinates smack in the middle of the blender scene else it could be you have to search alot in blender.
+
+
+#Files !
+proxy_recorder !
+
+A for now quite crude, minecraft recorder.
+This version will not record the position of the player that is connected via the proxy !
 
 
 lister !
@@ -44,7 +46,7 @@ get chunk data recorded in the right format
 
 2
 The ability to import the map/chunks
-import blockchnages (after map import is done)
+import blockchanges (after map import is done)
 
 3
 recording the details, animations of blocks, particles, lightning, rain, etc
@@ -54,3 +56,4 @@ recording of packets that are going to the server so the proxy connecting player
 This is a work in progress and without determination or the willingness to code/debug. this code will only fustrate you !
 
 also the import into blender can take a long time !
+198 seconds of recording, will take 119.5 seconds @ 3998 BOGOMIPS

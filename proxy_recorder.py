@@ -419,7 +419,7 @@ def main(argv):
         if opt == "--destip":
             destip = arg
         if opt == "--logfile":
-            logfile = arg + ".log"
+            logfile = arg
         if opt == "--started":
             startstarted = False
             if arg == "yes":

@@ -16,24 +16,25 @@ sourcefile = "default.log"
 destfile = "default.json"
 sesnrtoget = 0
 avgmiddle = False
+render = ["all"]
 
 try:
-    opts, args = getopt.getopt(sys.argv[1:],"",["avgmiddle=","sourcefile=","destfile=","session=", "avgmiddle="])
+    opts, args = getopt.getopt(sys.argv[1:],"",["avgmiddle=","sourcefile=","destfile=","session=", "avgmiddle=", "render="])
         
 except getopt.GetoptError:
-    print 'error: lister.py --avgmiddle --sourcefile filename --destfile filename --session sesnumber'
+    print 'error: lister.py --avgmiddle --sourcefile filename --destfile filename --session sesnumber --render rendermode'
     sys.exit(2)
 for opt, arg in opts:
     # print opt
     if opt == '-h':
-        print 'lister.py --avgmiddle --sourcefile filename --destfile filename --session sesnumber'
+        print 'lister.py --avgmiddle --sourcefile filename --destfile filename --session sesnumber --render rendermode'
         sys.exit()
 
     if opt == "--sourcefile":
-        sourcefile = arg + ".log"
+        sourcefile = arg
 
     if opt == "--destfile":
-        destfile = arg + ".json"
+        destfile = arg
 
     if opt == "--session":
         sesnrtoget = int(arg)
@@ -42,6 +43,10 @@ for opt, arg in opts:
         # print arg
         if arg == 'yes':
             avgmiddle = True
+
+    if opt == "--render":
+        render = arg.split(",")
+        
 
 
 allhistory = {}
@@ -62,10 +67,16 @@ chunks = []
 
 
 def fido(first, second):
-    x=min(first[0]-second[0], first[0]-second[0]+2*math.pi, first[0]-second[0]-2*math.pi, key=abs)
-    y=min(first[1]-second[1], first[1]-second[1]+2*math.pi, first[1]-second[1]-2*math.pi, key=abs)
-    z=min(first[2]-second[2], first[2]-second[2]+2*math.pi, first[2]-second[2]-2*math.pi, key=abs)
-    return (x,y,z)
+    y = 180 - abs(abs(first[0] - second[0]) - 180)
+    p = 180 - abs(abs(first[1] - second[1]) - 180)
+    h = 180 - abs(abs(first[2] - second[2]) - 180)
+
+    print (y,p,h)
+    return (y,p,h)
+    # print (second[0] - first[0], second[1] - first[1], second[2] - first[2])
+    # print
+    # return (second[0] - first[0], second[1] - first[1], second[2] - first[2])
+
 
 offset = (0,0,0)
 if avgmiddle:
@@ -91,12 +102,13 @@ for line in aroflines:
         currentses =+ 1
 
         
-    elif row[0] == 'spawnmob' and sesnrtoget == currentses:
+    elif row[0] == 'spawnmob' and sesnrtoget == currentses and ("mobs" in render or "all" in render):
         
 
         goodpos = ast.literal_eval(row[4])
         rawyawpichhead = ast.literal_eval(row[5])
-        
+        rawyawpichhead = (rawyawpichhead[0]+ 5) % 360, (rawyawpichhead[1]+ 5) % 360, (rawyawpichhead[2]+ 5) % 360
+        # print row    
         goodpos = (float(goodpos[0])/32, float(goodpos[1])/32, float(goodpos[2])/32)
         
         mob = {int(row[2]):{'type':row[3],'positions':[{'time':float(row[1]),'pos':tuple(map(operator.sub, goodpos, offset)), 'yawpichhead': rawyawpichhead,'status':0,'alive':1}]}}
@@ -120,9 +132,8 @@ for line in aroflines:
         yawpich = ast.literal_eval(row[4])
         
 
-        yawpichhead = yawpich[0],yawpich[1],lastlist['yawpichhead'][2]
-        yawpichhead = fido( yawpichhead, lastlist['yawpichhead'])
-        # print yawpichhead
+        yawpichhead = (yawpich[0]+ 5) % 360,(yawpich[1]+ 5) % 360,lastlist['yawpichhead'][2]
+        yawpichhead = fido(lastlist['yawpichhead'], yawpichhead)
 
         allhistory[int(row[2])]['positions'].append({'time':float(row[1]),'pos':absolutepos,'yawpichhead':yawpichhead,'status':0,'alive':lastlist['alive']})
 
@@ -133,8 +144,8 @@ for line in aroflines:
         # print lastlist['yawpichhead']
         if not ast.literal_eval(row[3]) == lastlist['yawpichhead'][2]:
             
-            yawpichhead = lastlist['yawpichhead'][0], lastlist['yawpichhead'][1], ast.literal_eval(row[3])
-            yawpichhead = fido( yawpichhead, lastlist['yawpichhead'])
+            yawpichhead = lastlist['yawpichhead'][0], lastlist['yawpichhead'][1], (ast.literal_eval(row[3])+ 5) % 360
+            yawpichhead = fido(yawpichhead, lastlist['yawpichhead'])
 
             allhistory[int(row[2])]['positions'].append({'time':float(row[1]),'pos':lastlist['pos'],'yawpichhead':yawpichhead,'status':0,'alive':lastlist['alive']})
 
@@ -146,7 +157,7 @@ for line in aroflines:
         
         lastlist = allhistory[int(row[2])]['positions'][-1]
         yawpich = ast.literal_eval(row[4])
-        yawpichhead = yawpich[0], yawpich[1], lastlist['yawpichhead'][2]
+        yawpichhead = (yawpich[0]+ 5) % 360, (yawpich[1]+ 5) % 360, lastlist['yawpichhead'][2]
         yawpichhead = fido( yawpichhead, lastlist['yawpichhead'])
         
         allhistory[int(row[2])]['positions'].append({'time':float(row[1]),'pos':tuple(map(operator.sub, goodpos, offset)),'yawpichhead':yawpichhead,'status':0,'alive':lastlist['alive']})
@@ -165,29 +176,29 @@ for line in aroflines:
                 lastlist = allhistory[entid]['positions'][-1]
                 allhistory[entid]['positions'].append({'time':float(row[1]),'pos':lastlist['pos'],'yawpichhead':yawpichhead,'status':0 ,'alive':0})
 
-    elif row[0] == 'chunkdata' and sesnrtoget == currentses:
-        length = row[2]
-        print hex(int(row[3]))
-        try:
-            onechunk = base64.standard_b64decode(row[4])
+    # elif row[0] == 'chunkdata' and sesnrtoget == currentses:
+    #     length = row[2]
+    #     print hex(int(row[3]))
+    #     try:
+    #         onechunk = base64.standard_b64decode(row[4])
             
 
 
-            for x in xrange(0,int(length)/2):
+    #         for x in xrange(0,int(length)/2):
                 
-                total = struct.unpack('H',onechunk[x:x+2])[0]
-                if x % 2 == 1:
-                    blocktype = total & 15
-                    blockmeta = (total >> 4) & 15
-                else:
-                    blockmeta = total & 15
-                    blocktype = (total >> 4) & 15
-                print blocktype, blockmeta
+    #             total = struct.unpack('H',onechunk[x:x+2])[0]
+    #             if x % 2 == 1:
+    #                 blocktype = total & 15
+    #                 blockmeta = (total >> 4) & 15
+    #             else:
+    #                 blockmeta = total & 15
+    #                 blocktype = (total >> 4) & 15
+    #             print blocktype, blockmeta
 
 
-            # chunks.append()
-        except Exception as e:
-            print e
+    #         # chunks.append()
+    #     except Exception as e:
+    #         print e
 
 
 
