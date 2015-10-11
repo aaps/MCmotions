@@ -55,44 +55,47 @@ class DataImporter:
 
             mat = bpy.data.materials.new("PKHG")
 
-            mobtype = int(value['type'])
-            if mobtype == 50:
+            mobtype = value['type']
+            if mobtype == '50':
                 ob.name = "creeper"
                 mat.diffuse_color = (0.0,1.0,0.0)
-            elif mobtype == 51:
+            elif mobtype == '51':
                 ob.name = "skeleton"
                 mat.diffuse_color = (1.0,1.0,1.0)
-            elif mobtype == 52:
+            elif mobtype == '52':
                 ob.name = "spider"
                 mat.diffuse_color = (0.2,0.1,0.1)
-            elif mobtype == 54:
+            elif mobtype == '54':
                 ob.name = "zombol"
                 mat.diffuse_color = (0.0,0.3,0.0)
-            elif mobtype == 55:
+            elif mobtype == '55':
                 ob.name = "slime"
                 mat.diffuse_color = (0.5,1,0.5)
-            elif mobtype == 58:
+            elif mobtype == '58':
                 ob.name = "enderman"
                 mat.diffuse_color = (0.5,0.0,0.5)
-            elif mobtype == 90:
+            elif mobtype == '90':
                 ob.name = "pig"
                 mat.diffuse_color = (0.5,0.4,0.4)
-            elif mobtype == 65:
+            elif mobtype == '65':
                 ob.name = "bat"
                 mat.diffuse_color = (1,0.5,0.2)
-            elif mobtype == 91:
+            elif mobtype == '91':
                 ob.name = "sheep"
                 mat.diffuse_color = (1,1,1)
-            elif mobtype == 92:
+            elif mobtype == '92':
                 ob.name = "cow"
                 mat.diffuse_color = (1,0.2,0.1)
-            elif mobtype == 94:
+            elif mobtype == '94':
                 ob.name = "squid"
                 mat.diffuse_color = (0.2,0.2,1)
             
-            elif mobtype == 101:
+            elif mobtype == '101':
                 ob.name = "rabbit"
                 mat.diffuse_color = (0.5,0.1,0.05)
+            elif len(mobtype) > 10:
+                ob.name = "player:" + mobtype
+                mat.diffuse_color = (1,0.6,0.4)
             else:
                 mat.diffuse_color = (0.0,0.0,0.0)
                 ob.name = str(mobtype)

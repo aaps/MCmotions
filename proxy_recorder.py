@@ -1,11 +1,14 @@
 #!/usr/bin/python -B
 
-from quarry.net.proxy import DownstreamFactory, Bridge
-
+from quarry.net.proxy import DownstreamFactory, Bridge, UpstreamFactory
+from quarry.mojang.profile import Profile
 import time
 import base64
 import sys, getopt
-
+import getpass
+import zlib
+from cStringIO import StringIO
+import gzip
 
 class QuietBridge(Bridge):
     quiet_mode = False
@@ -226,14 +229,19 @@ class QuietBridge(Bridge):
 
     # def packet_downstream_chunk_data(self, buff):
     #     buff.save()
+
     #     if self.recording:
+    #         # bytear = bytearray([])
     #         chunkxy = buff.unpack('ii')
     #         groundup = buff.unpack('?')
     #         pribitmask = buff.unpack('H')
     #         datalength = buff.unpack_varint()
-    #         contents = base64.b64encode(buff.buff)
             
-    #         print 'chunkdata|' + str(chunkxy) + '|' + str(groundup) + '|' + str(pribitmask) + '|' + str(datalength) + '|' + contents
+            
+    #         contents = buff.unpack(str(datalength) + 's')
+    #         zlib.decompress(contents[:-1], zlib.MAX_WBITS|32)
+            
+    #         self.dumpfile.write( 'chunkdata|' + str(chunkxy) + '|' + str(groundup) + '|' + str(pribitmask) + '|' + str(datalength) +'|' + contents + '\n')
 
     #         buff.restore()
     #     self.downstream.send_packet("chunk_data", buff.read())
@@ -243,6 +251,7 @@ class QuietBridge(Bridge):
     #     if self.recording:
     #         metaar = []
     #         chunkar = []
+    #         skylightsend = buff.unpack('?')
     #         nrchunks = buff.unpack_varint()
     #         for index in xrange(0,nrchunks):
     #             chunkxy = buff.unpack('ii')
@@ -256,7 +265,7 @@ class QuietBridge(Bridge):
 
     #         for index in xrange(0,metalen):
                 
-    #             print 'chunkdata|' + metaar[index] + '|' + chunkar[index]
+    #             self.dumpfile.write( 'Bchunkdata|' + metaar[index] + '|' + chunkar[index] + '\n')
 
 
     #     buff.restore()
@@ -278,7 +287,7 @@ class QuietBridge(Bridge):
                 z = (xz & 0xF) + (chunkxz[1] * 16)
                 y = buff.unpack('B')
                 newid = buff.unpack_varint() >> 4
-                self.dumpfile.write( 'Mblockchange|' + str(seconds) + '|' + str((x,z,y)) + '|' + str(newid)+ '\n')
+                self.dumpfile.write( 'blockchange|' + str(seconds) + '|' + str((x,z,y)) + '|' + str(newid)+ '\n')
             buff.restore()
             
         self.downstream.send_packet("multi_block_change", buff.read())
@@ -378,40 +387,58 @@ class QuietBridge(Bridge):
 
             return data
 
+class QuietUpstreamFactory(UpstreamFactory):
+    profile = Profile()
+    profile.username = "nobody"
+    
+
 
 class QuietDownstreamFactory(DownstreamFactory):
     bridge_class = QuietBridge
+    upstream_factory_class = QuietUpstreamFactory
     motd = "Proxy Server"
+    online_mode = False
+
+    
+    def login(self, email):
+        self.upstream_factory_class.profile.login(email, getpass.getpass())
+
+    def set_username(self,username):
+        self.upstream_factory_class.profile.username = username
 
     def set_dumpfile(self,file):
         self.bridge_class.dumpfile = file
 
     def set_startstarted(self, booler):
         self.bridge_class.recording = booler
-        # print self.bridge_class.recording
 
 
 def main(argv):
     
     startstarted = False
 
+    destip = "localhost"
+    sourceport = 6677
+    destport = 25565
+    logfile = "session.log"
+
+    factory = QuietDownstreamFactory()
+
     try:
-        opts, args = getopt.getopt(argv,"",["sourceport=","destport=","destip=","started=", "logfile="])
+        opts, args = getopt.getopt(argv,"",["sourceport=","destport=","destip=","started=", "logfile=","profile=","username="])
         
     except getopt.GetoptError:
-        print 'error: proxy_recorder.py --started --sourceport port --destport port --destip ip --logfile filename'
+        print 'error: proxy_recorder.py --started --sourceport port --destport port --destip ip --logfile filename --username --profile'
         sys.exit(2)
     for opt, arg in opts:
         
-        destip = "localhost"
-        sourceport = 6677
-        destport = 25565
-        logfile = "session.log"
-        
         if opt == '-h':
-            print 'proxy_recorder.py --started --sourceport port --destport port --destip ip --logfile filename'
+            print 'proxy_recorder.py --started --sourceport port --destport port --destip ip --logfile filename  --username --profile'
             sys.exit()
-
+        if opt == "--username":
+            factory.set_username(arg)
+        if opt == "--profile":
+            factory.login(arg)
         if opt == "--sourceport":
             sourceport = int(arg)
         if opt == "--destport":
@@ -425,10 +452,12 @@ def main(argv):
             if arg == "yes":
                 startstarted = True
 
+    print "Connecting to:" + destip + " on port:" + str(destport)
+    print "relaying on port:" + str(sourceport) + " dumping traffic in:" + logfile
 
 
     # Create factory
-    factory = QuietDownstreamFactory()
+    
     factory.set_dumpfile(open(logfile, 'w'))
     
     factory.set_startstarted(startstarted)
@@ -438,7 +467,7 @@ def main(argv):
     factory.connect_port = destport
 
     # Listen
-    factory.listen(destip, sourceport)
+    factory.listen("localhost", sourceport)
     factory.run()
 
 

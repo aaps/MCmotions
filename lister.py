@@ -67,15 +67,16 @@ chunks = []
 
 
 def fido(first, second):
+
+        
     y = 180 - abs(abs(first[0] - second[0]) - 180)
     p = 180 - abs(abs(first[1] - second[1]) - 180)
-    h = 180 - abs(abs(first[2] - second[2]) - 180)
+    if len(first) > 2 and len(second) > 2:
+        h = 180 - abs(abs(first[2] - second[2]) - 180)
 
-    print (y,p,h)
-    return (y,p,h)
-    # print (second[0] - first[0], second[1] - first[1], second[2] - first[2])
-    # print
-    # return (second[0] - first[0], second[1] - first[1], second[2] - first[2])
+        return (y,p,h)
+    return (y,p)
+    
 
 
 offset = (0,0,0)
@@ -102,13 +103,15 @@ for line in aroflines:
         currentses =+ 1
 
         
-    elif row[0] == 'spawnmob' and sesnrtoget == currentses and row[3] not in render:
+    elif 'spawn' in row[0]  and sesnrtoget == currentses and row[3] not in render:
         
 
         goodpos = ast.literal_eval(row[4])
         rawyawpichhead = ast.literal_eval(row[5])
-        rawyawpichhead = (rawyawpichhead[0]+ 5) % 360, (rawyawpichhead[1]+ 5) % 360, (rawyawpichhead[2]+ 5) % 360
-        # print row    
+        if len(rawyawpichhead) > 2:
+            rawyawpichhead = (rawyawpichhead[0]+ 5) % 360, (rawyawpichhead[1]+ 5) % 360, (rawyawpichhead[2]+ 5) % 360
+        else:
+            rawyawpichhead = (rawyawpichhead[0]+ 5) % 360, (rawyawpichhead[1]+ 5) % 360
         goodpos = (float(goodpos[0])/32, float(goodpos[1])/32, float(goodpos[2])/32)
         
         mob = {int(row[2]):{'type':row[3],'positions':[{'time':float(row[1]),'pos':tuple(map(operator.sub, goodpos, offset)), 'yawpichhead': rawyawpichhead,'status':0,'alive':1}]}}
@@ -131,8 +134,10 @@ for line in aroflines:
         absolutepos = tuple(map(operator.add, lastlist['pos'], ast.literal_eval(row[3])))
         yawpich = ast.literal_eval(row[4])
         
-
-        yawpichhead = (yawpich[0]+ 5) % 360,(yawpich[1]+ 5) % 360,lastlist['yawpichhead'][2]
+        if len(lastlist['yawpichhead']) > 2:
+            yawpichhead = (yawpich[0]+ 5) % 360,(yawpich[1]+ 5) % 360,lastlist['yawpichhead'][2]
+        else:
+            yawpichhead = (yawpich[0]+ 5) % 360,(yawpich[1]+ 5) % 360
         yawpichhead = fido(lastlist['yawpichhead'], yawpichhead)
 
         allhistory[int(row[2])]['positions'].append({'time':float(row[1]),'pos':absolutepos,'yawpichhead':yawpichhead,'status':0,'alive':lastlist['alive']})
@@ -142,9 +147,12 @@ for line in aroflines:
         lastlist = allhistory[int(row[2])]['positions'][-1]
         
         # print lastlist['yawpichhead']
-        if not ast.literal_eval(row[3]) == lastlist['yawpichhead'][2]:
+        if len(lastlist['yawpichhead']) > 2:
+            if not ast.literal_eval(row[3]) == lastlist['yawpichhead'][2]:
             
-            yawpichhead = lastlist['yawpichhead'][0], lastlist['yawpichhead'][1], (ast.literal_eval(row[3])+ 5) % 360
+                yawpichhead = lastlist['yawpichhead'][0], lastlist['yawpichhead'][1], (ast.literal_eval(row[3])+ 5) % 360
+
+
             yawpichhead = fido(yawpichhead, lastlist['yawpichhead'])
 
             allhistory[int(row[2])]['positions'].append({'time':float(row[1]),'pos':lastlist['pos'],'yawpichhead':yawpichhead,'status':0,'alive':lastlist['alive']})
@@ -157,7 +165,11 @@ for line in aroflines:
         
         lastlist = allhistory[int(row[2])]['positions'][-1]
         yawpich = ast.literal_eval(row[4])
-        yawpichhead = (yawpich[0]+ 5) % 360, (yawpich[1]+ 5) % 360, lastlist['yawpichhead'][2]
+        if len(lastlist['yawpichhead']) > 2:
+            yawpichhead = (yawpich[0]+ 5) % 360, (yawpich[1]+ 5) % 360, lastlist['yawpichhead'][2]
+        else:
+            yawpichhead = (yawpich[0]+ 5) % 360, (yawpich[1]+ 5) % 360
+        
         yawpichhead = fido( yawpichhead, lastlist['yawpichhead'])
         
         allhistory[int(row[2])]['positions'].append({'time':float(row[1]),'pos':tuple(map(operator.sub, goodpos, offset)),'yawpichhead':yawpichhead,'status':0,'alive':lastlist['alive']})
@@ -178,22 +190,30 @@ for line in aroflines:
 
     # elif row[0] == 'chunkdata' and sesnrtoget == currentses:
     #     length = row[2]
-    #     print hex(int(row[3]))
+        
+
+
     #     try:
-    #         onechunk = base64.standard_b64decode(row[4])
-            
 
+    #         # onechunk = base64.standard_b64decode(row[4])
+    #         # print len(onechunk)
+    #         # print
+    #         # print onechunk[5:]
+    #         # print zlib.decompress(onechunk[5:-1])
 
-    #         for x in xrange(0,int(length)/2):
+    #         # print struct.unpack('b',onechunk)[0]
+
+    #         # for x in xrange(1,int(length)):
                 
-    #             total = struct.unpack('H',onechunk[x:x+2])[0]
-    #             if x % 2 == 1:
-    #                 blocktype = total & 15
-    #                 blockmeta = (total >> 4) & 15
-    #             else:
-    #                 blockmeta = total & 15
-    #                 blocktype = (total >> 4) & 15
-    #             print blocktype, blockmeta
+    #         #     total = struct.unpack('H',onechunk[x:x+2])[0]
+    #         #     # print total
+    #         #     if x % 2 == 1:
+    #         #         blocktype = total & 15
+    #         #         blockmeta = (total >> 4) & 15
+    #         #     else:
+    #         #         blockmeta = total & 15
+    #         #         blocktype = (total >> 4) & 15
+    #         #     print blocktype, blockmeta
 
 
     #         # chunks.append()
