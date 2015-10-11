@@ -16,18 +16,18 @@ sourcefile = "default.log"
 destfile = "default.json"
 sesnrtoget = 0
 avgmiddle = False
-render = ["all"]
+render = ["none"]
 
 try:
-    opts, args = getopt.getopt(sys.argv[1:],"",["avgmiddle=","sourcefile=","destfile=","session=", "avgmiddle=", "render="])
+    opts, args = getopt.getopt(sys.argv[1:],"",["avgmiddle=","sourcefile=","destfile=","session=", "avgmiddle=", "exclude="])
         
 except getopt.GetoptError:
-    print 'error: lister.py --avgmiddle --sourcefile filename --destfile filename --session sesnumber --render rendermode'
+    print 'error: lister.py --avgmiddle --sourcefile filename --destfile filename --session sesnumber --exclude commaseperatedlist of entity ids'
     sys.exit(2)
 for opt, arg in opts:
     # print opt
     if opt == '-h':
-        print 'lister.py --avgmiddle --sourcefile filename --destfile filename --session sesnumber --render rendermode'
+        print 'lister.py --avgmiddle --sourcefile filename --destfile filename --session sesnumber --exclude commaseperatedlist of entity ids'
         sys.exit()
 
     if opt == "--sourcefile":
@@ -44,7 +44,7 @@ for opt, arg in opts:
         if arg == 'yes':
             avgmiddle = True
 
-    if opt == "--render":
+    if opt == "--exclude":
         render = arg.split(",")
         
 
@@ -102,7 +102,7 @@ for line in aroflines:
         currentses =+ 1
 
         
-    elif row[0] == 'spawnmob' and sesnrtoget == currentses and ("mobs" in render or "all" in render):
+    elif row[0] == 'spawnmob' and sesnrtoget == currentses and row[3] not in render:
         
 
         goodpos = ast.literal_eval(row[4])
