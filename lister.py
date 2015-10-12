@@ -9,6 +9,7 @@ import base64
 import struct
 import zlib
 import sys, getopt
+import numpy
 
 # import StringIO
 
@@ -50,6 +51,7 @@ for opt, arg in opts:
 
 
 allhistory = {}
+allblocks = {}
 
 
 currentses = 0
@@ -63,7 +65,7 @@ total = origin.read()
 
 aroflines = total.split('\n')
 
-chunks = []
+chunks = {}
 
 
 def fido(first, second):
@@ -188,44 +190,42 @@ for line in aroflines:
                 lastlist = allhistory[entid]['positions'][-1]
                 allhistory[entid]['positions'].append({'time':float(row[1]),'pos':lastlist['pos'],'yawpichhead':yawpichhead,'status':0 ,'alive':0})
 
-    # elif row[0] == 'chunkdata' and sesnrtoget == currentses:
-    #     length = row[2]
+    elif row[0] == 'chunkdata' and sesnrtoget == currentses:
+        length = row[2]
         
+        chunks.update({row[1]:{'blocks':{}}})
 
+        try:
+            
+            if row[3] is not '0':
+                chunkdata = base64.standard_b64decode(row[5])
+                for index1 in xrange(0, int(row[3])):
+                    
+                    for y in xrange(0,16):
+                        for z in xrange(0,16):
+                            for x in xrange(0,16):
+                                goodindex = (x+(z*16)+(y*256))
+                                # print goodindex
 
-    #     try:
+                                temp = struct.unpack('H',chunkdata[goodindex*2:goodindex*2+2])[0]
+                                # print
+                                btype = temp >> 4
+                                bmeta = temp & 15
 
-    #         # onechunk = base64.standard_b64decode(row[4])
-    #         # print len(onechunk)
-    #         # print
-    #         # print onechunk[5:]
-    #         # print zlib.decompress(onechunk[5:-1])
+                                block = {str((x,z,y+(index1*16))):btype}
+                                chunks[row[1]]['blocks'].update(block)
+                    
+                        
+        except Exception as e:
+            print e
 
-    #         # print struct.unpack('b',onechunk)[0]
-
-    #         # for x in xrange(1,int(length)):
-                
-    #         #     total = struct.unpack('H',onechunk[x:x+2])[0]
-    #         #     # print total
-    #         #     if x % 2 == 1:
-    #         #         blocktype = total & 15
-    #         #         blockmeta = (total >> 4) & 15
-    #         #     else:
-    #         #         blockmeta = total & 15
-    #         #         blocktype = (total >> 4) & 15
-    #         #     print blocktype, blockmeta
-
-
-    #         # chunks.append()
-    #     except Exception as e:
-    #         print e
-
-
+allstuff = {'allhistory':allhistory,'chunks':chunks}
 
 
 
 print 'entitys with spawnmessage:' + str(len(allhistory)) + ',so used !'
 print 'entitys without spawnmessage:' + str(len(lostcounter)) + ',so ignored !'
+
     
-f.write(json.dumps(allhistory))
+f.write(json.dumps(allstuff))
 

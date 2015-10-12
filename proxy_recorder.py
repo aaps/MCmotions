@@ -7,8 +7,7 @@ import base64
 import sys, getopt
 import getpass
 import zlib
-from cStringIO import StringIO
-import gzip
+import array
 
 class QuietBridge(Bridge):
     quiet_mode = False
@@ -227,24 +226,23 @@ class QuietBridge(Bridge):
 
     # notyet doing this since i cant decode chunk data yet and it is a lot of data to record
 
-    # def packet_downstream_chunk_data(self, buff):
-    #     buff.save()
+    def packet_downstream_chunk_data(self, buff):
+        buff.save()
 
-    #     if self.recording:
-    #         # bytear = bytearray([])
-    #         chunkxy = buff.unpack('ii')
-    #         groundup = buff.unpack('?')
-    #         pribitmask = buff.unpack('H')
-    #         datalength = buff.unpack_varint()
+        if self.recording:
+            # bytear = bytearray([])
+            chunkxy = buff.unpack('ii')
+            groundup = buff.unpack('?')
+            pribitmask = buff.unpack('H')
+            datalength = buff.unpack_varint()
             
             
-    #         contents = buff.unpack(str(datalength) + 's')
-    #         zlib.decompress(contents[:-1], zlib.MAX_WBITS|32)
-            
-    #         self.dumpfile.write( 'chunkdata|' + str(chunkxy) + '|' + str(groundup) + '|' + str(pribitmask) + '|' + str(datalength) +'|' + contents + '\n')
+            contents = base64.b64encode(buff.unpack(str(datalength) + 's'))
 
-    #         buff.restore()
-    #     self.downstream.send_packet("chunk_data", buff.read())
+            self.dumpfile.write( 'chunkdata|' + str(chunkxy) + '|' + str(groundup) + '|' + str(pribitmask) + '|' + str(datalength) + '|' + contents +'\n')
+            
+            buff.restore()
+        self.downstream.send_packet("chunk_data", buff.read())
 
     # def packet_downstream_map_chunk_bulk(self, buff):
     #     buff.save()
