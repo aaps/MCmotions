@@ -426,12 +426,12 @@ def main(argv):
         opts, args = getopt.getopt(argv,"",["sourceport=","destport=","destip=","started=", "logfile=","profile=","username="])
         
     except getopt.GetoptError:
-        print 'error: proxy_recorder.py --started --sourceport port --destport port --destip ip --logfile filename --username --profile'
+        print 'error: proxy_recorder.py --started yes/no --sourceport port --destport port --destip ip --logfile filename --username --profile'
         sys.exit(2)
     for opt, arg in opts:
         
         if opt == '-h':
-            print 'proxy_recorder.py --started --sourceport port --destport port --destip ip --logfile filename  --username --profile'
+            print 'proxy_recorder.py --started yes/no --sourceport port --destport port --destip ip --logfile filename  --username --profile'
             sys.exit()
         if opt == "--username":
             factory.set_username(arg)

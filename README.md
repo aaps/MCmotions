@@ -9,6 +9,10 @@ Blender for the plugin ;)
 Also a good idea minecraft !
 
 #NEW
+-- chunkdata will get exported by lister, wrong ?
+-- the ability to connect to server that will check account data ! (--username --profile, after start password will be asked)
+-- the possibility to start recording as soon as you connect (you will not lose player/mob spawn messages and thus lose the players/mobs in the recording, --started yes/no)
+
 proxy has commandline options:
 --sourceport portnr (the port the proxy listens on)
 --destport the portnr of the server the proxy trys to ommect to
@@ -41,16 +45,19 @@ A blender plugin that will take the json file and import it in animated blender 
 1
 find out what entity velocity means to mobs so better movements.
 good rotation of entitys, instead of the muck we have now !
-get chunk data recorded in the right format
-
+The ability to import the map/chunks
 
 2
-The ability to import the map/chunks
 import blockchanges (after map import is done)
+make recording alwais on when connecting. (filesize is gonna be big)
+the status message, should display current filesize
+
 
 3
 recording the details, animations of blocks, particles, lightning, rain, etc
 recording of packets that are going to the server so the proxy connecting player is also recorded !
+the ability to survive transports to other servers
+add the posibility to make takes, everything will still get recorder, but nog you can specifie what takes you want in the exported json
 
 #WARNING 
 This is a work in progress and without determination or the willingness to code/debug. this code will only fustrate you !

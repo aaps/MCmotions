@@ -49,7 +49,7 @@ class DataImporter:
         total = json.loads(origin.read())
 
         for key, value in total.items():
-            firstloc = value['positions'][0]['pos']
+            firstloc = value['allhistory']['positions'][0]['pos']
             bpy.ops.mesh.primitive_cube_add(location=firstloc)
             ob = bpy.context.object
 
@@ -102,7 +102,7 @@ class DataImporter:
 
             ob.active_material = mat
             frame_num = 0
-            for posses in value['positions'][1:]:
+            for posses in value['allhistory']['positions'][1:]:
                 bpy.context.scene.frame_set(frame_num)
                 ob.location =  (posses['pos'][0], posses['pos'][2], posses['pos'][1])
                 ob.rotation_mode = 'XYZ'
