@@ -193,13 +193,15 @@ for line in aroflines:
     elif row[0] == 'chunkdata' and sesnrtoget == currentses:
         length = row[2]
         
-        chunks.update({row[1]:{'blocks':{}}})
+        chunks.update({row[1]:{'blocks':[]}})
 
         try:
             
             if row[3] is not '0':
                 chunkdata = base64.standard_b64decode(row[5])
-                for index1 in xrange(0, int(row[3])):
+                xypos = ast.literal_eval(row[1])
+  
+                for index1 in xrange(0, int(row[3])+1):
                     
                     for y in xrange(0,16):
                         for z in xrange(0,16):
@@ -211,9 +213,9 @@ for line in aroflines:
                                 # print
                                 btype = temp >> 4
                                 bmeta = temp & 15
-
-                                block = {str((x,z,y+(index1*16))):btype}
-                                chunks[row[1]]['blocks'].update(block)
+                                
+                                block = ( (x + (xypos[0]*16),z + (xypos[1]*16),y+(index1*16)), btype)
+                                chunks[row[1]]['blocks'].append(block)
                     
                         
         except Exception as e:
