@@ -207,10 +207,9 @@ for line in aroflines:
                         for z in xrange(0,16):
                             for x in xrange(0,16):
                                 goodindex = (x+(z*16)+(y*256))
-                                # print goodindex
 
                                 temp = struct.unpack('H',chunkdata[goodindex*2:goodindex*2+2])[0]
-                                # print
+
                                 btype = temp >> 4
                                 bmeta = temp & 15
                                 
@@ -220,6 +219,70 @@ for line in aroflines:
                         
         except Exception as e:
             print e
+
+# put it in material array instead of chunk arrays
+
+print 'make a index of possible matrials'
+
+materials = {}
+for chunk in chunks:
+    for block in chunks[chunk]:
+        if len(chunks[chunk][block]) > 0:
+            for x in chunks[chunk][block]:
+                if x[1] > 0:
+                    matblock = {x[1]:{}}
+                    materials.update(matblock)
+
+print 'put the blocks of materials in their material index'
+for chunk in chunks:
+    for block in chunks[chunk]:
+        if len(chunks[chunk][block]) > 0:
+            for x in chunks[chunk][block]:
+                if x[1] > 0:
+                    materials[x[1]].update({x[0]:[]})
+
+# print materials
+neightbors = {}
+
+print 'find material neightbors' 
+for mat in materials:
+    neightbors[mat] = {}
+
+
+for mat in materials:
+    print len(materials[mat]), mat
+    for block in materials[mat]:
+        
+        neightbors[mat][block] = []
+        
+        if (block[0]-1, block[1], block[2]) in materials[mat]:
+            neightbors[mat][block].append(1)
+        if (block[0]+1, block[1], block[2]) in materials[mat]:
+            neightbors[mat][block].append(2)
+        if (block[0], block[1]-1, block[2]) in materials[mat]:
+            neightbors[mat][block].append(3)
+        if (block[0], block[1]+1, block[2]) in materials[mat]:
+            neightbors[mat][block].append(4)
+        if (block[0], block[1], block[2]-1) in materials[mat]:
+            neightbors[mat][block].append(5)
+        if (block[0], block[1], block[2]+1) in materials[mat]:
+            neightbors[mat][block].append(6)
+
+print 'removing all super neightbors, same type blocks on all sides'         
+
+loneneighbors = {}
+for mat in neightbors:
+    loneneighbors[mat] = {}
+    for block in neightbors[mat]:
+    
+        if len(neightbors[mat][block]) < 6:
+            loneneighbors[mat][block]  = neightbors[mat][block]
+
+for mat in loneneighbors:
+    print len(loneneighbors[mat]), mat
+
+
+
 
 allstuff = {'allhistory':allhistory,'chunks':chunks}
 
