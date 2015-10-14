@@ -233,7 +233,7 @@ for chunk in chunks:
                     matblock = {x[1]:{}}
                     materials.update(matblock)
 
-print 'put the blocks of materials in their material index'
+print 'put the blocks of materials in their material index for ' + str(len(materials)) + ' materials'
 for chunk in chunks:
     for block in chunks[chunk]:
         if len(chunks[chunk][block]) > 0:
@@ -244,47 +244,108 @@ for chunk in chunks:
 # print materials
 neightbors = {}
 
-print 'find material neightbors' 
+print 'find material neightbors for ' + str(len(materials)) + ' materials'         
 for mat in materials:
     neightbors[mat] = {}
 
 
 for mat in materials:
-    print len(materials[mat]), mat
+    print mat
     for block in materials[mat]:
         
         neightbors[mat][block] = []
         
-        if (block[0]-1, block[1], block[2]) in materials[mat]:
+        if (block[0]-1, block[1], block[2]) not in materials[mat]:
             neightbors[mat][block].append(1)
-        if (block[0]+1, block[1], block[2]) in materials[mat]:
+        if (block[0]+1, block[1], block[2]) not in materials[mat]:
             neightbors[mat][block].append(2)
-        if (block[0], block[1]-1, block[2]) in materials[mat]:
+        if (block[0], block[1]-1, block[2]) not in materials[mat]:
             neightbors[mat][block].append(3)
-        if (block[0], block[1]+1, block[2]) in materials[mat]:
+        if (block[0], block[1]+1, block[2]) not in materials[mat]:
             neightbors[mat][block].append(4)
-        if (block[0], block[1], block[2]-1) in materials[mat]:
+        if (block[0], block[1], block[2]-1) not in materials[mat]:
             neightbors[mat][block].append(5)
-        if (block[0], block[1], block[2]+1) in materials[mat]:
+        if (block[0], block[1], block[2]+1) not in materials[mat]:
             neightbors[mat][block].append(6)
 
-print 'removing all super neightbors, same type blocks on all sides'         
+print 'removing all super neightbors, same type blocks on all sides for ' + str(len(neightbors)) + ' materials'         
 
 loneneighbors = {}
 for mat in neightbors:
+    print mat
     loneneighbors[mat] = {}
     for block in neightbors[mat]:
-    
-        if len(neightbors[mat][block]) < 6:
-            loneneighbors[mat][block]  = neightbors[mat][block]
+
+        if len(neightbors[mat][block]) > 0:
+            loneneighbors[mat][block[0]+0.5, block[1]+0.5, block[2]+0.5]  = neightbors[mat][block]
+            
+
+print 'generating vertices and faces for ' + str(len(loneneighbors)) + ' materials'
+faces = {}
+vertices = {}
 
 for mat in loneneighbors:
-    print len(loneneighbors[mat]), mat
+    print mat
+    faces[mat] = []
+    vertices[mat] = []
+    # X, Z, Y
+    # y = hoogte, x en z over de horizon
+    for block in loneneighbors[mat]:
+        if 5 in loneneighbors[mat][block]:
+            loweplane = (block[0]-0.5,block[0]+0.5,block[0]-0.5),(block[0]-0.5,block[0]+0.5,block[0]-0.5),(block[0]-0.5,block[0]-0.5,block[0]+0.5),(block[0]-0.5,block[0]-0.5,block[0]-0.5)
+            faces[mat].append(loweplane)
+            vertices[mat].append(loweplane[0])
+            vertices[mat].append(loweplane[1])
+            vertices[mat].append(loweplane[2])
+            vertices[mat].append(loweplane[3])
+        if 6 in loneneighbors[mat][block]:
+            upperplane = (block[0]+0.5,block[0]+0.5,block[0]-0.5),(block[0]+0.5,block[0]+0.5,block[0]-0.5),(block[0]+0.5,block[0]-0.5,block[0]+0.5),(block[0]+0.5,block[0]-0.5,block[0]-0.5)
+            faces[mat].append(upperplane)
+            vertices[mat].append(upperplane[0])
+            vertices[mat].append(upperplane[1])
+            vertices[mat].append(upperplane[2])
+            vertices[mat].append(upperplane[3])
+
+        if 3 in loneneighbors[mat][block]:
+            leftplane = (block[0]-0.5,block[0]-0.5,block[0]-0.5),(block[0]-0.5,block[0]-0.5,block[0]+0.5),(block[0]+0.5,block[0]-0.5,block[0]-0.5),(block[0]-0.5,block[0]-0.5,block[0]-0.5)
+            faces[mat].append(leftplane)
+            vertices[mat].append(upperplane[0])
+            vertices[mat].append(upperplane[1])
+            vertices[mat].append(upperplane[2])
+            vertices[mat].append(upperplane[3])
+        if 4 in loneneighbors[mat][block]:
+            leftplane = (block[0]-0.5,block[0]+0.5,block[0]-0.5),(block[0]-0.5,block[0]+0.5,block[0]+0.5),(block[0]+0.5,block[0]+0.5,block[0]-0.5),(block[0]-0.5,block[0]+0.5,block[0]-0.5)
+            faces[mat].append(leftplane)
+            vertices[mat].append(leftplane[0])
+            vertices[mat].append(leftplane[1])
+            vertices[mat].append(leftplane[2])
+            vertices[mat].append(leftplane[3])
+
+        if 1 in loneneighbors[mat][block]:
+            backplane = (block[0]-0.5,block[0]-0.5,block[0]+0.5),(block[0]-0.5,block[0]+0.5,block[0]+0.5),(block[0]-0.5,block[0]+0.5,block[0]+0.5),(block[0]+0.5,block[0]+0.5,block[0]+0.5)
+            faces[mat].append(backplane)
+            vertices[mat].append(backplane[0])
+            vertices[mat].append(backplane[1])
+            vertices[mat].append(backplane[2])
+            vertices[mat].append(backplane[3])
+        if 2 in loneneighbors[mat][block]:
+            frontplane = (block[0]-0.5,block[0]-0.5,block[0]-0.5),(block[0]-0.5,block[0]+0.5,block[0]-0.5),(block[0]-0.5,block[0]+0.5,block[0]-0.5),(block[0]+0.5,block[0]+0.5,block[0]-0.5)
+            faces[mat].append(frontplane)
+            vertices[mat].append(frontplane[0])
+            vertices[mat].append(frontplane[1])
+            vertices[mat].append(frontplane[2])
+            vertices[mat].append(frontplane[3])
+
+ 
+
+for mat in vertices:
+    vertices[mat] = list(set(vertices[mat]))
+
+for mat in faces:
+    faces[mat] = list(set(faces[mat]))
 
 
-
-
-allstuff = {'allhistory':allhistory,'chunks':chunks}
+allstuff = {'allhistory':allhistory,'vertices':vertices,'faces':faces}
 
 
 
