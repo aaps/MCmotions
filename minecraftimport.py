@@ -16,6 +16,7 @@ import time
 import json
 from math import pi
 import operator
+import ast
 
 from bpy_extras.io_utils import ImportHelper
 from bpy.props import StringProperty
@@ -24,13 +25,13 @@ dbg = False
 
 bl_info = {
     "name": "Minecraft mejiggest (*.json)",
-    "description": "This addon allows you to import WarCraft MDL model files (.mdl).",
-    "author": "Thomas 'CruzR' Glamsch",
+    "description": "This addon allows you to import minecraft worls and mob motions",
+    "author": "Aat Karelse",
     "version": (0, 2, 1),
     "blender": (2, 6, 3),
     #"api": ???,
     "location": "File > Import > minecraft stuff",
-    "warning": "Currently only the vertices and faces are imported, work in progress.",
+    "warning": "Alpha",
     # "wiki_url": "http://wiki.blender.org/index.php/Extensions:2.5/Py/Scripts/Import-Export/WarCraft_MDL",
     # "tracker_url": "http://projects.blender.org/tracker/index.php?func=detail&aid=29552",
     "category": "Import-Export"}
@@ -47,24 +48,23 @@ class DataImporter:
         
         origin = open(filepath, 'r')
 
-        total = json.loads(origin.read())
-        total = dict(total.items())
+        total = ast.literal_eval(origin.read())
+        # total = dict(total.items())
         
         indexi = 0
 
         entitys = total['allhistory']
-        chuncks = total['chunks']
+        vertices = total['vertices']
+        faces = total['faces']
 
-        rootob = None
-        for keys in chuncks:
+        
+        print(faces)
 
-            blocks = chuncks[keys]
+        # for keys in vertices:
 
-            for block in blocks['blocks']:
-                indexi +=1          
-                print(indexi)
-                
-                bpy.ops.mesh.primitive_cube_add(location=block[0])
+            # matvertices = vertices[keys]
+
+            # print(keys)
                 # tijd om met meshes te werken, fuck
 
 

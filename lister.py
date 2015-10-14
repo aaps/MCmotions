@@ -291,59 +291,89 @@ for mat in loneneighbors:
     # X, Z, Y
     # y = hoogte, x en z over de horizon
     for block in loneneighbors[mat]:
+        
         if 5 in loneneighbors[mat][block]:
-            loweplane = (block[0]-0.5,block[0]+0.5,block[0]-0.5),(block[0]-0.5,block[0]+0.5,block[0]-0.5),(block[0]-0.5,block[0]-0.5,block[0]+0.5),(block[0]-0.5,block[0]-0.5,block[0]-0.5)
-            faces[mat].append(loweplane)
+            loweplane = (block[0]-0.5,block[1]+0.5,block[2]+0.5),(block[0]-0.5,block[1]+0.5,block[2]-0.5),(block[0]-0.5,block[1]-0.5,block[2]+0.5),(block[0]-0.5,block[1]-0.5,block[2]-0.5)
             vertices[mat].append(loweplane[0])
             vertices[mat].append(loweplane[1])
             vertices[mat].append(loweplane[2])
             vertices[mat].append(loweplane[3])
+            
+            faces[mat].append(loweplane)
+
         if 6 in loneneighbors[mat][block]:
-            upperplane = (block[0]+0.5,block[0]+0.5,block[0]-0.5),(block[0]+0.5,block[0]+0.5,block[0]-0.5),(block[0]+0.5,block[0]-0.5,block[0]+0.5),(block[0]+0.5,block[0]-0.5,block[0]-0.5)
-            faces[mat].append(upperplane)
+            upperplane = (block[0]+0.5,block[1]+0.5,block[2]+0.5),(block[0]+0.5,block[1]+0.5,block[2]-0.5),(block[0]+0.5,block[1]-0.5,block[2]+0.5),(block[0]+0.5,block[1]-0.5,block[2]-0.5)
             vertices[mat].append(upperplane[0])
             vertices[mat].append(upperplane[1])
             vertices[mat].append(upperplane[2])
             vertices[mat].append(upperplane[3])
+            
+            faces[mat].append(upperplane)
 
         if 3 in loneneighbors[mat][block]:
-            leftplane = (block[0]-0.5,block[0]-0.5,block[0]-0.5),(block[0]-0.5,block[0]-0.5,block[0]+0.5),(block[0]+0.5,block[0]-0.5,block[0]-0.5),(block[0]-0.5,block[0]-0.5,block[0]-0.5)
-            faces[mat].append(leftplane)
-            vertices[mat].append(upperplane[0])
-            vertices[mat].append(upperplane[1])
-            vertices[mat].append(upperplane[2])
-            vertices[mat].append(upperplane[3])
-        if 4 in loneneighbors[mat][block]:
-            leftplane = (block[0]-0.5,block[0]+0.5,block[0]-0.5),(block[0]-0.5,block[0]+0.5,block[0]+0.5),(block[0]+0.5,block[0]+0.5,block[0]-0.5),(block[0]-0.5,block[0]+0.5,block[0]-0.5)
-            faces[mat].append(leftplane)
+            leftplane = (block[0]-0.5,block[1]-0.5,block[2]-0.5),(block[0]-0.5,block[1]-0.5,block[2]+0.5),(block[0]+0.5,block[1]-0.5,block[2]-0.5),(block[0]-0.5,block[1]-0.5,block[2]-0.5)
             vertices[mat].append(leftplane[0])
             vertices[mat].append(leftplane[1])
             vertices[mat].append(leftplane[2])
             vertices[mat].append(leftplane[3])
+            
+            faces[mat].append(leftplane)
+
+        if 4 in loneneighbors[mat][block]:
+            rightplane = (block[0]-0.5,block[1]+0.5,block[2]-0.5),(block[0]-0.5,block[1]+0.5,block[2]+0.5),(block[0]+0.5,block[1]+0.5,block[2]-0.5),(block[0]-0.5,block[1]+0.5,block[2]-0.5)
+            vertices[mat].append(rightplane[0])
+            vertices[mat].append(rightplane[1])
+            vertices[mat].append(rightplane[2])
+            vertices[mat].append(rightplane[3])
+            
+            faces[mat].append(rightplane)
 
         if 1 in loneneighbors[mat][block]:
-            backplane = (block[0]-0.5,block[0]-0.5,block[0]+0.5),(block[0]-0.5,block[0]+0.5,block[0]+0.5),(block[0]-0.5,block[0]+0.5,block[0]+0.5),(block[0]+0.5,block[0]+0.5,block[0]+0.5)
-            faces[mat].append(backplane)
+            backplane = (block[0]-0.5,block[1]-0.5,block[2]+0.5),(block[0]-0.5,block[1]+0.5,block[2]+0.5),(block[0]+0.5,block[1]-0.5,block[2]+0.5),(block[0]+0.5,block[1]+0.5,block[2]+0.5)
             vertices[mat].append(backplane[0])
             vertices[mat].append(backplane[1])
             vertices[mat].append(backplane[2])
             vertices[mat].append(backplane[3])
+            
+            faces[mat].append(backplane)
+
         if 2 in loneneighbors[mat][block]:
-            frontplane = (block[0]-0.5,block[0]-0.5,block[0]-0.5),(block[0]-0.5,block[0]+0.5,block[0]-0.5),(block[0]-0.5,block[0]+0.5,block[0]-0.5),(block[0]+0.5,block[0]+0.5,block[0]-0.5)
-            faces[mat].append(frontplane)
+            frontplane = (block[0]-0.5,block[1]-0.5,block[2]-0.5),(block[0]-0.5,block[1]+0.5,block[2]-0.5),(block[0]+0.5,block[1]-0.5,block[2]-0.5),(block[0]+0.5,block[1]+0.5,block[2]-0.5)
             vertices[mat].append(frontplane[0])
             vertices[mat].append(frontplane[1])
             vertices[mat].append(frontplane[2])
             vertices[mat].append(frontplane[3])
+            
+            faces[mat].append(frontplane)
 
- 
+
 
 for mat in vertices:
-    vertices[mat] = list(set(vertices[mat]))
+    vertices[int(mat)] = list(set(vertices[mat]))
 
-for mat in faces:
-    faces[mat] = list(set(faces[mat]))
 
+print 'linking faces to vertices of ' + str(len(faces)) + ' materials'
+
+# as it stand this part below is slow as fuck, replace
+
+# linkedfaces = {}
+
+# for mat in faces:
+#     print mat, len(faces[mat])
+#     linkedfaces[mat] = []
+#     counter = 0
+#     for loc in faces[mat]:
+#         counter += 1
+#         if counter % 100 == 0:
+#             print counter
+
+#         aface = []
+#         for x in xrange(0,4):   
+
+#             aface.append(vertices[mat].index(loc[x]))
+#         linkedfaces[mat].append( tuple(aface) )
+        
+# print linkedfaces
 
 allstuff = {'allhistory':allhistory,'vertices':vertices,'faces':faces}
 
@@ -353,5 +383,5 @@ print 'entitys with spawnmessage:' + str(len(allhistory)) + ',so used !'
 print 'entitys without spawnmessage:' + str(len(lostcounter)) + ',so ignored !'
 
     
-f.write(json.dumps(allstuff))
+f.write(repr(allstuff))
 
