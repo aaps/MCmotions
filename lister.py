@@ -10,6 +10,8 @@ import struct
 import zlib
 import sys, getopt
 import numpy
+from blist import *
+from collections import Counter
 
 # import StringIO
 
@@ -18,6 +20,31 @@ destfile = "default.json"
 sesnrtoget = 0
 avgmiddle = False
 render = ["none"]
+
+def facevertlinker(block, mat, plane):
+    
+    
+
+    plane1 = int(plane[0][0] + (plane[0][1]*16) + (plane[0][2]*256))
+    plane2 = int(plane[1][0] + (plane[1][1]*16) + (plane[1][2]*256))
+    plane3 = int(plane[2][0] + (plane[2][1]*16) + (plane[2][2]*256))
+    plane4 = int(plane[3][0] + (plane[3][1]*16) + (plane[3][2]*256))
+
+
+    vertices[mat].update({plane1: plane[0]})
+
+
+    vertices[mat].update({plane2: plane[1]})
+
+
+    vertices[mat].update({plane3: plane[2]})
+
+
+    vertices[mat].update({plane4: plane[3]})
+    
+    faces[mat].append((plane1, plane2, plane3, plane4))
+
+
 
 try:
     opts, args = getopt.getopt(sys.argv[1:],"",["avgmiddle=","sourcefile=","destfile=","session=", "avgmiddle=", "exclude="])
@@ -287,93 +314,54 @@ vertices = {}
 for mat in loneneighbors:
     print mat
     faces[mat] = []
-    vertices[mat] = []
-    # X, Z, Y
-    # y = hoogte, x en z over de horizon
+    vertices[mat] = {}
+
     for block in loneneighbors[mat]:
-        
+
         if 5 in loneneighbors[mat][block]:
             loweplane = (block[0]-0.5,block[1]+0.5,block[2]+0.5),(block[0]-0.5,block[1]+0.5,block[2]-0.5),(block[0]-0.5,block[1]-0.5,block[2]+0.5),(block[0]-0.5,block[1]-0.5,block[2]-0.5)
-            vertices[mat].append(loweplane[0])
-            vertices[mat].append(loweplane[1])
-            vertices[mat].append(loweplane[2])
-            vertices[mat].append(loweplane[3])
             
-            faces[mat].append(loweplane)
+            facevertlinker(block, mat, loweplane)
 
         if 6 in loneneighbors[mat][block]:
             upperplane = (block[0]+0.5,block[1]+0.5,block[2]+0.5),(block[0]+0.5,block[1]+0.5,block[2]-0.5),(block[0]+0.5,block[1]-0.5,block[2]+0.5),(block[0]+0.5,block[1]-0.5,block[2]-0.5)
-            vertices[mat].append(upperplane[0])
-            vertices[mat].append(upperplane[1])
-            vertices[mat].append(upperplane[2])
-            vertices[mat].append(upperplane[3])
             
-            faces[mat].append(upperplane)
+            facevertlinker(block, mat, upperplane)
 
         if 3 in loneneighbors[mat][block]:
-            leftplane = (block[0]-0.5,block[1]-0.5,block[2]-0.5),(block[0]-0.5,block[1]-0.5,block[2]+0.5),(block[0]+0.5,block[1]-0.5,block[2]-0.5),(block[0]-0.5,block[1]-0.5,block[2]-0.5)
-            vertices[mat].append(leftplane[0])
-            vertices[mat].append(leftplane[1])
-            vertices[mat].append(leftplane[2])
-            vertices[mat].append(leftplane[3])
+            leftplane = (block[0]-0.5,block[1]-0.5,block[2]-0.5),(block[0]-0.5,block[1]-0.5,block[2]+0.5),(block[0]+0.5,block[1]-0.5,block[2]-0.5),(block[0]+0.5,block[1]-0.5,block[2]+0.5)
             
-            faces[mat].append(leftplane)
+            facevertlinker(block, mat, leftplane)
 
         if 4 in loneneighbors[mat][block]:
-            rightplane = (block[0]-0.5,block[1]+0.5,block[2]-0.5),(block[0]-0.5,block[1]+0.5,block[2]+0.5),(block[0]+0.5,block[1]+0.5,block[2]-0.5),(block[0]-0.5,block[1]+0.5,block[2]-0.5)
-            vertices[mat].append(rightplane[0])
-            vertices[mat].append(rightplane[1])
-            vertices[mat].append(rightplane[2])
-            vertices[mat].append(rightplane[3])
+            rightplane = (block[0]-0.5,block[1]+0.5,block[2]-0.5),(block[0]-0.5,block[1]+0.5,block[2]+0.5),(block[0]+0.5,block[1]+0.5,block[2]-0.5),(block[0]+0.5,block[1]+0.5,block[2]+0.5)
             
-            faces[mat].append(rightplane)
+            facevertlinker(block, mat, rightplane)
 
         if 1 in loneneighbors[mat][block]:
-            backplane = (block[0]-0.5,block[1]-0.5,block[2]+0.5),(block[0]-0.5,block[1]+0.5,block[2]+0.5),(block[0]+0.5,block[1]-0.5,block[2]+0.5),(block[0]+0.5,block[1]+0.5,block[2]+0.5)
-            vertices[mat].append(backplane[0])
-            vertices[mat].append(backplane[1])
-            vertices[mat].append(backplane[2])
-            vertices[mat].append(backplane[3])
+            backplane = (block[0]-0.5,block[1]-0.5,block[2]-0.5),(block[0]-0.5,block[1]+0.5,block[2]-0.5),(block[0]+0.5,block[1]-0.5,block[2]-0.5),(block[0]+0.5,block[1]+0.5,block[2]-0.5)
             
-            faces[mat].append(backplane)
+            facevertlinker(block, mat, backplane)
 
         if 2 in loneneighbors[mat][block]:
-            frontplane = (block[0]-0.5,block[1]-0.5,block[2]-0.5),(block[0]-0.5,block[1]+0.5,block[2]-0.5),(block[0]+0.5,block[1]-0.5,block[2]-0.5),(block[0]+0.5,block[1]+0.5,block[2]-0.5)
-            vertices[mat].append(frontplane[0])
-            vertices[mat].append(frontplane[1])
-            vertices[mat].append(frontplane[2])
-            vertices[mat].append(frontplane[3])
-            
-            faces[mat].append(frontplane)
+            frontplane = (block[0]-0.5,block[1]-0.5,block[2]+0.5),(block[0]-0.5,block[1]+0.5,block[2]+0.5),(block[0]+0.5,block[1]-0.5,block[2]+0.5),(block[0]+0.5,block[1]+0.5,block[2]+0.5)
+            facevertlinker(block, mat, frontplane)
 
-
+print 'filtering the faces and meterials for duplicates ' + str(len(loneneighbors)) + ' materials'
 
 for mat in vertices:
-    vertices[int(mat)] = list(set(vertices[mat]))
+    vertices[mat] =  vertices[mat].values()
+    print len(vertices[mat])
+
+print
+
+for vert in faces:
+    faces[vert] = list(set(faces[vert]))
+    print len(faces[vert])
 
 
-print 'linking faces to vertices of ' + str(len(faces)) + ' materials'
 
-# as it stand this part below is slow as fuck, replace
 
-# linkedfaces = {}
-
-# for mat in faces:
-#     print mat, len(faces[mat])
-#     linkedfaces[mat] = []
-#     counter = 0
-#     for loc in faces[mat]:
-#         counter += 1
-#         if counter % 100 == 0:
-#             print counter
-
-#         aface = []
-#         for x in xrange(0,4):   
-
-#             aface.append(vertices[mat].index(loc[x]))
-#         linkedfaces[mat].append( tuple(aface) )
-        
-# print linkedfaces
 
 allstuff = {'allhistory':allhistory,'vertices':vertices,'faces':faces}
 

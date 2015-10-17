@@ -42,7 +42,25 @@ bl_info = {
 # to construct the model in Blender.
 class DataImporter:
 
-    
+    def createMeshFromData(self, name, origin, verts, faces):
+        # Create mesh and object
+        me = bpy.data.meshes.new(name+'Mesh')
+        ob = bpy.data.objects.new(name, me)
+        ob.location = origin
+        ob.show_name = True
+     
+        # Link object to scene and make active
+        scn = bpy.context.scene
+        scn.objects.link(ob)
+        scn.objects.active = ob
+        ob.select = True
+     
+        # Create mesh from given verts, faces.
+        me.from_pydata(verts, [], faces)
+        # Update mesh with new data
+        me.update()    
+        return ob
+
     def run(self, filepath, context):
         start_time = time.time()
         
@@ -57,8 +75,9 @@ class DataImporter:
         vertices = total['vertices']
         faces = total['faces']
 
+        for mat in vertices:
         
-        print(faces)
+            self.createMeshFromData(str(mat), (0,0,0), vertices[mat], [] )
 
         # for keys in vertices:
 
