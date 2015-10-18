@@ -223,29 +223,31 @@ for line in aroflines:
         chunks.update({row[1]:{'blocks':[]}})
 
         try:
-            
-            if row[3] is not '0':
+            if row[5] != 'None':
                 chunkdata = base64.standard_b64decode(row[5])
-                xypos = ast.literal_eval(row[1])
-  
-                for index1 in xrange(0, int(row[3])+1):
-                    
-                    for y in xrange(0,16):
-                        for z in xrange(0,16):
-                            for x in xrange(0,16):
-                                goodindex = (x+(z*16)+(y*256))
+                xzpos = ast.literal_eval(row[1])
 
-                                temp = struct.unpack('H',chunkdata[goodindex*2:goodindex*2+2])[0]
+                for index1 in xrange(0, 16):
+                    if int(row[3]) & (1 << index1):
+                        for y in xrange(0,16):
 
-                                btype = temp >> 4
-                                bmeta = temp & 15
-                                
-                                block = ( (x + (xypos[0]*16),z + (xypos[1]*16),y+(index1*16)), btype)
-                                chunks[row[1]]['blocks'].append(block)
+                            for z in xrange(0,16):
+                                for x in xrange(0,16):
+                                    goodindex = (x+(z*16)+(y*256)+(index1*4096))
+
+                                    temp = struct.unpack('H',chunkdata[goodindex*2:goodindex*2+2])[0]
+
+                                    btype = temp >> 4
+                                    bmeta = temp & 15
+                                    
+                                    block = ( (x + (xzpos[0]*16),z + (xzpos[1]*16),y+(index1*16)), btype)
+                                    chunks[row[1]]['blocks'].append(block)
                     
+
                         
         except Exception as e:
             print e
+
 
 # put it in material array instead of chunk arrays
 
@@ -351,13 +353,12 @@ print 'filtering the faces and meterials for duplicates ' + str(len(loneneighbor
 
 for mat in vertices:
     vertices[mat] =  vertices[mat].values()
-    print len(vertices[mat])
 
-print
+
 
 for vert in faces:
     faces[vert] = list(set(faces[vert]))
-    print len(faces[vert])
+
 
 
 

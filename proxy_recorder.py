@@ -222,6 +222,21 @@ class QuietBridge(Bridge):
             buff.restore()
         self.downstream.send_packet("destroy_entities", buff.read())
 
+    def packet_downstream_disconnect(self, buff):
+        buff.save()
+        if self.recording:
+            self.dumpfile.write('disconnect|' + buff.unpack_chat() + '\n')
+            buff.restore()
+        self.downstream.send_packet("disconnect", buff.read())
+
+    def packet_downstream_keep_alive(self, buff):
+        buff.save()
+        if self.recording:
+            self.dumpfile.write('keep_alive|' + str(buff.unpack_varint()) + '\n' )
+            buff.restore()
+        self.downstream.send_packet("keep_alive", buff.read() )
+
+
     # block and chunk stuff
 
     # notyet doing this since i cant decode chunk data yet and it is a lot of data to record
@@ -238,36 +253,41 @@ class QuietBridge(Bridge):
             
             
             contents = base64.b64encode(buff.unpack(str(datalength) + 's'))
+            # contents = base64.b64encode(buff.buff[0:datalength*2])
 
             self.dumpfile.write( 'chunkdata|' + str(chunkxy) + '|' + str(groundup) + '|' + str(pribitmask) + '|' + str(datalength) + '|' + contents +'\n')
             
             buff.restore()
         self.downstream.send_packet("chunk_data", buff.read())
 
-    # def packet_downstream_map_chunk_bulk(self, buff):
-    #     buff.save()
-    #     if self.recording:
-    #         metaar = []
-    #         chunkar = []
-    #         skylightsend = buff.unpack('?')
-    #         nrchunks = buff.unpack_varint()
-    #         for index in xrange(0,nrchunks):
-    #             chunkxy = buff.unpack('ii')
-    #             pribitmask = buff.unpack('H')
-    #             datalength = buff.unpack_varint()
-    #             metaar.append( str(chunkxy) + '|' + str(pribitmask) + '|' + str(datalength))
-    #         for index in xrange(0,nrchunks):
-    #             chunkar.append(base64.b64encode(buff.buff))
-            
-    #         metalen = len(metaar)    
 
-    #         for index in xrange(0,metalen):
+
+    def packet_downstream_map_chunk_bulk(self, buff):
+        buff.save()
+        if self.recording:
+            metaar = [((0,0),0,0)]
+            lengths = 0
+            chunkar = []
+            skylightsend = buff.unpack('?')
+            nrchunks = buff.unpack_varint()
+            for index in xrange(0,nrchunks):
+                chunkxy = buff.unpack('ii')
+                pribitmask = buff.unpack('H')
+                lengths += (65536 * 2)
+                metaar.append( (chunkxy,pribitmask,lengths) )
+                chunkar.append('None')
+
+            # for index in xrange(0,nrchunks):
+            #     bigstring = buff.buff[metaar[index][2]:metaar[index+1][2]]
+            #     chunkar.append(base64.b64encode(bigstring))
                 
-    #             self.dumpfile.write( 'Bchunkdata|' + metaar[index] + '|' + chunkar[index] + '\n')
+
+            for index in xrange(0,nrchunks):
+                self.dumpfile.write( 'chunkdata|' + str(metaar[index+1][0]) +  '|True|' + str(metaar[index+1][1]) + '|' + str(65536) + '|' + chunkar[index] + '\n')
 
 
-    #     buff.restore()
-    #     self.downstream.send_packet("map_chunk_bulk", buff.read())
+        buff.restore()
+        self.downstream.send_packet("map_chunk_bulk", buff.read())
 
     def packet_downstream_multi_block_change(self, buff):
         buff.save()
