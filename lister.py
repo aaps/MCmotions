@@ -258,7 +258,7 @@ for chunk in chunks:
     for block in chunks[chunk]:
         if len(chunks[chunk][block]) > 0:
             for x in chunks[chunk][block]:
-                if x[1] > 0:
+                if x[1] > 0 and x[1] < 256:
                     matblock = {x[1]:{}}
                     materials.update(matblock)
 
@@ -267,8 +267,11 @@ for chunk in chunks:
     for block in chunks[chunk]:
         if len(chunks[chunk][block]) > 0:
             for x in chunks[chunk][block]:
-                if x[1] > 0:
+                if x[1] > 0 and x[1] < 256:
                     materials[x[1]].update({x[0]:[]})
+        chunks[chunk][block] = None
+
+chunks = None
 
 # print materials
 neightbors = {}
@@ -296,7 +299,9 @@ for mat in materials:
             neightbors[mat][block].append(5)
         if (block[0], block[1], block[2]+1) not in materials[mat]:
             neightbors[mat][block].append(6)
+    materials[mat] = None
 
+materials = None
 print 'removing all super neightbors, same type blocks on all sides for ' + str(len(neightbors)) + ' materials'         
 
 loneneighbors = {}
@@ -307,7 +312,9 @@ for mat in neightbors:
 
         if len(neightbors[mat][block]) > 0:
             loneneighbors[mat][block[0]+0.5, block[1]+0.5, block[2]+0.5]  = neightbors[mat][block]
-            
+    neightbors[mat] = None
+
+neightbors = None
 
 print 'generating vertices and faces for ' + str(len(loneneighbors)) + ' materials'
 faces = {}
@@ -348,24 +355,23 @@ for mat in loneneighbors:
         if 2 in loneneighbors[mat][block]:
             frontplane = (block[0]-0.5,block[1]-0.5,block[2]+0.5),(block[0]-0.5,block[1]+0.5,block[2]+0.5),(block[0]+0.5,block[1]-0.5,block[2]+0.5),(block[0]+0.5,block[1]+0.5,block[2]+0.5)
             facevertlinker(block, mat, frontplane)
+    loneneighbors[mat] = None
 
-print 'filtering the faces and meterials for duplicates ' + str(len(loneneighbors)) + ' materials'
+print 'filtering the faces and materials for duplicates ' + str(len(loneneighbors)) + ' materials'
+
+loneneighbors = None
 
 for mat in vertices:
     vertices[mat] =  vertices[mat].values()
-
-
 
 for vert in faces:
     faces[vert] = list(set(faces[vert]))
 
 
-
-
-
-
 allstuff = {'allhistory':allhistory,'vertices':vertices,'faces':faces}
 
+vertices = None
+faces = None
 
 
 print 'entitys with spawnmessage:' + str(len(allhistory)) + ',so used !'

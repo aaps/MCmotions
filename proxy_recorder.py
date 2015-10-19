@@ -265,25 +265,38 @@ class QuietBridge(Bridge):
     def packet_downstream_map_chunk_bulk(self, buff):
         buff.save()
         if self.recording:
-            metaar = [((0,0),0,0)]
+            
             lengths = 0
             chunkar = []
+            metaar = []
             skylightsend = buff.unpack('?')
             nrchunks = buff.unpack_varint()
+            # print '--' + str(nrchunks) + '--'
+
+
             for index in xrange(0,nrchunks):
                 chunkxy = buff.unpack('ii')
                 pribitmask = buff.unpack('H')
-                lengths += (65536 * 2)
-                metaar.append( (chunkxy,pribitmask,lengths) )
-                chunkar.append('None')
+                metaar.append( (chunkxy,pribitmask) )
 
-            # for index in xrange(0,nrchunks):
-            #     bigstring = buff.buff[metaar[index][2]:metaar[index+1][2]]
-            #     chunkar.append(base64.b64encode(bigstring))
-                
+
 
             for index in xrange(0,nrchunks):
-                self.dumpfile.write( 'chunkdata|' + str(metaar[index+1][0]) +  '|True|' + str(metaar[index+1][1]) + '|' + str(65536) + '|' + chunkar[index] + '\n')
+                bigstring = ''
+                counter = 0
+                for height in xrange(0,16):
+                    print hex(metaar[index][1])
+                    # if int(metaar[index][1]) & (1 << height):
+                    #     counter += 4096
+                    #     bigstring += buff.unpack(str(4096*2) + 's')
+
+                chunkar.append(base64.b64encode(bigstring))
+                metaar[index] = metaar[index][0], metaar[index][1], counter
+                buff.unpack(str(256) + 's')
+            
+
+            for index in xrange(0,nrchunks):
+                self.dumpfile.write( 'chunkdata|' + str(metaar[index][0]) +  '|True|' + str(metaar[index][1]) + '|' + str(metaar[index][2]) + '|' + chunkar[index] + '\n')
 
 
         buff.restore()
