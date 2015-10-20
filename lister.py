@@ -370,9 +370,12 @@ loneneighbors = None
 
 for mat in vertices:
     vertices[mat] =  vertices[mat].values()
+    print 'mat: ' + mat + ' vertices: ' + str(len(vertices[mat]))
 
-for vert in faces:
-    faces[vert] = list(set(faces[vert]))
+for mat in faces:
+    faces[mat] = list(set(faces[mat]))
+    print 'mat: ' + mat + ' faces: ' + str(len(faces[mat]))
+
 
 
 allstuff = {'allhistory':allhistory,'vertices':vertices,'faces':faces}

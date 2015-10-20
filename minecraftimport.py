@@ -67,7 +67,6 @@ class DataImporter:
         origin = open(filepath, 'r')
 
         total = ast.literal_eval(origin.read())
-        # total = dict(total.items())
         
         indexi = 0
 
@@ -79,7 +78,8 @@ class DataImporter:
 
         for mat in vertices:
             self.createMeshFromData(str(mat), (0,0,0), vertices[mat], faces[mat] )
-            vertices[mat]= None
+            vertices[mat] = None
+            faces[mat] = None
 
         # for keys in vertices:
 
