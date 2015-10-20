@@ -9,7 +9,6 @@ import base64
 import struct
 import zlib
 import sys, getopt
-import numpy
 from blist import *
 from collections import Counter
 
@@ -221,27 +220,29 @@ for line in aroflines:
         length = row[2]
         
         chunks.update({row[1]:{'blocks':[]}})
+        chunkposses = []
 
         try:
             if row[5] != 'None':
                 chunkdata = base64.standard_b64decode(row[5])
                 xzpos = ast.literal_eval(row[1])
+                if xzpos not in chunkposses:
+                    chunkposses.append(xzpos)
+                    for index1 in xrange(0, 16):
+                        if int(row[3]) & (1 << index1):
+                            for y in xrange(0,16):
 
-                for index1 in xrange(0, 16):
-                    if int(row[3]) & (1 << index1):
-                        for y in xrange(0,16):
+                                for z in xrange(0,16):
+                                    for x in xrange(0,16):
+                                        goodindex = (x+(z*16)+(y*256)+(index1*4096))
 
-                            for z in xrange(0,16):
-                                for x in xrange(0,16):
-                                    goodindex = (x+(z*16)+(y*256)+(index1*4096))
+                                        temp = struct.unpack('H',chunkdata[goodindex*2:goodindex*2+2])[0]
 
-                                    temp = struct.unpack('H',chunkdata[goodindex*2:goodindex*2+2])[0]
-
-                                    btype = temp >> 4
-                                    bmeta = temp & 15
-                                    
-                                    block = ( (x + (xzpos[0]*16),z + (xzpos[1]*16),y+(index1*16)), btype)
-                                    chunks[row[1]]['blocks'].append(block)
+                                        btype = temp >> 4
+                                        bmeta = temp & 15
+                                        
+                                        block = ( (x + (xzpos[0]*16),z + (xzpos[1]*16),y+(index1*16)), btype)
+                                        chunks[row[1]]['blocks'].append(block)
                     
 
                         
@@ -251,8 +252,9 @@ for line in aroflines:
 
 # put it in material array instead of chunk arrays
 
-print 'make a index of possible matrials'
+print 'make a index of possible materials'
 
+wrongblocks = False
 materials = {}
 for chunk in chunks:
     for block in chunks[chunk]:
@@ -261,6 +263,11 @@ for chunk in chunks:
                 if x[1] > 0 and x[1] < 256:
                     matblock = {x[1]:{}}
                     materials.update(matblock)
+                elif x[1] < 256:
+                    wrongblocks = True
+
+if wrongblocks:
+    print 'there are wrong block types found, there is a good change the parsing in the proxy fase whent wrong !'
 
 print 'put the blocks of materials in their material index for ' + str(len(materials)) + ' materials'
 for chunk in chunks:

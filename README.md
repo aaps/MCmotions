@@ -8,6 +8,8 @@ Blender for the plugin ;)
 
 Also a good idea minecraft !
 
+for lister.py and minecraft importer a beefy computer will help alot !
+
 #NEW
 -- chunkdata will get exported by lister, wrong ?
 -- the ability to connect to server that will check account data ! (--username --profile, after start password will be asked)
@@ -49,7 +51,6 @@ The ability to import the map/chunks
 
 2
 import blockchanges (after map import is done)
-make recording alwais on when connecting. (filesize is gonna be big)
 the status message, should display current filesize
 
 
@@ -60,7 +61,4 @@ the ability to survive transports to other servers
 add the posibility to make takes, everything will still get recorder, but nog you can specifie what takes you want in the exported json
 
 #WARNING 
-This is a work in progress and without determination or the willingness to code/debug. this code will only fustrate you !
-
-also the import into blender can take a long time !
-198 seconds of recording, will take 119.5 seconds @ 3998 BOGOMIPS
+This is a work in progress, things can go wrong, for now map data will be imported only, also only the vertices, not the faces, also in the wrong format.

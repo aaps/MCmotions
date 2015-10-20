@@ -253,7 +253,6 @@ class QuietBridge(Bridge):
             
             
             contents = base64.b64encode(buff.unpack(str(datalength) + 's'))
-            # contents = base64.b64encode(buff.buff[0:datalength*2])
 
             self.dumpfile.write( 'chunkdata|' + str(chunkxy) + '|' + str(groundup) + '|' + str(pribitmask) + '|' + str(datalength) + '|' + contents +'\n')
             
@@ -271,7 +270,6 @@ class QuietBridge(Bridge):
             metaar = []
             skylightsend = buff.unpack('?')
             nrchunks = buff.unpack_varint()
-            # print '--' + str(nrchunks) + '--'
 
 
             for index in xrange(0,nrchunks):
@@ -281,21 +279,25 @@ class QuietBridge(Bridge):
 
 
 
+
+
             for index in xrange(0,nrchunks):
                 bigstring = ''
                 counter = 0
+                
                 for height in xrange(0,16):
-                    print hex(metaar[index][1])
-                    # if int(metaar[index][1]) & (1 << height):
-                    #     counter += 4096
-                    #     bigstring += buff.unpack(str(4096*2) + 's')
+
+                    if int(metaar[index][1]) & (1 << height):
+                        counter += 4096
+                        bigstring += buff.unpack(str(4096*2) + 's')
 
                 chunkar.append(base64.b64encode(bigstring))
                 metaar[index] = metaar[index][0], metaar[index][1], counter
-                buff.unpack(str(256) + 's')
-            
+                # buff.unpack(str(256) + 's')
+
 
             for index in xrange(0,nrchunks):
+                
                 self.dumpfile.write( 'chunkdata|' + str(metaar[index][0]) +  '|True|' + str(metaar[index][1]) + '|' + str(metaar[index][2]) + '|' + chunkar[index] + '\n')
 
 
