@@ -259,6 +259,26 @@ class QuietBridge(Bridge):
             buff.restore()
         self.downstream.send_packet("chunk_data", buff.read())
 
+    # def packet_downstream_map_chunk_bulk(self, buff):
+    #     buff.save()
+
+    #     metaar = []
+    #     skylightsend = buff.unpack('?')
+    #     nrchunks = buff.unpack_varint()
+
+    #     print '--' + str(nrchunks) + '--'
+    #     for index in xrange(0,nrchunks):
+    #         chunkxy = buff.unpack('ii')
+    #         pribitmask = buff.unpack('H')
+    #         print 'bitmask ord: ' + str(bin(pribitmask)) + ' int:' + str(pribitmask)
+
+    #     print 'Length raw remaining chunk + meta data: ' + str(len(buff.buff))
+    #     print 'Length remaining chunk + meta data: ' + str(len(buff.buff)*2)
+        
+
+    #     print
+    #     buff.restore()
+    #     self.downstream.send_packet("map_chunk_bulk", buff.read())
 
 
     def packet_downstream_map_chunk_bulk(self, buff):
@@ -277,10 +297,6 @@ class QuietBridge(Bridge):
                 pribitmask = buff.unpack('H')
                 metaar.append( (chunkxy,pribitmask) )
 
-
-
-
-
             for index in xrange(0,nrchunks):
                 bigstring = ''
                 counter = 0
@@ -293,16 +309,18 @@ class QuietBridge(Bridge):
 
                 chunkar.append(base64.b64encode(bigstring))
                 metaar[index] = metaar[index][0], metaar[index][1], counter
-                # buff.unpack(str(256) + 's')
+                
+                lightstuff = buff.unpack(str(counter) + 's')
+                biomemeta = buff.unpack(str(256) + 's')
 
 
             for index in xrange(0,nrchunks):
-                
                 self.dumpfile.write( 'chunkdata|' + str(metaar[index][0]) +  '|True|' + str(metaar[index][1]) + '|' + str(metaar[index][2]) + '|' + chunkar[index] + '\n')
 
 
         buff.restore()
         self.downstream.send_packet("map_chunk_bulk", buff.read())
+
 
     def packet_downstream_multi_block_change(self, buff):
         buff.save()
