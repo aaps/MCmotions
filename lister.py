@@ -1,16 +1,12 @@
 #!/usr/bin/python -B
 
-# import csv
 import operator
 import ast
 import json
-import math
 import base64
 import struct
-import zlib
 import sys, getopt
-from blist import *
-from collections import Counter
+# from collections import Counter
 
 # import StringIO
 
@@ -18,7 +14,11 @@ sourcefile = "default.log"
 destfile = "default.json"
 sesnrtoget = 0
 avgmiddle = False
-render = ["none"]
+norenderents = ["none"]
+norenderblocks = ["none"]
+cuty = (0,16)
+cutz = (-1000,1000)
+cutx = (-1000,1000)
 
 def facevertlinker(block, mat, plane):
     
@@ -46,15 +46,15 @@ def facevertlinker(block, mat, plane):
 
 
 try:
-    opts, args = getopt.getopt(sys.argv[1:],"",["avgmiddle=","sourcefile=","destfile=","session=", "avgmiddle=", "exclude="])
+    opts, args = getopt.getopt(sys.argv[1:],"",["avgmiddle=","sourcefile=","destfile=","session=", "avgmiddle=", "excludeent=","excludeblocks=","cutx=","cuty=","cutz=" ])
         
 except getopt.GetoptError:
-    print 'error: lister.py --avgmiddle --sourcefile filename --destfile filename --session sesnumber --exclude commaseperatedlist of entity ids'
+    print 'error: lister.py --avgmiddle --sourcefile filename --destfile filename --session sesnumber --excludeent commaseperatedlist of entity ids --excludeblocks commaseperatedlist of blockids'
     sys.exit(2)
 for opt, arg in opts:
     # print opt
     if opt == '-h':
-        print 'lister.py --avgmiddle --sourcefile filename --destfile filename --session sesnumber --exclude commaseperatedlist of entity ids'
+        print 'lister.py --avgmiddle --sourcefile filename --destfile filename --session sesnumber --excludeent commaseperatedlist of entity ids --excludeblocks commaseperatedlist of blockids'
         sys.exit()
 
     if opt == "--sourcefile":
@@ -71,9 +71,22 @@ for opt, arg in opts:
         if arg == 'yes':
             avgmiddle = True
 
-    if opt == "--exclude":
-        render = arg.split(",")
-        
+    if opt == "--excludeent":
+        norenderents = arg.split(",")
+
+    if opt == "--excludeblocks":
+        norenderblocks = arg.split(",")
+        norenderblocks = map(int, norenderblocks)
+
+    if opt == "--cutz":
+        cutz = ast.literal_eval(arg)
+
+    if opt == "--cutx":
+        cutx = ast.literal_eval(arg)
+
+    if opt == "--cuty":
+        cuty = ast.literal_eval(arg)
+
 
 
 allhistory = {}
@@ -85,13 +98,20 @@ lostcounter = []
 
 f = open(destfile, 'w')
 
-origin = open(sourcefile, 'r')
+try:
+    origin = open(sourcefile, 'r')
+except Exception as e:
+    print e
+    print 'try it with --sourcefile dumpfile'
+    exit()
+
 
 total = origin.read()
 
 aroflines = total.split('\n')
 
 chunks = {}
+chunkposses = []
 
 
 def fido(first, second):
@@ -131,7 +151,7 @@ for line in aroflines:
         currentses =+ 1
 
         
-    elif 'spawn' in row[0]  and sesnrtoget == currentses and row[3] not in render:
+    elif 'spawn' in row[0]  and sesnrtoget == currentses and row[3] not in norenderents:
         
 
         goodpos = ast.literal_eval(row[4])
@@ -220,13 +240,15 @@ for line in aroflines:
         length = row[2]
         
         chunks.update({row[1]:{'blocks':[]}})
-        chunkposses = []
+        
 
         try:
             if row[5] != 'None':
                 chunkdata = base64.standard_b64decode(row[5])
                 xzpos = ast.literal_eval(row[1])
-                if xzpos not in chunkposses:
+                # print xzpos, cutx, cutz
+
+                if xzpos not in chunkposses and xzpos[0] > cutx[0] and xzpos[0] < cutx[1] and xzpos[1] > cutz[0] and xzpos[1] < cutz[1]:
                     chunkposses.append(xzpos)
                     for index1 in xrange(0, 16):
                         if int(row[3]) & (1 << index1):
@@ -249,6 +271,7 @@ for line in aroflines:
         except Exception as e:
             print e
 
+print 'parsing ' + str(len(chunkposses)) + ' chunks'
 
 # put it in material array instead of chunk arrays
 
@@ -260,7 +283,8 @@ for chunk in chunks:
     for block in chunks[chunk]:
         if len(chunks[chunk][block]) > 0:
             for x in chunks[chunk][block]:
-                if x[1] > 0 and x[1] < 256:
+                
+                if x[1] > 0 and x[1] < 256 and x[1] not in norenderblocks:
                     matblock = {x[1]:{}}
                     materials.update(matblock)
                 elif x[1] < 256:
@@ -274,7 +298,7 @@ for chunk in chunks:
     for block in chunks[chunk]:
         if len(chunks[chunk][block]) > 0:
             for x in chunks[chunk][block]:
-                if x[1] > 0 and x[1] < 256:
+                if x[1] > 0 and x[1] < 256 and x[1] not in norenderblocks:
                     materials[x[1]].update({x[0]:[]})
         chunks[chunk][block] = None
 
@@ -370,11 +394,12 @@ loneneighbors = None
 
 for mat in vertices:
     vertices[mat] =  vertices[mat].values()
-    print 'mat: ' + mat + ' vertices: ' + str(len(vertices[mat]))
-
-for mat in faces:
     faces[mat] = list(set(faces[mat]))
-    print 'mat: ' + mat + ' faces: ' + str(len(faces[mat]))
+    print 'mat: ' + str(mat) + ' vertices: ' + str(len(vertices[mat])) + ' faces: ' + str(len(faces[mat]))
+
+# for mat in faces:
+    
+#     print 'mat: ' + str(mat) + ' faces: ' + str(len(faces[mat]))
 
 
 

@@ -77,9 +77,11 @@ class DataImporter:
         total = None
 
         for mat in vertices:
-            self.createMeshFromData(str(mat), (0,0,0), vertices[mat], faces[mat] )
-            vertices[mat] = None
-            faces[mat] = None
+            print(vertices[mat], faces[mat])
+
+            # self.createMeshFromData(str(mat), (0,0,0), vertices[mat], faces[mat] )
+            # vertices[mat] = None
+            # faces[mat] = None
 
         # for keys in vertices:
 
