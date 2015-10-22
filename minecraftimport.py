@@ -52,13 +52,16 @@ class DataImporter:
         # Link object to scene and make active
         scn = bpy.context.scene
         scn.objects.link(ob)
-        scn.objects.active = ob
-        ob.select = True
+        # scn.objects.active = ob
+        # ob.select = True
+        
      
         # Create mesh from given verts, faces.
         me.from_pydata(verts, [], faces)
+        me.validate(verbose=True) 
+        # mymesh.update(calc_edges=True)
         # Update mesh with new data
-        me.update()    
+        me.update(calc_edges=True)    
         return ob
 
     def run(self, filepath, context):
@@ -76,23 +79,14 @@ class DataImporter:
 
         total = None
 
+        extralist = {}
+
         for mat in vertices:
-            print(vertices[mat], faces[mat])
-
-            # self.createMeshFromData(str(mat), (0,0,0), vertices[mat], faces[mat] )
-            # vertices[mat] = None
-            # faces[mat] = None
-
-        # for keys in vertices:
-
-            # matvertices = vertices[keys]
-
-            # print(keys)
-                # tijd om met meshes te werken, fuck
+            # extralist[mat] = []
 
 
-
-            # print(chuncks[keys])
+            self.createMeshFromData(str(mat), (0,0,0), vertices[mat], faces[mat] )
+            
 
 
 

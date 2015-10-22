@@ -6,9 +6,11 @@ import json
 import base64
 import struct
 import sys, getopt
+import crc16
 # from collections import Counter
 
 # import StringIO
+
 
 sourcefile = "default.log"
 destfile = "default.json"
@@ -24,24 +26,37 @@ def facevertlinker(block, mat, plane):
     
     
 
-    plane1 = int(plane[0][0] + (plane[0][1]*16) + (plane[0][2]*256))
-    plane2 = int(plane[1][0] + (plane[1][1]*16) + (plane[1][2]*256))
-    plane3 = int(plane[2][0] + (plane[2][1]*16) + (plane[2][2]*256))
-    plane4 = int(plane[3][0] + (plane[3][1]*16) + (plane[3][2]*256))
+    if plane[0] not in hashlist:
+        hashlist.add(plane[0])
+        vertices[mat].append(plane[0])
+        index1 = len(vertices[mat]) - 1
+    else:
+        index1 = vertices[mat].index(plane[0])
+
+    if plane[1] not in hashlist:
+        hashlist.add(plane[1])
+        vertices[mat].append(plane[1])
+        index2 = len(vertices[mat]) - 1
+    else:
+        index2 = vertices[mat].index(plane[1])
+
+    if plane[2] not in hashlist:
+        hashlist.add(plane[2])
+        vertices[mat].append(plane[2])
+        index3 = len(vertices[mat]) - 1
+    else:
+        index3 = vertices[mat].index(plane[2])
+
+    if plane[3] not in hashlist:
+        hashlist.add(plane[3])
+        vertices[mat].append(plane[3])
+        index4 = len(vertices[mat]) - 1
+    else:
+        index4 = vertices[mat].index(plane[3])
 
 
-    vertices[mat].update({plane1: plane[0]})
 
-
-    vertices[mat].update({plane2: plane[1]})
-
-
-    vertices[mat].update({plane3: plane[2]})
-
-
-    vertices[mat].update({plane4: plane[3]})
-    
-    faces[mat].append((plane1, plane2, plane3, plane4))
+    faces[mat].append((index1,index2,index4, index3))
 
 
 
@@ -354,17 +369,18 @@ vertices = {}
 for mat in loneneighbors:
     print mat
     faces[mat] = []
-    vertices[mat] = {}
+    vertices[mat] = []
+    hashlist = set()
 
     for block in loneneighbors[mat]:
 
         if 5 in loneneighbors[mat][block]:
-            loweplane = (block[0]-0.5,block[1]+0.5,block[2]+0.5),(block[0]-0.5,block[1]+0.5,block[2]-0.5),(block[0]-0.5,block[1]-0.5,block[2]+0.5),(block[0]-0.5,block[1]-0.5,block[2]-0.5)
+            loweplane = (block[0]+0.5,block[1]+0.5,block[2]-0.5),(block[0]-0.5,block[1]+0.5,block[2]-0.5),(block[0]+0.5,block[1]-0.5,block[2]-0.5),(block[0]-0.5,block[1]-0.5,block[2]-0.5)
             
             facevertlinker(block, mat, loweplane)
 
         if 6 in loneneighbors[mat][block]:
-            upperplane = (block[0]+0.5,block[1]+0.5,block[2]+0.5),(block[0]+0.5,block[1]+0.5,block[2]-0.5),(block[0]+0.5,block[1]-0.5,block[2]+0.5),(block[0]+0.5,block[1]-0.5,block[2]-0.5)
+            upperplane = (block[0]+0.5,block[1]+0.5,block[2]+0.5),(block[0]-0.5,block[1]+0.5,block[2]+0.5),(block[0]+0.5,block[1]-0.5,block[2]+0.5),(block[0]-0.5,block[1]-0.5,block[2]+0.5)
             
             facevertlinker(block, mat, upperplane)
 
@@ -379,12 +395,12 @@ for mat in loneneighbors:
             facevertlinker(block, mat, rightplane)
 
         if 1 in loneneighbors[mat][block]:
-            backplane = (block[0]-0.5,block[1]-0.5,block[2]-0.5),(block[0]-0.5,block[1]+0.5,block[2]-0.5),(block[0]+0.5,block[1]-0.5,block[2]-0.5),(block[0]+0.5,block[1]+0.5,block[2]-0.5)
+            backplane = (block[0]-0.5,block[1]-0.5,block[2]-0.5),(block[0]-0.5,block[1]+0.5,block[2]-0.5),(block[0]-0.5,block[1]-0.5,block[2]+0.5),(block[0]-0.5,block[1]+0.5,block[2]+0.5)
             
             facevertlinker(block, mat, backplane)
 
         if 2 in loneneighbors[mat][block]:
-            frontplane = (block[0]-0.5,block[1]-0.5,block[2]+0.5),(block[0]-0.5,block[1]+0.5,block[2]+0.5),(block[0]+0.5,block[1]-0.5,block[2]+0.5),(block[0]+0.5,block[1]+0.5,block[2]+0.5)
+            frontplane = (block[0]+0.5,block[1]-0.5,block[2]-0.5),(block[0]+0.5,block[1]+0.5,block[2]-0.5),(block[0]+0.5,block[1]-0.5,block[2]+0.5),(block[0]+0.5,block[1]+0.5,block[2]+0.5)
             facevertlinker(block, mat, frontplane)
     loneneighbors[mat] = None
 
@@ -392,14 +408,14 @@ print 'filtering the faces and materials for duplicates ' + str(len(loneneighbor
 
 loneneighbors = None
 
-for mat in vertices:
-    vertices[mat] =  vertices[mat].values()
-    faces[mat] = list(set(faces[mat]))
-    print 'mat: ' + str(mat) + ' vertices: ' + str(len(vertices[mat])) + ' faces: ' + str(len(faces[mat]))
 
-# for mat in faces:
-    
-#     print 'mat: ' + str(mat) + ' faces: ' + str(len(faces[mat]))
+# for mat in vertices:
+#     print faces[mat]
+
+
+for mat in vertices:
+    faces[mat] = list(set(faces[mat]))
+    print 'mat: ' + str(mat) + ' vertices: ' + str(len(vertices[mat])) + ' faces: ' + str(len(faces[mat])) + '    facestype: ' + str(type(faces[mat])) + ' vetticestype: ' + str(type(vertices[mat]))
 
 
 
@@ -408,6 +424,7 @@ allstuff = {'allhistory':allhistory,'vertices':vertices,'faces':faces}
 vertices = None
 faces = None
 
+print hashlist
 
 print 'entitys with spawnmessage:' + str(len(allhistory)) + ',so used !'
 print 'entitys without spawnmessage:' + str(len(lostcounter)) + ',so ignored !'
