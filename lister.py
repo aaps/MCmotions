@@ -6,7 +6,8 @@ import json
 import base64
 import struct
 import sys, getopt
-import crc16
+from blist import blist
+import time
 # from collections import Counter
 
 # import StringIO
@@ -18,41 +19,42 @@ sesnrtoget = 0
 avgmiddle = False
 norenderents = ["none"]
 norenderblocks = ["none"]
-cuty = (0,16)
+cuty = 0
 cutz = (-1000,1000)
 cutx = (-1000,1000)
 
 def facevertlinker(block, mat, plane):
     
-    
+    values = vertices[mat].values()
 
-    if plane[0] not in hashlist:
-        hashlist.add(plane[0])
-        vertices[mat].append(plane[0])
-        index1 = len(vertices[mat]) - 1
+    if plane[0] not in vertices[mat].values():
+        index1 = len(vertices[mat])
+        vertices[mat].update({index1: plane[0]})
+        
     else:
-        index1 = vertices[mat].index(plane[0])
+        index1 = values.index(plane[0])
 
-    if plane[1] not in hashlist:
-        hashlist.add(plane[1])
-        vertices[mat].append(plane[1])
-        index2 = len(vertices[mat]) - 1
+    if plane[1] not in vertices[mat].values():
+        index2 = len(vertices[mat])
+        vertices[mat].update({index2: plane[1]})
+        
     else:
-        index2 = vertices[mat].index(plane[1])
+        index2 = values.index(plane[1])
 
-    if plane[2] not in hashlist:
-        hashlist.add(plane[2])
-        vertices[mat].append(plane[2])
-        index3 = len(vertices[mat]) - 1
+    if plane[2] not in vertices[mat].values():
+        index3 = len(vertices[mat])
+        vertices[mat].update({index3: plane[2]})
+        
     else:
-        index3 = vertices[mat].index(plane[2])
+        index3 = values.index(plane[2])
 
-    if plane[3] not in hashlist:
-        hashlist.add(plane[3])
-        vertices[mat].append(plane[3])
-        index4 = len(vertices[mat]) - 1
+    if plane[3] not in vertices[mat].values():
+        index4 = len(vertices[mat])
+        vertices[mat].update({index4: plane[3]})
+
     else:
-        index4 = vertices[mat].index(plane[3])
+
+        index4 = values.index(plane[3])
 
 
 
@@ -266,7 +268,7 @@ for line in aroflines:
                 if xzpos not in chunkposses and xzpos[0] > cutx[0] and xzpos[0] < cutx[1] and xzpos[1] > cutz[0] and xzpos[1] < cutz[1]:
                     chunkposses.append(xzpos)
                     for index1 in xrange(0, 16):
-                        if int(row[3]) & (1 << index1):
+                        if int(row[3]) & (1 << index1) and index1 >= cuty:
                             for y in xrange(0,16):
 
                                 for z in xrange(0,16):
@@ -362,7 +364,7 @@ for mat in neightbors:
 
 neightbors = None
 
-print 'generating vertices and faces for ' + str(len(loneneighbors)) + ' materials'
+print 'generating face positions ' + str(len(loneneighbors)) + ' materials'
 faces = {}
 vertices = {}
 
@@ -370,52 +372,83 @@ for mat in loneneighbors:
     print mat
     faces[mat] = []
     vertices[mat] = []
-    hashlist = set()
 
     for block in loneneighbors[mat]:
-
+        
+    
         if 5 in loneneighbors[mat][block]:
             loweplane = (block[0]+0.5,block[1]+0.5,block[2]-0.5),(block[0]-0.5,block[1]+0.5,block[2]-0.5),(block[0]+0.5,block[1]-0.5,block[2]-0.5),(block[0]-0.5,block[1]-0.5,block[2]-0.5)
-            
-            facevertlinker(block, mat, loweplane)
+            faces[mat].append(loweplane)
+            # facevertlinker(block, mat, loweplane)
 
         if 6 in loneneighbors[mat][block]:
             upperplane = (block[0]+0.5,block[1]+0.5,block[2]+0.5),(block[0]-0.5,block[1]+0.5,block[2]+0.5),(block[0]+0.5,block[1]-0.5,block[2]+0.5),(block[0]-0.5,block[1]-0.5,block[2]+0.5)
-            
-            facevertlinker(block, mat, upperplane)
+            faces[mat].append(upperplane)
+            # facevertlinker(block, mat, upperplane)
 
         if 3 in loneneighbors[mat][block]:
             leftplane = (block[0]-0.5,block[1]-0.5,block[2]-0.5),(block[0]-0.5,block[1]-0.5,block[2]+0.5),(block[0]+0.5,block[1]-0.5,block[2]-0.5),(block[0]+0.5,block[1]-0.5,block[2]+0.5)
-            
-            facevertlinker(block, mat, leftplane)
+            faces[mat].append(leftplane)
+            # facevertlinker(block, mat, leftplane)
 
         if 4 in loneneighbors[mat][block]:
             rightplane = (block[0]-0.5,block[1]+0.5,block[2]-0.5),(block[0]-0.5,block[1]+0.5,block[2]+0.5),(block[0]+0.5,block[1]+0.5,block[2]-0.5),(block[0]+0.5,block[1]+0.5,block[2]+0.5)
-            
-            facevertlinker(block, mat, rightplane)
+            faces[mat].append(rightplane)
+            # facevertlinker(block, mat, rightplane)
 
         if 1 in loneneighbors[mat][block]:
             backplane = (block[0]-0.5,block[1]-0.5,block[2]-0.5),(block[0]-0.5,block[1]+0.5,block[2]-0.5),(block[0]-0.5,block[1]-0.5,block[2]+0.5),(block[0]-0.5,block[1]+0.5,block[2]+0.5)
-            
-            facevertlinker(block, mat, backplane)
+            faces[mat].append(backplane)
+            # facevertlinker(block, mat, backplane)
 
         if 2 in loneneighbors[mat][block]:
             frontplane = (block[0]+0.5,block[1]-0.5,block[2]-0.5),(block[0]+0.5,block[1]+0.5,block[2]-0.5),(block[0]+0.5,block[1]-0.5,block[2]+0.5),(block[0]+0.5,block[1]+0.5,block[2]+0.5)
-            facevertlinker(block, mat, frontplane)
+            faces[mat].append(frontplane)
+            # facevertlinker(block, mat, frontplane)
+
     loneneighbors[mat] = None
 
-print 'filtering the faces and materials for duplicates ' + str(len(loneneighbors)) + ' materials'
+print 'generating the vertices'
 
-loneneighbors = None
-
-
-# for mat in vertices:
-#     print faces[mat]
-
+for mat in faces:
+    for forverts in faces[mat]:
+        for vert in forverts:
+            vertices[mat].append(vert)
 
 for mat in vertices:
-    faces[mat] = list(set(faces[mat]))
-    print 'mat: ' + str(mat) + ' vertices: ' + str(len(vertices[mat])) + ' faces: ' + str(len(faces[mat])) + '    facestype: ' + str(type(faces[mat])) + ' vetticestype: ' + str(type(vertices[mat]))
+    vertices[mat] = list(set(vertices[mat]))
+    vertices[mat] = sorted(vertices[mat])
+
+newfaces = {}
+
+print 'linking the vert index to the faces, this will take the most time !!!'
+
+for mat in faces:
+    print mat
+    counter = 0
+    newfaces[mat] = []
+    timenow = None
+    for forverts in faces[mat]:
+        if counter % 1000 == 0:
+            if timenow != None:
+                print time.time()-timenow
+            timenow=time.time()
+            print counter, len(faces[mat])
+        counter += 1
+        tempface = []
+
+
+
+        tempface.append( vertices[mat].index(forverts[0]))
+        tempface.append( vertices[mat].index(forverts[1]))
+        tempface.append( vertices[mat].index(forverts[3]))
+        tempface.append( vertices[mat].index(forverts[2]))
+
+        newfaces[mat].append(tempface)
+      
+faces = newfaces
+newface = None
+loneneighbors = None
 
 
 
@@ -423,8 +456,6 @@ allstuff = {'allhistory':allhistory,'vertices':vertices,'faces':faces}
 
 vertices = None
 faces = None
-
-print hashlist
 
 print 'entitys with spawnmessage:' + str(len(allhistory)) + ',so used !'
 print 'entitys without spawnmessage:' + str(len(lostcounter)) + ',so ignored !'
