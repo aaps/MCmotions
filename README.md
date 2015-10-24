@@ -76,6 +76,7 @@ good rotation of entitys, instead of the muck we have now !
 2
 import blockchanges (after map import is done)
 the status message, should display current filesize
+instead of all 1 x 1 x 1 blocks also other shapes, like stairs, poles, etc
 
 3
 recording the details, animations of blocks, particles, lightning, rain, etc

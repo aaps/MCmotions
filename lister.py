@@ -177,7 +177,7 @@ for line in aroflines:
         currentses =+ 1
 
         
-    elif 'spawn' in row[0]  and sesnrtoget == currentses and row[3] not in norenderents and not noentitys::
+    elif 'spawn' in row[0]  and sesnrtoget == currentses and row[3] not in norenderents and not noentitys:
         
 
         goodpos = ast.literal_eval(row[4])
@@ -193,7 +193,7 @@ for line in aroflines:
         allhistory.update(mob)
 
     
-    elif row[0] == 'entityrelmove' and int(row[2]) in allhistory and sesnrtoget == currentses and not noentitys::
+    elif row[0] == 'entityrelmove' and int(row[2]) in allhistory and sesnrtoget == currentses and not noentitys:
         
         lastlist = allhistory[int(row[2])]['positions'][-1]
 
@@ -201,7 +201,7 @@ for line in aroflines:
 
         allhistory[int(row[2])]['positions'].append({'time':float(row[1]),'pos':absolutepos,'yawpichhead':lastlist['yawpichhead'],'status':0,'alive':lastlist['alive']})
 
-    elif row[0] == 'entitylookandrelmove' and int(row[2]) in allhistory and sesnrtoget == currentses and not noentitys::
+    elif row[0] == 'entitylookandrelmove' and int(row[2]) in allhistory and sesnrtoget == currentses and not noentitys:
         
         lastlist = allhistory[int(row[2])]['positions'][-1]
 
@@ -216,7 +216,7 @@ for line in aroflines:
 
         allhistory[int(row[2])]['positions'].append({'time':float(row[1]),'pos':absolutepos,'yawpichhead':yawpichhead,'status':0,'alive':lastlist['alive']})
 
-    elif row[0] == 'entityheadlook' and int(row[2]) in allhistory and sesnrtoget == currentses and not noentitys::
+    elif row[0] == 'entityheadlook' and int(row[2]) in allhistory and sesnrtoget == currentses and not noentitys:
         
         lastlist = allhistory[int(row[2])]['positions'][-1]
         
@@ -230,7 +230,7 @@ for line in aroflines:
             allhistory[int(row[2])]['positions'].append({'time':float(row[1]),'pos':lastlist['pos'],'yawpichhead':yawpichhead,'status':0,'alive':lastlist['alive']})
 
 
-    elif row[0] == 'entityteleport' and int(row[2]) in allhistory and sesnrtoget == currentses and not noentitys::
+    elif row[0] == 'entityteleport' and int(row[2]) in allhistory and sesnrtoget == currentses and not noentitys:
         
         goodpos = ast.literal_eval(row[3])
         goodpos = (float(goodpos[0])/32, float(goodpos[1])/32, float(goodpos[2])/32)
@@ -246,7 +246,7 @@ for line in aroflines:
         
         allhistory[int(row[2])]['positions'].append({'time':float(row[1]),'pos':tuple(map(operator.sub, goodpos, offset)),'yawpichhead':yawpichhead,'status':0,'alive':lastlist['alive']})
 
-    elif row[0] == 'entitystatus' and int(row[2]) in allhistory and sesnrtoget == currentses and not noentitys::
+    elif row[0] == 'entitystatus' and int(row[2]) in allhistory and sesnrtoget == currentses and not noentitys:
         
         lastlist = allhistory[int(row[2])]['positions'][-1]
         if lastlist['status'] == row[3]:
@@ -260,7 +260,7 @@ for line in aroflines:
                 lastlist = allhistory[entid]['positions'][-1]
                 allhistory[entid]['positions'].append({'time':float(row[1]),'pos':lastlist['pos'],'yawpichhead':yawpichhead,'status':0 ,'alive':0})
 
-    elif row[0] == 'chunkdata' and sesnrtoget == currentses and not noentitys::
+    elif row[0] == 'chunkdata' and sesnrtoget == currentses and not noentitys:
         length = row[2]
         
         chunks.update({row[1]:{'blocks':[]}})

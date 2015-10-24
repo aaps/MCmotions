@@ -70,14 +70,24 @@ class DataImporter:
             mat.diffuse_color = (0.6,0.5,0.4)
         elif material == 16:
             mat.diffuse_color = (0.4,0.4,0.4)
-        elif material == 18 or material == 2:
+        elif material == 17 or material == 5:
+            mat.diffuse_color = (0.5,0.3,0.1)
+        elif material == 18 or material == 2 or material == 111 or material == 31:
             mat.diffuse_color = (0,0.8,0)
-        elif material == 12 or material == 24:
+        elif material == 12 or material == 24 :
             mat.diffuse_color = (1,0.8,0.7)
         elif material == 49:
             mat.diffuse_color = (0,0,0.2)
+        elif material == 44:
+            mat.diffuse_color = (0.8,0.8,0.8)
         elif material == 79:
-            mat.diffuse_color = (0.3,0.3,1)
+            mat.diffuse_color = (0.4,0.4,1)
+        elif material == 155 or material == 171 or material == 156:
+            mat.diffuse_color = (1,1,1)
+        elif material == 159:
+            mat.diffuse_color = (1,0.8,0.8)
+        else:
+            mat.diffuse_color = (0,0,0)
 
         ob.active_material = mat
         # Link object to scene and make active

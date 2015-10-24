@@ -17,9 +17,9 @@ def getsourcefile():
 
     total = origin.read()
 
-    aroflines = total.split('\n')
+    return total.split('\n')
 
-def getchunkminmax():
+def getchunkminmax(aroflines):
     currentses = 0
     sesnrtoget = 0
 
@@ -61,11 +61,11 @@ for opt, arg in opts:
         sys.exit()
     if opt == '--sourcefile':
         sourcefile = arg
-        getsourcefile()
+        aroflines = getsourcefile()
 
     if opt == "--session":
         sesnrtoget = int(arg)
 
     if opt == '--chunkmaxmin':
-        getchunkminmax()
+        getchunkminmax(aroflines)
 
