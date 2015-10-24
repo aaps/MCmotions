@@ -57,17 +57,27 @@ class DataImporter:
             mat.use_transparency = True
             mat.transparency_method = 'RAYTRACE'
         elif material == 1:
-            mat.diffuse_color = (0.8,0.8,0.8)
+            mat.diffuse_color = (0.7,0.7,0.7)
         elif material == 3:
             mat.diffuse_color = (0.9,0.7,0.6)
         elif material == 7:
             mat.diffuse_color = (0.2,0.2,0.2)
         elif material == 11:
             mat.diffuse_color = (0.9,0.2,0.2)
+        elif material == 13:
+            mat.diffuse_color = (0.5,0.5,0.5)
+        elif material == 15:
+            mat.diffuse_color = (0.6,0.5,0.4)
+        elif material == 16:
+            mat.diffuse_color = (0.4,0.4,0.4)
+        elif material == 18 or material == 2:
+            mat.diffuse_color = (0,0.8,0)
         elif material == 12 or material == 24:
             mat.diffuse_color = (1,0.8,0.7)
         elif material == 49:
             mat.diffuse_color = (0,0,0.2)
+        elif material == 79:
+            mat.diffuse_color = (0.3,0.3,1)
 
         ob.active_material = mat
         # Link object to scene and make active

@@ -7,11 +7,7 @@ import ast
 sourcefile = "default.log"
 
 
-
-def getchunkminmax():
-    currentses = 0
-    sesnrtoget = 0
-
+def getsourcefile():
     try:
         origin = open(sourcefile, 'r')
     except Exception as e:
@@ -22,6 +18,12 @@ def getchunkminmax():
     total = origin.read()
 
     aroflines = total.split('\n')
+
+def getchunkminmax():
+    currentses = 0
+    sesnrtoget = 0
+
+
 
     maxminx = [0,10000]
     maxminz = [0,10000]
@@ -59,8 +61,11 @@ for opt, arg in opts:
         sys.exit()
     if opt == '--sourcefile':
         sourcefile = arg
+        getsourcefile()
+
     if opt == "--session":
         sesnrtoget = int(arg)
 
     if opt == '--chunkmaxmin':
         getchunkminmax()
+

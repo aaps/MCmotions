@@ -19,51 +19,55 @@ sesnrtoget = 0
 avgmiddle = False
 norenderents = ["none"]
 norenderblocks = ["none"]
+
+noentitys = False
+nochunks = False
+
 cuty = 0
 cutz = (-1000,1000)
 cutx = (-1000,1000)
 
-def facevertlinker(block, mat, plane):
+# def facevertlinker(block, mat, plane):
     
-    values = vertices[mat].values()
+#     values = vertices[mat].values()
 
-    if plane[0] not in vertices[mat].values():
-        index1 = len(vertices[mat])
-        vertices[mat].update({index1: plane[0]})
+#     if plane[0] not in vertices[mat].values():
+#         index1 = len(vertices[mat])
+#         vertices[mat].update({index1: plane[0]})
         
-    else:
-        index1 = values.index(plane[0])
+#     else:
+#         index1 = values.index(plane[0])
 
-    if plane[1] not in vertices[mat].values():
-        index2 = len(vertices[mat])
-        vertices[mat].update({index2: plane[1]})
+#     if plane[1] not in vertices[mat].values():
+#         index2 = len(vertices[mat])
+#         vertices[mat].update({index2: plane[1]})
         
-    else:
-        index2 = values.index(plane[1])
+#     else:
+#         index2 = values.index(plane[1])
 
-    if plane[2] not in vertices[mat].values():
-        index3 = len(vertices[mat])
-        vertices[mat].update({index3: plane[2]})
+#     if plane[2] not in vertices[mat].values():
+#         index3 = len(vertices[mat])
+#         vertices[mat].update({index3: plane[2]})
         
-    else:
-        index3 = values.index(plane[2])
+#     else:
+#         index3 = values.index(plane[2])
 
-    if plane[3] not in vertices[mat].values():
-        index4 = len(vertices[mat])
-        vertices[mat].update({index4: plane[3]})
+#     if plane[3] not in vertices[mat].values():
+#         index4 = len(vertices[mat])
+#         vertices[mat].update({index4: plane[3]})
 
-    else:
+#     else:
 
-        index4 = values.index(plane[3])
+#         index4 = values.index(plane[3])
 
 
 
-    faces[mat].append((index1,index2,index4, index3))
+#     faces[mat].append((index1,index2,index4, index3))
 
 
 
 try:
-    opts, args = getopt.getopt(sys.argv[1:],"",["avgmiddle=","sourcefile=","destfile=","session=", "avgmiddle=", "excludeent=","excludeblocks=","cutx=","cuty=","cutz=" ])
+    opts, args = getopt.getopt(sys.argv[1:],"",["avgmiddle=","sourcefile=","destfile=","session=", "avgmiddle=", "excludeent=","excludeblocks=","cutx=","cuty=","cutz=","noentitys=","nochunks=" ])
         
 except getopt.GetoptError:
     print 'error: lister.py --avgmiddle --sourcefile filename --destfile filename --session sesnumber --excludeent commaseperatedlist of entity ids --excludeblocks commaseperatedlist of blockids'
@@ -104,6 +108,12 @@ for opt, arg in opts:
     if opt == "--cuty":
         cuty = ast.literal_eval(arg)
 
+    if opt == "--noentitys":
+        noentitys = True
+
+    if opt == "--nochunks":
+        nochunks = True
+
 
 
 allhistory = {}
@@ -143,7 +153,6 @@ def fido(first, second):
     return (y,p)
     
 
-
 offset = (0,0,0)
 if avgmiddle:
     allposses = []
@@ -163,12 +172,12 @@ for line in aroflines:
     
     row = line.split('|')
 
-    if row[0] == 'startrecord':
+    if row[0] == 'startrecord' and not noentitys:
         
         currentses =+ 1
 
         
-    elif 'spawn' in row[0]  and sesnrtoget == currentses and row[3] not in norenderents:
+    elif 'spawn' in row[0]  and sesnrtoget == currentses and row[3] not in norenderents and not noentitys::
         
 
         goodpos = ast.literal_eval(row[4])
@@ -184,7 +193,7 @@ for line in aroflines:
         allhistory.update(mob)
 
     
-    elif row[0] == 'entityrelmove' and int(row[2]) in allhistory and sesnrtoget == currentses:
+    elif row[0] == 'entityrelmove' and int(row[2]) in allhistory and sesnrtoget == currentses and not noentitys::
         
         lastlist = allhistory[int(row[2])]['positions'][-1]
 
@@ -192,7 +201,7 @@ for line in aroflines:
 
         allhistory[int(row[2])]['positions'].append({'time':float(row[1]),'pos':absolutepos,'yawpichhead':lastlist['yawpichhead'],'status':0,'alive':lastlist['alive']})
 
-    elif row[0] == 'entitylookandrelmove' and int(row[2]) in allhistory and sesnrtoget == currentses:
+    elif row[0] == 'entitylookandrelmove' and int(row[2]) in allhistory and sesnrtoget == currentses and not noentitys::
         
         lastlist = allhistory[int(row[2])]['positions'][-1]
 
@@ -207,23 +216,21 @@ for line in aroflines:
 
         allhistory[int(row[2])]['positions'].append({'time':float(row[1]),'pos':absolutepos,'yawpichhead':yawpichhead,'status':0,'alive':lastlist['alive']})
 
-    elif row[0] == 'entityheadlook' and int(row[2]) in allhistory and sesnrtoget == currentses:
+    elif row[0] == 'entityheadlook' and int(row[2]) in allhistory and sesnrtoget == currentses and not noentitys::
         
         lastlist = allhistory[int(row[2])]['positions'][-1]
         
-        # print lastlist['yawpichhead']
         if len(lastlist['yawpichhead']) > 2:
             if not ast.literal_eval(row[3]) == lastlist['yawpichhead'][2]:
             
                 yawpichhead = lastlist['yawpichhead'][0], lastlist['yawpichhead'][1], (ast.literal_eval(row[3])+ 5) % 360
-
 
             yawpichhead = fido(yawpichhead, lastlist['yawpichhead'])
 
             allhistory[int(row[2])]['positions'].append({'time':float(row[1]),'pos':lastlist['pos'],'yawpichhead':yawpichhead,'status':0,'alive':lastlist['alive']})
 
 
-    elif row[0] == 'entityteleport' and int(row[2]) in allhistory and sesnrtoget == currentses:
+    elif row[0] == 'entityteleport' and int(row[2]) in allhistory and sesnrtoget == currentses and not noentitys::
         
         goodpos = ast.literal_eval(row[3])
         goodpos = (float(goodpos[0])/32, float(goodpos[1])/32, float(goodpos[2])/32)
@@ -239,7 +246,7 @@ for line in aroflines:
         
         allhistory[int(row[2])]['positions'].append({'time':float(row[1]),'pos':tuple(map(operator.sub, goodpos, offset)),'yawpichhead':yawpichhead,'status':0,'alive':lastlist['alive']})
 
-    elif row[0] == 'entitystatus' and int(row[2]) in allhistory and sesnrtoget == currentses:
+    elif row[0] == 'entitystatus' and int(row[2]) in allhistory and sesnrtoget == currentses and not noentitys::
         
         lastlist = allhistory[int(row[2])]['positions'][-1]
         if lastlist['status'] == row[3]:
@@ -253,11 +260,10 @@ for line in aroflines:
                 lastlist = allhistory[entid]['positions'][-1]
                 allhistory[entid]['positions'].append({'time':float(row[1]),'pos':lastlist['pos'],'yawpichhead':yawpichhead,'status':0 ,'alive':0})
 
-    elif row[0] == 'chunkdata' and sesnrtoget == currentses:
+    elif row[0] == 'chunkdata' and sesnrtoget == currentses and not noentitys::
         length = row[2]
         
         chunks.update({row[1]:{'blocks':[]}})
-        
 
         try:
             if row[5] != 'None':
@@ -274,12 +280,9 @@ for line in aroflines:
                                 for z in xrange(0,16):
                                     for x in xrange(0,16):
                                         goodindex = (x+(z*16)+(y*256)+(index1*4096))
-
                                         temp = struct.unpack('H',chunkdata[goodindex*2:goodindex*2+2])[0]
-
                                         btype = temp >> 4
                                         bmeta = temp & 15
-                                        
                                         block = ( (x + (xzpos[0]*16),z + (xzpos[1]*16),y+(index1*16)), btype)
                                         chunks[row[1]]['blocks'].append(block)
                     
@@ -321,7 +324,7 @@ for chunk in chunks:
 
 chunks = None
 
-# print materials
+
 neightbors = {}
 
 print 'find material neightbors for ' + str(len(materials)) + ' materials'         
@@ -374,37 +377,32 @@ for mat in loneneighbors:
     vertices[mat] = []
 
     for block in loneneighbors[mat]:
-        
     
         if 5 in loneneighbors[mat][block]:
             loweplane = (block[0]+0.5,block[1]+0.5,block[2]-0.5),(block[0]-0.5,block[1]+0.5,block[2]-0.5),(block[0]+0.5,block[1]-0.5,block[2]-0.5),(block[0]-0.5,block[1]-0.5,block[2]-0.5)
             faces[mat].append(loweplane)
-            # facevertlinker(block, mat, loweplane)
 
         if 6 in loneneighbors[mat][block]:
             upperplane = (block[0]+0.5,block[1]+0.5,block[2]+0.5),(block[0]-0.5,block[1]+0.5,block[2]+0.5),(block[0]+0.5,block[1]-0.5,block[2]+0.5),(block[0]-0.5,block[1]-0.5,block[2]+0.5)
             faces[mat].append(upperplane)
-            # facevertlinker(block, mat, upperplane)
 
         if 3 in loneneighbors[mat][block]:
             leftplane = (block[0]-0.5,block[1]-0.5,block[2]-0.5),(block[0]-0.5,block[1]-0.5,block[2]+0.5),(block[0]+0.5,block[1]-0.5,block[2]-0.5),(block[0]+0.5,block[1]-0.5,block[2]+0.5)
             faces[mat].append(leftplane)
-            # facevertlinker(block, mat, leftplane)
 
         if 4 in loneneighbors[mat][block]:
             rightplane = (block[0]-0.5,block[1]+0.5,block[2]-0.5),(block[0]-0.5,block[1]+0.5,block[2]+0.5),(block[0]+0.5,block[1]+0.5,block[2]-0.5),(block[0]+0.5,block[1]+0.5,block[2]+0.5)
             faces[mat].append(rightplane)
-            # facevertlinker(block, mat, rightplane)
+
 
         if 1 in loneneighbors[mat][block]:
             backplane = (block[0]-0.5,block[1]-0.5,block[2]-0.5),(block[0]-0.5,block[1]+0.5,block[2]-0.5),(block[0]-0.5,block[1]-0.5,block[2]+0.5),(block[0]-0.5,block[1]+0.5,block[2]+0.5)
             faces[mat].append(backplane)
-            # facevertlinker(block, mat, backplane)
 
         if 2 in loneneighbors[mat][block]:
             frontplane = (block[0]+0.5,block[1]-0.5,block[2]-0.5),(block[0]+0.5,block[1]+0.5,block[2]-0.5),(block[0]+0.5,block[1]-0.5,block[2]+0.5),(block[0]+0.5,block[1]+0.5,block[2]+0.5)
             faces[mat].append(frontplane)
-            # facevertlinker(block, mat, frontplane)
+
 
     loneneighbors[mat] = None
 
@@ -436,8 +434,6 @@ for mat in faces:
             print counter, len(faces[mat])
         counter += 1
         tempface = []
-
-
 
         tempface.append( vertices[mat].index(forverts[0]))
         tempface.append( vertices[mat].index(forverts[1]))
