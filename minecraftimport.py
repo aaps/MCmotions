@@ -131,7 +131,7 @@ class DataImporter:
             aentity = entitys[value]
             
             firstloc = aentity['positions'][0]['pos']
-            bpy.ops.mesh.primitive_cube_add(location=firstloc)
+            bpy.ops.mesh.primitive_uv_sphere_add(size=0.5, location=firstloc)
             ob = bpy.context.object
 
             mat = bpy.data.materials.new("PKHG")
@@ -195,7 +195,9 @@ class DataImporter:
                 ob.keyframe_insert("hide")
                 ob.keyframe_insert("hide_render")
 
-                frame_num = posses['time'] * 24
+
+                frame_num = int(posses['time'] * 30)
+                # print(frame_num)
 
 
         print("Script finished after {} seconds".format(time.time() - start_time))
