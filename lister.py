@@ -27,43 +27,6 @@ cuty = 0
 cutz = (-1000,1000)
 cutx = (-1000,1000)
 
-# def facevertlinker(block, mat, plane):
-    
-#     values = vertices[mat].values()
-
-#     if plane[0] not in vertices[mat].values():
-#         index1 = len(vertices[mat])
-#         vertices[mat].update({index1: plane[0]})
-        
-#     else:
-#         index1 = values.index(plane[0])
-
-#     if plane[1] not in vertices[mat].values():
-#         index2 = len(vertices[mat])
-#         vertices[mat].update({index2: plane[1]})
-        
-#     else:
-#         index2 = values.index(plane[1])
-
-#     if plane[2] not in vertices[mat].values():
-#         index3 = len(vertices[mat])
-#         vertices[mat].update({index3: plane[2]})
-        
-#     else:
-#         index3 = values.index(plane[2])
-
-#     if plane[3] not in vertices[mat].values():
-#         index4 = len(vertices[mat])
-#         vertices[mat].update({index4: plane[3]})
-
-#     else:
-
-#         index4 = values.index(plane[3])
-
-
-
-#     faces[mat].append((index1,index2,index4, index3))
-
 
 
 try:
@@ -140,6 +103,90 @@ aroflines = total.split('\n')
 chunks = {}
 chunkposses = []
 
+
+def makeblock(loneneighbors, mat):
+    for block in loneneighbors[mat]:
+    
+        if 5 in loneneighbors[mat][block]:
+            loweplane = (block[0]+0.5,block[1]+0.5,block[2]-0.5),(block[0]-0.5,block[1]+0.5,block[2]-0.5),(block[0]+0.5,block[1]-0.5,block[2]-0.5),(block[0]-0.5,block[1]-0.5,block[2]-0.5)
+            faces[mat].append(loweplane)
+
+        if 6 in loneneighbors[mat][block]:
+            upperplane = (block[0]+0.5,block[1]+0.5,block[2]+0.5),(block[0]-0.5,block[1]+0.5,block[2]+0.5),(block[0]+0.5,block[1]-0.5,block[2]+0.5),(block[0]-0.5,block[1]-0.5,block[2]+0.5)
+            faces[mat].append(upperplane)
+
+        if 3 in loneneighbors[mat][block]:
+            leftplane = (block[0]-0.5,block[1]-0.5,block[2]-0.5),(block[0]-0.5,block[1]-0.5,block[2]+0.5),(block[0]+0.5,block[1]-0.5,block[2]-0.5),(block[0]+0.5,block[1]-0.5,block[2]+0.5)
+            faces[mat].append(leftplane)
+
+        if 4 in loneneighbors[mat][block]:
+            rightplane = (block[0]-0.5,block[1]+0.5,block[2]-0.5),(block[0]-0.5,block[1]+0.5,block[2]+0.5),(block[0]+0.5,block[1]+0.5,block[2]-0.5),(block[0]+0.5,block[1]+0.5,block[2]+0.5)
+            faces[mat].append(rightplane)
+
+
+        if 1 in loneneighbors[mat][block]:
+            backplane = (block[0]-0.5,block[1]-0.5,block[2]-0.5),(block[0]-0.5,block[1]+0.5,block[2]-0.5),(block[0]-0.5,block[1]-0.5,block[2]+0.5),(block[0]-0.5,block[1]+0.5,block[2]+0.5)
+            faces[mat].append(backplane)
+
+        if 2 in loneneighbors[mat][block]:
+            frontplane = (block[0]+0.5,block[1]-0.5,block[2]-0.5),(block[0]+0.5,block[1]+0.5,block[2]-0.5),(block[0]+0.5,block[1]-0.5,block[2]+0.5),(block[0]+0.5,block[1]+0.5,block[2]+0.5)
+            faces[mat].append(frontplane)
+
+def makehalfblock(loneneighbors, mat):
+    for block in loneneighbors[mat]:
+    
+        if 5 in loneneighbors[mat][block]:
+            loweplane = (block[0]+0.5,block[1]+0.5,block[2]-0.5),(block[0]-0.5,block[1]+0.5,block[2]-0.5),(block[0]+0.5,block[1]-0.5,block[2]-0.5),(block[0]-0.5,block[1]-0.5,block[2]-0.5)
+            faces[mat].append(loweplane)
+
+        if 6 in loneneighbors[mat][block]:
+            upperplane = (block[0]+0.5,block[1]+0.5,block[2]),(block[0]-0.5,block[1]+0.5,block[2]),(block[0]+0.5,block[1]-0.5,block[2]),(block[0]-0.5,block[1]-0.5,block[2])
+            faces[mat].append(upperplane)
+
+        if 3 in loneneighbors[mat][block]:
+            leftplane = (block[0]-0.5,block[1]-0.5,block[2]-0.5),(block[0]-0.5,block[1]-0.5,block[2]),(block[0]+0.5,block[1]-0.5,block[2]-0.5),(block[0]+0.5,block[1]-0.5,block[2])
+            faces[mat].append(leftplane)
+
+        if 4 in loneneighbors[mat][block]:
+            rightplane = (block[0]-0.5,block[1]+0.5,block[2]-0.5),(block[0]-0.5,block[1]+0.5,block[2]),(block[0]+0.5,block[1]+0.5,block[2]-0.5),(block[0]+0.5,block[1]+0.5,block[2])
+            faces[mat].append(rightplane)
+
+
+        if 1 in loneneighbors[mat][block]:
+            backplane = (block[0]-0.5,block[1]-0.5,block[2]-0.5),(block[0]-0.5,block[1]+0.5,block[2]-0.5),(block[0]-0.5,block[1]-0.5,block[2]),(block[0]-0.5,block[1]+0.5,block[2])
+            faces[mat].append(backplane)
+
+        if 2 in loneneighbors[mat][block]:
+            frontplane = (block[0]+0.5,block[1]-0.5,block[2]-0.5),(block[0]+0.5,block[1]+0.5,block[2]-0.5),(block[0]+0.5,block[1]-0.5,block[2]),(block[0]+0.5,block[1]+0.5,block[2])
+            faces[mat].append(frontplane)
+
+def makeflatblock(loneneighbors, mat):
+    for block in loneneighbors[mat]:
+    
+        if 5 in loneneighbors[mat][block]:
+            loweplane = (block[0]+0.5,block[1]+0.5,block[2]-0.5),(block[0]-0.5,block[1]+0.5,block[2]-0.5),(block[0]+0.5,block[1]-0.5,block[2]-0.5),(block[0]-0.5,block[1]-0.5,block[2]-0.5)
+            faces[mat].append(loweplane)
+
+        if 6 in loneneighbors[mat][block]:
+            upperplane = (block[0]+0.5,block[1]+0.5,block[2]-0.4),(block[0]-0.5,block[1]+0.5,block[2]-0.4),(block[0]+0.5,block[1]-0.5,block[2]-0.4),(block[0]-0.5,block[1]-0.5,block[2]-0.4)
+            faces[mat].append(upperplane)
+
+        if 3 in loneneighbors[mat][block]:
+            leftplane = (block[0]-0.5,block[1]-0.5,block[2]-0.5),(block[0]-0.5,block[1]-0.5,block[2]-0.4),(block[0]+0.5,block[1]-0.5,block[2]-0.5),(block[0]+0.5,block[1]-0.5,block[2]-0.4)
+            faces[mat].append(leftplane)
+
+        if 4 in loneneighbors[mat][block]:
+            rightplane = (block[0]-0.5,block[1]+0.5,block[2]-0.5),(block[0]-0.5,block[1]+0.5,block[2]-0.4),(block[0]+0.5,block[1]+0.5,block[2]-0.5),(block[0]+0.5,block[1]+0.5,block[2]-0.4)
+            faces[mat].append(rightplane)
+
+
+        if 1 in loneneighbors[mat][block]:
+            backplane = (block[0]-0.5,block[1]-0.5,block[2]-0.5),(block[0]-0.5,block[1]+0.5,block[2]-0.5),(block[0]-0.5,block[1]-0.5,block[2]-0.4),(block[0]-0.5,block[1]+0.5,block[2]-0.4)
+            faces[mat].append(backplane)
+
+        if 2 in loneneighbors[mat][block]:
+            frontplane = (block[0]+0.5,block[1]-0.5,block[2]-0.5),(block[0]+0.5,block[1]+0.5,block[2]-0.5),(block[0]+0.5,block[1]-0.5,block[2]-0.4),(block[0]+0.5,block[1]+0.5,block[2]-0.4)
+            faces[mat].append(frontplane)
 
 def fido(first, second):
 
@@ -271,7 +318,7 @@ for line in aroflines:
                 xzpos = ast.literal_eval(row[1])
                 # print xzpos, cutx, cutz
 
-                if xzpos not in chunkposses and xzpos[0] > cutx[0] and xzpos[0] < cutx[1] and xzpos[1] > cutz[0] and xzpos[1] < cutz[1]:
+                if xzpos not in chunkposses and xzpos[0] >= cutx[0] and xzpos[0] <= cutx[1] and xzpos[1] >= cutz[0] and xzpos[1] <= cutz[1]:
                     chunkposses.append(xzpos)
                     for index1 in xrange(0, 16):
                         if int(row[3]) & (1 << index1) and index1 >= cuty:
@@ -375,34 +422,13 @@ for mat in loneneighbors:
     print mat
     faces[mat] = []
     vertices[mat] = []
-
-    for block in loneneighbors[mat]:
+    if mat == 182 or mat == 126 or mat == 44:
+        makehalfblock(loneneighbors, mat)
+    elif mat == 171 or mat == 111:
+        makeflatblock(loneneighbors, mat)
+    else:
+        makeblock(loneneighbors, mat)
     
-        if 5 in loneneighbors[mat][block]:
-            loweplane = (block[0]+0.5,block[1]+0.5,block[2]-0.5),(block[0]-0.5,block[1]+0.5,block[2]-0.5),(block[0]+0.5,block[1]-0.5,block[2]-0.5),(block[0]-0.5,block[1]-0.5,block[2]-0.5)
-            faces[mat].append(loweplane)
-
-        if 6 in loneneighbors[mat][block]:
-            upperplane = (block[0]+0.5,block[1]+0.5,block[2]+0.5),(block[0]-0.5,block[1]+0.5,block[2]+0.5),(block[0]+0.5,block[1]-0.5,block[2]+0.5),(block[0]-0.5,block[1]-0.5,block[2]+0.5)
-            faces[mat].append(upperplane)
-
-        if 3 in loneneighbors[mat][block]:
-            leftplane = (block[0]-0.5,block[1]-0.5,block[2]-0.5),(block[0]-0.5,block[1]-0.5,block[2]+0.5),(block[0]+0.5,block[1]-0.5,block[2]-0.5),(block[0]+0.5,block[1]-0.5,block[2]+0.5)
-            faces[mat].append(leftplane)
-
-        if 4 in loneneighbors[mat][block]:
-            rightplane = (block[0]-0.5,block[1]+0.5,block[2]-0.5),(block[0]-0.5,block[1]+0.5,block[2]+0.5),(block[0]+0.5,block[1]+0.5,block[2]-0.5),(block[0]+0.5,block[1]+0.5,block[2]+0.5)
-            faces[mat].append(rightplane)
-
-
-        if 1 in loneneighbors[mat][block]:
-            backplane = (block[0]-0.5,block[1]-0.5,block[2]-0.5),(block[0]-0.5,block[1]+0.5,block[2]-0.5),(block[0]-0.5,block[1]-0.5,block[2]+0.5),(block[0]-0.5,block[1]+0.5,block[2]+0.5)
-            faces[mat].append(backplane)
-
-        if 2 in loneneighbors[mat][block]:
-            frontplane = (block[0]+0.5,block[1]-0.5,block[2]-0.5),(block[0]+0.5,block[1]+0.5,block[2]-0.5),(block[0]+0.5,block[1]-0.5,block[2]+0.5),(block[0]+0.5,block[1]+0.5,block[2]+0.5)
-            faces[mat].append(frontplane)
-
 
     loneneighbors[mat] = None
 
