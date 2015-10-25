@@ -188,6 +188,18 @@ def makeflatblock(loneneighbors, mat):
             frontplane = (block[0]+0.5,block[1]-0.5,block[2]-0.5),(block[0]+0.5,block[1]+0.5,block[2]-0.5),(block[0]+0.5,block[1]-0.5,block[2]-0.4),(block[0]+0.5,block[1]+0.5,block[2]-0.4)
             faces[mat].append(frontplane)
 
+def makexblock(loneneighbors, mat):
+    for block in loneneighbors[mat]:
+    
+
+        firstplane = (block[0]+0.5,block[1]+0.5,block[2]+0.5),(block[0]+0.5,block[1]+0.5,block[2]-0.5),(block[0]-0.5,block[1]-0.5,block[2]-0.5),(block[0]-0.5,block[1]-0.5,block[2]+0.5)
+        secondplane = (block[0]+0.5,block[1]-0.5,block[2]+0.5),(block[0]+0.5,block[1]-0.5,block[2]-0.5),(block[0]-0.5,block[1]+0.5,block[2]+0.5),(block[0]-0.5,block[1]+0.5,block[2]-0.5)
+        faces[mat].append(firstplane)
+        faces[mat].append(secondplane)
+
+
+
+
 def fido(first, second):
 
         
@@ -318,7 +330,7 @@ for line in aroflines:
                 xzpos = ast.literal_eval(row[1])
                 # print xzpos, cutx, cutz
 
-                if xzpos not in chunkposses and xzpos[0] >= cutx[0] and xzpos[0] <= cutx[1] and xzpos[1] >= cutz[0] and xzpos[1] <= cutz[1]:
+                if xzpos not in chunkposses and xzpos[0] > cutx[0] and xzpos[0] < cutx[1] and xzpos[1] > cutz[0] and xzpos[1] < cutz[1]:
                     chunkposses.append(xzpos)
                     for index1 in xrange(0, 16):
                         if int(row[3]) & (1 << index1) and index1 >= cuty:
@@ -426,6 +438,8 @@ for mat in loneneighbors:
         makehalfblock(loneneighbors, mat)
     elif mat == 171 or mat == 111:
         makeflatblock(loneneighbors, mat)
+    elif mat in [6 , 111 , 30 , 31 , 32,37,40, 51, 83, 175]:
+        makexblock(loneneighbors, mat)
     else:
         makeblock(loneneighbors, mat)
     
