@@ -1,10 +1,10 @@
 #!/usr/bin/python -B
 
 import sys, getopt
-import json
+# import json
 import ast
 
-sourcefile = "default.log"
+sourcefile = "default.dump"
 
 
 def getsourcefile():

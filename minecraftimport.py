@@ -13,7 +13,7 @@ import bpy
 import string
 import pdb
 import time
-import json
+# import json
 from math import pi
 import operator
 import ast
@@ -24,7 +24,7 @@ from bpy.props import StringProperty
 dbg = False
 
 bl_info = {
-    "name": "Minecraft mejiggest (*.json)",
+    "name": "Minecraft mejiggest (*.mcmo)",
     "description": "This addon allows you to import minecraft worls and mob motions",
     "author": "Aat Karelse",
     "version": (0, 2, 1),
@@ -46,7 +46,8 @@ class DataImporter:
         # Create mesh and object
         me = bpy.data.meshes.new(str(material)+'Mesh')
         ob = bpy.data.objects.new(str(material), me)
-        ob.location = origin
+        # ob.origin = 'GEOMETRY_ORIGIN'
+        # bpy.ops.object.origin_set(type="GEOMETRY_ORIGIN")
         ob.show_name = True
         
         mat = bpy.data.materials.new("PKHG")
@@ -62,8 +63,9 @@ class DataImporter:
             mat.diffuse_color = (0.9,0.7,0.6)
         elif material == 7:
             mat.diffuse_color = (0.2,0.2,0.2)
-        elif material == 11:
+        elif material in [11, 10]:
             mat.diffuse_color = (0.9,0.2,0.2)
+            mat.emit = 5
         elif material == 13:
             mat.diffuse_color = (0.5,0.5,0.5)
         elif material == 15:
@@ -82,7 +84,12 @@ class DataImporter:
             mat.diffuse_color = (0.8,0.8,0.8)
         elif material == 79:
             mat.diffuse_color = (0.4,0.4,1)
-        elif material == 155 or material == 171 or material == 156:
+        elif material in [89, 50, 124, 91, 51, 62] :
+            mat.diffuse_color = (0.9,0.9,0.2)
+            mat.emit = 5
+        elif material == 138:
+            mat.diffuse_color = (0.5,0.5,0.8)
+        elif material in [155, 171, 156]:
             mat.diffuse_color = (1,1,1)
         elif material == 159:
             mat.diffuse_color = (1,0.8,0.8)
@@ -205,15 +212,15 @@ class DataImporter:
 
 # This is the import operator.
 class MineCraftImport(bpy.types.Operator, ImportHelper):
-    '''Import form minecraft netrecorder some format (.json)'''
+    '''Import form minecraft netrecorder some format (.mcmo)'''
     bl_idname = "something.minecraft"
     bl_label = "MineCraft EntityPaths"
     # mc ep
     
-    filename_ext = ".json"
+    filename_ext = ".mcmo"
     
     filter_glob = StringProperty(
-            default="*.json",
+            default="*.mcmo",
             options={'HIDDEN'}
             )
     
@@ -226,7 +233,7 @@ class MineCraftImport(bpy.types.Operator, ImportHelper):
         return di.run(self.filepath, context)
 
 def menu_func_export(self, context):
-    self.layout.operator(MineCraftImport.bl_idname, text="MineCraft EntityPaths (.json)")
+    self.layout.operator(MineCraftImport.bl_idname, text="Mcmo import (.mcmo)")
 
 def register():
     bpy.utils.register_class(MineCraftImport)

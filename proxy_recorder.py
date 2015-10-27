@@ -491,20 +491,20 @@ def main(argv):
     destip = "localhost"
     sourceport = 6677
     destport = 25565
-    logfile = "session.log"
+    dumpfile = "session.dump"
 
     factory = QuietDownstreamFactory()
 
     try:
-        opts, args = getopt.getopt(argv,"",["sourceport=","destport=","destip=", "logfile=","profile=","username="])
+        opts, args = getopt.getopt(argv,"",["sourceport=","destport=","destip=", "dumpfile=","profile=","username="])
         
     except getopt.GetoptError:
-        print 'error: proxy_recorder.py  --sourceport port --destport port --destip ip --logfile filename --username --profile'
+        print 'error: proxy_recorder.py  --sourceport port --destport port --destip ip --dumpfile filename --username --profile'
         sys.exit(2)
     for opt, arg in opts:
         
         if opt == '-h':
-            print 'proxy_recorder.py  --sourceport port --destport port --destip ip --logfile filename  --username --profile'
+            print 'proxy_recorder.py  --sourceport port --destport port --destip ip --dumpfile filename  --username --profile'
             sys.exit()
         if opt == "--username":
             factory.set_username(arg)
@@ -516,17 +516,17 @@ def main(argv):
             destport = int(arg)
         if opt == "--destip":
             destip = arg
-        if opt == "--logfile":
-            logfile = arg
+        if opt == "--dumpfile":
+            dumpfile = arg
 
 
     print "Connecting to:" + destip + " on port:" + str(destport)
-    print "relaying on port:" + str(sourceport) + " dumping traffic in:" + logfile
+    print "relaying on port:" + str(sourceport) + " dumping traffic in:" + dumpfile
 
 
     # Create factory
     
-    factory.set_dumpfile(open(logfile, 'w'))
+    factory.set_dumpfile(open(dumpfile, 'w'))
     
     factory.set_startstarted(startstarted)
 
