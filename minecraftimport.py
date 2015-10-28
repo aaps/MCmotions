@@ -129,9 +129,6 @@ class DataImporter:
         for mat in vertices:
 
             self.createMeshFromData(mat, (0,0,0), vertices[mat], faces[mat] )
-            
-
-
 
         for value in entitys:
             
