@@ -46,7 +46,7 @@ class QuietBridge(Bridge):
             message = "Not recording !"
             if self.recording:
                 seconds = round(time.time() - self.start_time,2)
-                message = "Recording for: " + str(seconds) + " seconds !, filesize: " + str(dumpsize/1024)
+                message = "Recording for: " + str(seconds) + " seconds !, filesize: " + str(self.dumpsize/1024)
             
             self.downstream.send_packet("chat_message", self.write_chat(message, "downstream"))
 
@@ -60,7 +60,7 @@ class QuietBridge(Bridge):
             seconds = round(time.time() - self.start_time,2)
             
             towrite = 'spawnplayer|' + str(seconds) + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack_uuid()) + '|' + str(buff.unpack('iii')) + '|' +  str(buff.unpack('bb'))+ '|' +  str(buff.unpack('h')) + '\n'
-            dumpsize += len(towrite)
+            self.dumpsize += len(towrite)
             self.dumpfile.write(towrite)
             buff.restore()
         self.downstream.send_packet("spawn_player", buff.read())
@@ -74,7 +74,7 @@ class QuietBridge(Bridge):
             theposition = str(buff.unpack('iii'))
             
             towrite = 'spawnobject|' + str(seconds) + '|' + theid + '|' + thetype + '|' + theposition + '|' +  str(buff.unpack('bb')) + '\n'
-            dumpsize += len(towrite)
+            self.dumpsize += len(towrite)
             self.dumpfile.write(towrite)
             buff.restore()
         self.downstream.send_packet("spawn_object", buff.read())
@@ -84,7 +84,7 @@ class QuietBridge(Bridge):
         if self.recording:
             seconds = round(time.time() - self.start_time,2)
             towrite = 'spawnmob|' + str(seconds) + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack('B')) + '|' + str(buff.unpack('iii')) + '|' +  str(buff.unpack('bbb')) + '|' +  str(buff.unpack('hhh')) + '\n'
-            dumpsize += len(towrite)
+            self.dumpsize += len(towrite)
             self.dumpfile.write(towrite)
             buff.restore()
         self.downstream.send_packet("spawn_mob", buff.read())
@@ -135,7 +135,7 @@ class QuietBridge(Bridge):
         if self.recording:
             seconds = round(time.time() - self.start_time,2)
             towrite = 'entity|' + str(seconds) + '|' + str(buff.unpack_varint()) + '\n'
-            dumpsize += len(towrite)
+            self.dumpsize += len(towrite)
             self.dumpfile.write(towrite)
             buff.restore()
         self.downstream.send_packet("entity", buff.read())
@@ -146,7 +146,7 @@ class QuietBridge(Bridge):
         if self.recording:
             seconds = round(time.time() - self.start_time,2)
             towrite = 'entityrelmove|' + str(seconds) + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack('bbb')) + '|' + str(buff.unpack('?'))+ '\n'
-            dumpsize += len(towrite)
+            self.dumpsize += len(towrite)
             self.dumpfile.write(towrite)
             buff.restore()
         self.downstream.send_packet("entity_relative_move", buff.read())
@@ -157,7 +157,7 @@ class QuietBridge(Bridge):
         if self.recording:
             seconds = round(time.time() - self.start_time,2)
             towrite = 'entitylook|' + str(seconds) + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack('bb')) + '|' + str(buff.unpack('?'))+ '\n'
-            dumpsize += len(towrite)
+            self.dumpsize += len(towrite)
             self.dumpfile.write(towrite)
             buff.restore()
         self.downstream.send_packet("entity_look", buff.read())
@@ -176,7 +176,7 @@ class QuietBridge(Bridge):
         if self.recording:   
             seconds = round(time.time() - self.start_time,2)
             towrite = 'entityteleport|' + str(seconds) + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack('iii')) + '|' + str(buff.unpack('bb')) + '|' + str(buff.unpack('?'))+ '\n'
-            dumpsize += len(towrite)
+            self.dumpsize += len(towrite)
             self.dumpfile.write(towrite)
             
             buff.restore()
@@ -187,7 +187,7 @@ class QuietBridge(Bridge):
         if self.recording:
             seconds = round(time.time() - self.start_time,2)
             towrite ='entityvelocity|' + str(seconds) + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack('hhh'))+ '\n'
-            dumpsize += len(towrite)
+            self.dumpsize += len(towrite)
             self.dumpfile.write(towrite)
             buff.restore()
         self.downstream.send_packet("entity_velocity", buff.read())
@@ -197,7 +197,7 @@ class QuietBridge(Bridge):
         if self.recording:   
             seconds = round(time.time() - self.start_time,2)
             towrite = 'entityheadlook|' + str(seconds) + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack('b'))+ '\n'
-            dumpsize += len(towrite)
+            self.dumpsize += len(towrite)
             self.dumpfile.write(towrite)
             buff.restore()
         self.downstream.send_packet("entity_head_look", buff.read())
@@ -207,7 +207,7 @@ class QuietBridge(Bridge):
         if self.recording:
             seconds = round(time.time() - self.start_time,2)
             towrite = 'entitystatus|' + str(seconds) + '|' + str(buff.unpack('i')) + '|' + str(buff.unpack('b'))+ '\n'
-            dumpsize += len(towrite)
+            self.dumpsize += len(towrite)
             self.dumpfile.write(towrite)
             buff.restore()
         self.downstream.send_packet("entity_status", buff.read())
@@ -217,7 +217,7 @@ class QuietBridge(Bridge):
         if self.recording:    
             seconds = round(time.time() - self.start_time,2)
             towrite = 'entityeffect|' + str(seconds) + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack('b')) + '|' + str(buff.unpack('b')) + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack('?'))+ '\n'
-            dumpsize += len(towrite)
+            self.dumpsize += len(towrite)
             self.dumpfile.write(towrite)
             buff.restore()
         self.downstream.send_packet("entity_effect", buff.read())
@@ -227,7 +227,7 @@ class QuietBridge(Bridge):
         if self.recording:
             seconds = round(time.time() - self.start_time,2)
             towrite = 'rementityeffect|' + str(seconds) + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack('b'))+ '\n'
-            dumpsize += len(towrite)
+            self.dumpsize += len(towrite)
             self.dumpfile.write(towrite)
             buff.restore()
         self.downstream.send_packet("remove_entity_effect", buff.read())
@@ -243,7 +243,7 @@ class QuietBridge(Bridge):
             for aent in xrange(0,length):
                 entitys.append(buff.unpack_varint())
             towrite = 'destroyents|' + str(seconds) + '|' +  '|'.join(map(str, entitys))+ '\n'
-            dumpsize += len(towrite)
+            self.dumpsize += len(towrite)
             self.dumpfile.write(towrite)
             
             buff.restore()
@@ -253,7 +253,7 @@ class QuietBridge(Bridge):
         buff.save()
         if self.recording:
             towrite = 'disconnect|' + buff.unpack_chat() + '\n'
-            dumpsize += len(towrite)
+            self.dumpsize += len(towrite)
             self.dumpfile.write(towrite)
             buff.restore()
         self.downstream.send_packet("disconnect", buff.read())
@@ -262,7 +262,7 @@ class QuietBridge(Bridge):
         buff.save()
         if self.recording:
             towrite = 'keep_alive|' + str(buff.unpack_varint()) + '\n'
-            dumpsize += len(towrite)
+            self.dumpsize += len(towrite)
             self.dumpfile.write(towrite)
             buff.restore()
         self.downstream.send_packet("keep_alive", buff.read() )
@@ -285,7 +285,7 @@ class QuietBridge(Bridge):
             
             contents = base64.b64encode(buff.unpack(str(datalength) + 's'))
             towrite = 'chunkdata|' + str(chunkxy) + '|' + str(groundup) + '|' + str(pribitmask) + '|' + str(datalength) + '|' + contents +'\n'
-            dumpsize += len(towrite)
+            self.dumpsize += len(towrite)
             self.dumpfile.write(towrite)
             
             buff.restore()
@@ -327,7 +327,7 @@ class QuietBridge(Bridge):
 
             for index in xrange(0,nrchunks):
                 towrite = 'chunkdata|' + str(metaar[index][0]) +  '|True|' + str(metaar[index][1]) + '|' + str(metaar[index][2]) + '|' + chunkar[index] + '\n'
-                dumpsize += len(towrite)
+                self.dumpsize += len(towrite)
                 self.dumpfile.write(towrite)
 
 
@@ -350,7 +350,7 @@ class QuietBridge(Bridge):
                 y = buff.unpack('B')
                 newid = buff.unpack_varint() >> 4
                 towrite = 'blockchange|' + str(seconds) + '|' + str((x,z,y)) + '|' + str(newid)+ '\n'
-                dumpsize += len(towrite)
+                self.dumpsize += len(towrite)
                 self.dumpfile.write(towrite)
             buff.restore()
             
@@ -367,7 +367,7 @@ class QuietBridge(Bridge):
       
             newid = buff.unpack_varint() >> 4
             towrite = 'blockchange|' + str(seconds) + '|' + str(xyz) + '|' + str(newid)+ '\n'
-            dumpsize += len(towrite)
+            self.dumpsize += len(towrite)
             self.dumpfile.write(towrite)
             buff.restore()
 
@@ -384,7 +384,7 @@ class QuietBridge(Bridge):
             blocktype = buff.unpack_varint()
             seconds = round(time.time() - self.start_time,2)
             towrite = 'blockaction|' + str(seconds) + '|' + str(xyz) + '|' + str(bytea) + '|' + str(byteb) + '\n'
-            dumpsize += len(towrite)
+            self.dumpsize += len(towrite)
             self.dumpfile.write(towrite)
             buff.restore()
 
@@ -402,7 +402,7 @@ class QuietBridge(Bridge):
 
                 stage = buff.unpack('b')
                 towrite = 'blockbreak|' + str(seconds) + '|' + str(entid) + '|' + str(xyz) + '|' + str(stage) + '\n'
-                dumpsize += len(towrite)
+                self.dumpsize += len(towrite)
                 self.dumpfile.write(towrite)
 
             buff.restore()
@@ -420,7 +420,7 @@ class QuietBridge(Bridge):
             partcount = buff.unpack('i')
             
             towrite = 'particle|' + str(seconds) + '|' + str(partid) + '|' + str(longdist) + '|' + str(pos) + '|' + str(offset) + '|' + str(data) + '\n'
-            dumpsize += len(towrite)
+            self.dumpsize += len(towrite)
             self.dumpfile.write(towrite)
                 
 

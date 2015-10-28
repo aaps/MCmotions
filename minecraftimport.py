@@ -66,7 +66,7 @@ class DataImporter:
         elif material in [11, 10]:
             mat.diffuse_color = (0.9,0.2,0.2)
             mat.emit = 5
-        elif material == 13:
+        elif material in [13]:
             mat.diffuse_color = (0.5,0.5,0.5)
         elif material == 15:
             mat.diffuse_color = (0.6,0.5,0.4)
@@ -80,7 +80,7 @@ class DataImporter:
             mat.diffuse_color = (1,0.8,0.7)
         elif material == 49:
             mat.diffuse_color = (0,0,0.2)
-        elif material == 44:
+        elif material in [44, 82]:
             mat.diffuse_color = (0.8,0.8,0.8)
         elif material == 79:
             mat.diffuse_color = (0.4,0.4,1)
