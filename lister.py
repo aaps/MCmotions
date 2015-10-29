@@ -17,14 +17,15 @@ from collections import OrderedDict
 
 sourcefile = "default.dump"
 destfile = "default.mcmo"
-sesnrtoget = 0
+
 avgmiddle = False
 norenderents = ["none"]
 norenderblocks = ["none"]
 
 noentitys = False
 nochunks = False
-
+onlyplayerents = False
+curscene = "noscene"
 cuty = 0
 cutz = (-1000,1000)
 cutx = (-1000,1000)
@@ -32,16 +33,19 @@ cutx = (-1000,1000)
 
 
 try:
-    opts, args = getopt.getopt(sys.argv[1:],"",["avgmiddle=","sourcefile=","destfile=","session=", "avgmiddle=", "excludeent=","excludeblocks=","cutx=","cuty=","cutz=","noentitys=","nochunks=" ])
+    opts, args = getopt.getopt(sys.argv[1:],"",["avgmiddle=","sourcefile=","destfile=","scene=", "excludeent=","excludeblocks=","cutx=","cuty=","cutz=","noentitys=","nochunks=","onlyplayerents=" ])
         
 except getopt.GetoptError:
-    print 'error: lister.py --avgmiddle --sourcefile filename --destfile filename --session sesnumber --excludeent commaseperatedlist of entity ids --excludeblocks commaseperatedlist of blockids'
+    print 'error: lister.py --onlyplayerents --avgmiddle --sourcefile filename --destfile filename --scene scene name --excludeent commaseperatedlist of entity ids --excludeblocks commaseperatedlist of blockids'
     sys.exit(2)
 for opt, arg in opts:
     # print opt
     if opt == '-h':
-        print 'lister.py --avgmiddle --sourcefile filename --destfile filename --session sesnumber --excludeent commaseperatedlist of entity ids --excludeblocks commaseperatedlist of blockids'
+        print 'lister.py --onlyplayerents --avgmiddle --sourcefile filename --destfile filename --scene scene name --excludeent commaseperatedlist of entity ids --excludeblocks commaseperatedlist of blockids'
         sys.exit()
+
+    if opt == "--onlyplayerents":
+        onlyplayerents = True
 
     if opt == "--sourcefile":
         sourcefile = arg
@@ -49,8 +53,8 @@ for opt, arg in opts:
     if opt == "--destfile":
         destfile = arg
 
-    if opt == "--session":
-        sesnrtoget = int(arg)
+    if opt == "--scene":
+        curscene = arg
 
     if opt == "--avgmiddle":
         # print arg
@@ -85,7 +89,7 @@ allhistory = {}
 allblocks = {}
 
 
-currentses = 0
+
 lostcounter = []
 
 f = open(destfile, 'w')
@@ -405,8 +409,8 @@ if avgmiddle:
     allposses = []
     for line in aroflines:
         row = line.split('|')
-        if 'spawn' in row[0] and sesnrtoget == currentses:
-            goodpos = ast.literal_eval(row[4])
+        if 'spawn' in row[0]:
+            goodpos = ast.literal_eval(row[5])
             goodpos = (float(goodpos[0])/32, float(goodpos[1])/32, float(goodpos[2])/32)
             allposses.append(goodpos)
 
@@ -419,41 +423,56 @@ for line in aroflines:
     
     row = line.split('|')
 
-    if row[0] == 'startrecord' and not noentitys:
-        
-        currentses =+ 1
+
 
         
-    elif 'spawn' in row[0]  and sesnrtoget == currentses and row[3] not in norenderents and not noentitys:
+    if not noentitys and 'spawn' in row[0] and row[4] not in norenderents and not noentitys:
         
+        if not onlyplayerents:
+            
+            
 
-        goodpos = ast.literal_eval(row[4])
-        rawyawpichhead = ast.literal_eval(row[5])
-        if len(rawyawpichhead) > 2:
-            rawyawpichhead = (rawyawpichhead[0]+ 5) % 360, (rawyawpichhead[1]+ 5) % 360, (rawyawpichhead[2]+ 5) % 360
-        else:
-            rawyawpichhead = (rawyawpichhead[0]+ 5) % 360, (rawyawpichhead[1]+ 5) % 360
-        goodpos = (float(goodpos[0])/32, float(goodpos[1])/32, float(goodpos[2])/32)
-        
-        mob = {int(row[2]):{'type':row[3],'positions':[{'time':float(row[1]),'pos':tuple(map(operator.sub, goodpos, offset)), 'yawpichhead': rawyawpichhead,'status':0,'alive':1}]}}
+            goodpos = ast.literal_eval(row[5])
+            rawyawpichhead = ast.literal_eval(row[6])
+            if len(rawyawpichhead) > 2:
+                rawyawpichhead = (rawyawpichhead[0]+ 5) % 360, (rawyawpichhead[1]+ 5) % 360, (rawyawpichhead[2]+ 5) % 360
+            else:
+                rawyawpichhead = (rawyawpichhead[0]+ 5) % 360, (rawyawpichhead[1]+ 5) % 360
+            goodpos = (float(goodpos[0])/32, float(goodpos[1])/32, float(goodpos[2])/32)
+            
+            mob = {int(row[3]):{'type':row[4],'positions':[{'time':int(row[1]),'pos':tuple(map(operator.sub, goodpos, offset)), 'yawpichhead': rawyawpichhead,'status':0,'alive':1}]}}
 
-        allhistory.update(mob)
+            allhistory.update(mob)
+
+        elif 'player' in row[0]:
+
+            goodpos = ast.literal_eval(row[5])
+            rawyawpichhead = ast.literal_eval(row[6])
+            if len(rawyawpichhead) > 2:
+                rawyawpichhead = (rawyawpichhead[0]+ 5) % 360, (rawyawpichhead[1]+ 5) % 360, (rawyawpichhead[2]+ 5) % 360
+            else:
+                rawyawpichhead = (rawyawpichhead[0]+ 5) % 360, (rawyawpichhead[1]+ 5) % 360
+            goodpos = (float(goodpos[0])/32, float(goodpos[1])/32, float(goodpos[2])/32)
+            
+            mob = {int(row[3]):{'type':row[4],'positions':[{'time':int(row[1]),'pos':tuple(map(operator.sub, goodpos, offset)), 'yawpichhead': rawyawpichhead,'status':0,'alive':1}]}}
+
+            allhistory.update(mob)
 
     
-    elif row[0] == 'entityrelmove' and int(row[2]) in allhistory and sesnrtoget == currentses and not noentitys:
+    elif row[0] == 'entityrelmove' and int(row[3]) in allhistory and (row[2] == curscene or curscene == 'all') and not noentitys:
         
-        lastlist = allhistory[int(row[2])]['positions'][-1]
+        lastlist = allhistory[int(row[3])]['positions'][-1]
 
-        absolutepos = tuple(map(operator.add, lastlist['pos'], ast.literal_eval(row[3])))
+        absolutepos = tuple(map(operator.add, lastlist['pos'], ast.literal_eval(row[4])))
 
-        allhistory[int(row[2])]['positions'].append({'time':float(row[1]),'pos':absolutepos,'yawpichhead':lastlist['yawpichhead'],'status':0,'alive':lastlist['alive']})
+        allhistory[int(row[3])]['positions'].append({'time':int(row[1]),'pos':absolutepos,'yawpichhead':lastlist['yawpichhead'],'status':0,'alive':lastlist['alive']})
 
-    elif row[0] == 'entitylookandrelmove' and int(row[2]) in allhistory and sesnrtoget == currentses and not noentitys:
+    elif row[0] == 'entitylookandrelmove' and int(row[3]) in allhistory and (row[2] == curscene or curscene == 'all') and not noentitys:
         
-        lastlist = allhistory[int(row[2])]['positions'][-1]
+        lastlist = allhistory[int(row[3])]['positions'][-1]
 
-        absolutepos = tuple(map(operator.add, lastlist['pos'], ast.literal_eval(row[3])))
-        yawpich = ast.literal_eval(row[4])
+        absolutepos = tuple(map(operator.add, lastlist['pos'], ast.literal_eval(row[4])))
+        yawpich = ast.literal_eval(row[5])
         
         if len(lastlist['yawpichhead']) > 2:
             yawpichhead = (yawpich[0]+ 5) % 360,(yawpich[1]+ 5) % 360,lastlist['yawpichhead'][2]
@@ -461,28 +480,28 @@ for line in aroflines:
             yawpichhead = (yawpich[0]+ 5) % 360,(yawpich[1]+ 5) % 360
         yawpichhead = fido(lastlist['yawpichhead'], yawpichhead)
 
-        allhistory[int(row[2])]['positions'].append({'time':float(row[1]),'pos':absolutepos,'yawpichhead':yawpichhead,'status':0,'alive':lastlist['alive']})
+        allhistory[int(row[3])]['positions'].append({'time':int(row[1]),'pos':absolutepos,'yawpichhead':yawpichhead,'status':0,'alive':lastlist['alive']})
 
-    elif row[0] == 'entityheadlook' and int(row[2]) in allhistory and sesnrtoget == currentses and not noentitys:
+    elif row[0] == 'entityheadlook' and int(row[3]) in allhistory and (row[2] == curscene or curscene == 'all') and not noentitys:
         
-        lastlist = allhistory[int(row[2])]['positions'][-1]
+        lastlist = allhistory[int(row[3])]['positions'][-1]
         
         if len(lastlist['yawpichhead']) > 2:
-            if not ast.literal_eval(row[3]) == lastlist['yawpichhead'][2]:
+            if not ast.literal_eval(row[4]) == lastlist['yawpichhead'][2]:
             
-                yawpichhead = lastlist['yawpichhead'][0], lastlist['yawpichhead'][1], (ast.literal_eval(row[3])+ 5) % 360
+                yawpichhead = lastlist['yawpichhead'][0], lastlist['yawpichhead'][1], (ast.literal_eval(row[4])+ 5) % 360
 
             yawpichhead = fido(yawpichhead, lastlist['yawpichhead'])
 
-            allhistory[int(row[2])]['positions'].append({'time':float(row[1]),'pos':lastlist['pos'],'yawpichhead':yawpichhead,'status':0,'alive':lastlist['alive']})
+            allhistory[int(row[3])]['positions'].append({'time':int(row[1]),'pos':lastlist['pos'],'yawpichhead':yawpichhead,'status':0,'alive':lastlist['alive']})
 
 
-    elif row[0] == 'entityteleport' and int(row[2]) in allhistory and sesnrtoget == currentses and not noentitys:
+    elif row[0] == 'entityteleport' and int(row[3]) in allhistory and (row[2] == curscene or curscene == 'all') and not noentitys:
         
-        goodpos = ast.literal_eval(row[3])
+        goodpos = ast.literal_eval(row[4])
         goodpos = (float(goodpos[0])/32, float(goodpos[1])/32, float(goodpos[2])/32)
         
-        lastlist = allhistory[int(row[2])]['positions'][-1]
+        lastlist = allhistory[int(row[3])]['positions'][-1]
         yawpich = ast.literal_eval(row[4])
         if len(lastlist['yawpichhead']) > 2:
             yawpichhead = (yawpich[0]+ 5) % 360, (yawpich[1]+ 5) % 360, lastlist['yawpichhead'][2]
@@ -491,28 +510,29 @@ for line in aroflines:
         
         yawpichhead = fido( yawpichhead, lastlist['yawpichhead'])
         
-        allhistory[int(row[2])]['positions'].append({'time':float(row[1]),'pos':tuple(map(operator.sub, goodpos, offset)),'yawpichhead':yawpichhead,'status':0,'alive':lastlist['alive']})
+        allhistory[int(row[3])]['positions'].append({'time':int(row[1]),'pos':tuple(map(operator.sub, goodpos, offset)),'yawpichhead':yawpichhead,'status':0,'alive':lastlist['alive']})
 
-    elif row[0] == 'entitystatus' and int(row[2]) in allhistory and sesnrtoget == currentses and not noentitys:
+    elif row[0] == 'entitystatus' and int(row[2]) in allhistory and (row[2] == curscene or curscene == 'all') and not noentitys:
         
-        lastlist = allhistory[int(row[2])]['positions'][-1]
-        if lastlist['status'] == row[3]:
-            allhistory[int(row[2])]['positions'].append({'time':float(row[1]),'pos':lastlist['pos'],'yawpichhead':lastlist['yawpichhead'],'status':row[3],'alive':lastlist['alive'] })
+        lastlist = allhistory[int(row[3])]['positions'][-1]
+        if lastlist['status'] == row[4]:
+            allhistory[int(row[3])]['positions'].append({'time':int(row[1]),'pos':lastlist['pos'],'yawpichhead':lastlist['yawpichhead'],'status':row[4],'alive':lastlist['alive'] })
 
-    elif row[0] == 'destroyents' and sesnrtoget == currentses:
-        entids = row[2:]
+    elif row[0] == 'destroyents' and not noentitys:
+        entids = row[3:]
         
         for entid in entids:
-            if entid in allhistory and sesnrtoget == currentses:
+            if entid in allhistory and (row[2] == curscene or curscene == 'all'):
                 lastlist = allhistory[entid]['positions'][-1]
-                allhistory[entid]['positions'].append({'time':float(row[1]),'pos':lastlist['pos'],'yawpichhead':yawpichhead,'status':0 ,'alive':0})
+                allhistory[entid]['positions'].append({'time':int(row[1]),'pos':lastlist['pos'],'yawpichhead':yawpichhead,'status':0 ,'alive':0})
 
-    elif row[0] == 'chunkdata' and sesnrtoget == currentses and not noentitys:
-        length = row[2]
+    elif row[0] == 'chunkdata' and (row[2] == curscene or curscene == 'all') and not noentitys:
+        length = row[3]
         
         chunks.update({row[1]:{'blocks':[]}})
 
         try:
+            # print row
             if row[5] != 'None':
                 chunkdata = base64.standard_b64decode(row[5])
                 xzpos = ast.literal_eval(row[1])
@@ -521,6 +541,7 @@ for line in aroflines:
                 if xzpos not in chunkposses and xzpos[0] >= cutx[0] and xzpos[0] <= cutx[1] and xzpos[1] >= cutz[0] and xzpos[1] <= cutz[1]:
                     chunkposses.append(xzpos)
                     for index1 in xrange(0, 16):
+                        # print row
                         if int(row[3]) & (1 << index1) and index1 >= cuty:
                             for y in xrange(0,16):
 
@@ -537,6 +558,15 @@ for line in aroflines:
                         
         except Exception as e:
             print e
+
+
+print 'Filtering players that dont move'
+
+for x in allhistory:
+    if len(allhistory[x]['type']) > 35:
+        print len(allhistory[x]['positions'])
+
+
 
 print 'parsing ' + str(len(chunkposses)) + ' chunks'
 

@@ -118,10 +118,10 @@ class DataImporter:
         
         indexi = 0
 
-        entitys = total['allhistory']
+        
         vertices = total['vertices']
         faces = total['faces']
-
+        entitys = total['allhistory']
         total = None
 
         extralist = {}
@@ -129,6 +129,12 @@ class DataImporter:
         for mat in vertices:
 
             self.createMeshFromData(mat, (0,0,0), vertices[mat], faces[mat] )
+            faces[mat] = None
+            vertices[mat] = None
+
+       
+
+        
 
         for value in entitys:
             
@@ -200,8 +206,8 @@ class DataImporter:
                 ob.keyframe_insert("hide_render")
 
 
-                frame_num = int(posses['time'] * 30)
-                # print(frame_num)
+                frame_num = int((posses['time'] / 20) * 25)
+        #         # print(frame_num)
 
 
         print("Script finished after {} seconds".format(time.time() - start_time))

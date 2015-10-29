@@ -25,8 +25,8 @@ def getchunkminmax(aroflines):
 
 
 
-    maxminx = [0,10000]
-    maxminz = [0,10000]
+    maxminx = [1000,-1000]
+    maxminz = [1000,-1000]
 
     for line in aroflines:
         row = line.split('|')
@@ -35,24 +35,24 @@ def getchunkminmax(aroflines):
 
         if 'chunkdata' == row[0] and sesnrtoget == currentses:
             chunkxy = ast.literal_eval(row[1])
-            if chunkxy[0] > maxminx[0]:
-                maxminx[0] = chunkxy[0]
-            if chunkxy[0] < maxminx[1]:
+            if chunkxy[0] > maxminx[1]:
                 maxminx[1] = chunkxy[0]
+            if chunkxy[0] < maxminx[0]:
+                maxminx[0] = chunkxy[0]
 
-            if chunkxy[1] > maxminz[0]:
-                maxminz[0] = chunkxy[1]
-            if chunkxy[1] < maxminz[1]:
+            if chunkxy[1] > maxminz[1]:
                 maxminz[1] = chunkxy[1]
+            if chunkxy[1] < maxminz[0]:
+                maxminz[0] = chunkxy[1]
 
     print 'maxminx:' + str(maxminx) + ' maxminz: ' + str(maxminz)
 
 try:
-    opts, args = getopt.getopt(sys.argv[1:],"",["chunkmaxmin=","sourcefile=","session=" ])
+    opts, args = getopt.getopt(sys.argv[1:],"",["chunkmaxmin=","sourcefile=","scenes=" ])
         
 except getopt.GetoptError:
 
-    print 'error: info.py -h --chunkmaxmin --sourcefile'
+    print 'error: info.py -h --chunkmaxmin --sourcefile --scenes'
     sys.exit(2)
 for opt, arg in opts:
     # print opt
@@ -63,8 +63,16 @@ for opt, arg in opts:
         sourcefile = arg
         aroflines = getsourcefile()
 
-    if opt == "--session":
-        sesnrtoget = int(arg)
+    if opt == "--scenes":
+        listofscenes = []
+        for line in aroflines:
+            # print line
+            row = line.split('|')
+            if row[0] in ['entityteleport','entitylookandrelmove','entityheadlook','entitylook','entityrelmove']:
+                listofscenes.append(row[2])
+        for scene in list(set(listofscenes)):
+            print scene
+
 
     if opt == '--chunkmaxmin':
         getchunkminmax(aroflines)
