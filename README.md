@@ -1,5 +1,6 @@
 # MCmotions
 A minecraft network recorder to record mob and player motions and render these movements in Blender.
+Now with map data / objects !
 
 #requirements !
 quarry, install via pip install quarry !
@@ -9,7 +10,6 @@ Blender for the plugin ;)
 Also a good idea minecraft !
 
 for minecraftimport.py a beefy computer will help alot !
-
 
 
 proxy has commandline options:
