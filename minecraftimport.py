@@ -13,7 +13,8 @@ import bpy
 import string
 import pdb
 import time
-# import json
+import json
+import urllib.request
 from math import pi
 import operator
 import ast
@@ -185,15 +186,25 @@ class DataImporter:
                 ob.name = "rabbit"
                 mat.diffuse_color = (0.5,0.1,0.05)
             elif len(mobtype) > 10:
-                ob.name = "player:" + mobtype
+                mobtype = mobtype.replace('-','')
+                request = urllib.request.urlopen('https://sessionserver.mojang.com/session/minecraft/profile/' + mobtype)
+                data = request.read().decode("utf8")
+              
+                
+                if  len(data) > 10:
+                    data = json.loads(data)
+                else:
+                    data = "error decoding name"
+                ob.name = "player:" + data['name']
                 mat.diffuse_color = (1,0.6,0.4)
             else:
                 mat.diffuse_color = (0.0,0.0,0.0)
                 ob.name = str(mobtype)
 
             ob.active_material = mat
-            frame_num = 0
+            # frame_num = 0
             for posses in aentity['positions'][1:]:
+                frame_num = int((posses['time'] / 20) * 25)
                 bpy.context.scene.frame_set(frame_num)
                 ob.location =  (posses['pos'][0], posses['pos'][2], posses['pos'][1])
                 ob.rotation_mode = 'XYZ'
@@ -206,7 +217,7 @@ class DataImporter:
                 ob.keyframe_insert("hide_render")
 
 
-                frame_num = int((posses['time'] / 20) * 25)
+                
         #         # print(frame_num)
 
 

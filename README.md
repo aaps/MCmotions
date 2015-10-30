@@ -88,5 +88,5 @@ add the posibility to make takes, everything will still get recorder, but nog yo
 This is a work in progress, command line knowledge will help
 
 #Thanks to all the people that where willing to help:
-Mattijs25
+matthijs25
 

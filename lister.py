@@ -440,7 +440,7 @@ for line in aroflines:
                 rawyawpichhead = (rawyawpichhead[0]+ 5) % 360, (rawyawpichhead[1]+ 5) % 360
             goodpos = (float(goodpos[0])/32, float(goodpos[1])/32, float(goodpos[2])/32)
             
-            mob = {int(row[3]):{'type':row[4],'positions':[{'time':int(row[1]),'pos':tuple(map(operator.sub, goodpos, offset)), 'yawpichhead': rawyawpichhead,'status':0,'alive':1}]}}
+            mob = {int(row[3]):{'type':row[4],'positions':[{'time':int(row[1]),'pos':tuple(map(operator.sub, goodpos, offset)), 'yawpichhead': rawyawpichhead,'status':0,'alive':1,'scene':'noscene'}]}}
 
             allhistory.update(mob)
 
@@ -454,24 +454,26 @@ for line in aroflines:
                 rawyawpichhead = (rawyawpichhead[0]+ 5) % 360, (rawyawpichhead[1]+ 5) % 360
             goodpos = (float(goodpos[0])/32, float(goodpos[1])/32, float(goodpos[2])/32)
             
-            mob = {int(row[3]):{'type':row[4],'positions':[{'time':int(row[1]),'pos':tuple(map(operator.sub, goodpos, offset)), 'yawpichhead': rawyawpichhead,'status':0,'alive':1}]}}
+            mob = {int(row[3]):{'type':row[4],'positions':[{'time':int(row[1]),'pos':tuple(map(operator.sub, goodpos, offset)), 'yawpichhead': rawyawpichhead,'status':0,'alive':1,'scene':'noscene'}]}}
 
             allhistory.update(mob)
 
     
-    elif row[0] == 'entityrelmove' and int(row[3]) in allhistory and (row[2] == curscene or curscene == 'all') and not noentitys:
+    elif row[0] == 'entityrelmove' and int(row[3]) in allhistory and not noentitys:
         
         lastlist = allhistory[int(row[3])]['positions'][-1]
+        posses = ast.literal_eval(row[4])
+        posses = posses[0]/32,posses[1]/32,posses[2]/32
+        absolutepos = tuple(map(operator.add, lastlist['pos'], posses))
 
-        absolutepos = tuple(map(operator.add, lastlist['pos'], ast.literal_eval(row[4])))
+        allhistory[int(row[3])]['positions'].append({'time':int(row[1]),'pos':absolutepos,'yawpichhead':lastlist['yawpichhead'],'status':0,'alive':lastlist['alive'],'scene':row[2]})
 
-        allhistory[int(row[3])]['positions'].append({'time':int(row[1]),'pos':absolutepos,'yawpichhead':lastlist['yawpichhead'],'status':0,'alive':lastlist['alive']})
-
-    elif row[0] == 'entitylookandrelmove' and int(row[3]) in allhistory and (row[2] == curscene or curscene == 'all') and not noentitys:
+    elif row[0] == 'entitylookandrelmove' and int(row[3]) in allhistory and  not noentitys:
         
         lastlist = allhistory[int(row[3])]['positions'][-1]
-
-        absolutepos = tuple(map(operator.add, lastlist['pos'], ast.literal_eval(row[4])))
+        posses = ast.literal_eval(row[4])
+        posses = posses[0]/32,posses[1]/32,posses[2]/32
+        absolutepos = tuple(map(operator.add, lastlist['pos'], posses))
         yawpich = ast.literal_eval(row[5])
         
         if len(lastlist['yawpichhead']) > 2:
@@ -480,9 +482,9 @@ for line in aroflines:
             yawpichhead = (yawpich[0]+ 5) % 360,(yawpich[1]+ 5) % 360
         yawpichhead = fido(lastlist['yawpichhead'], yawpichhead)
 
-        allhistory[int(row[3])]['positions'].append({'time':int(row[1]),'pos':absolutepos,'yawpichhead':yawpichhead,'status':0,'alive':lastlist['alive']})
+        allhistory[int(row[3])]['positions'].append({'time':int(row[1]),'pos':absolutepos,'yawpichhead':yawpichhead,'status':0,'alive':lastlist['alive'],'scene':row[2]})
 
-    elif row[0] == 'entityheadlook' and int(row[3]) in allhistory and (row[2] == curscene or curscene == 'all') and not noentitys:
+    elif row[0] == 'entityheadlook' and int(row[3]) in allhistory and  not noentitys:
         
         lastlist = allhistory[int(row[3])]['positions'][-1]
         
@@ -493,10 +495,10 @@ for line in aroflines:
 
             yawpichhead = fido(yawpichhead, lastlist['yawpichhead'])
 
-            allhistory[int(row[3])]['positions'].append({'time':int(row[1]),'pos':lastlist['pos'],'yawpichhead':yawpichhead,'status':0,'alive':lastlist['alive']})
+            allhistory[int(row[3])]['positions'].append({'time':int(row[1]),'pos':lastlist['pos'],'yawpichhead':yawpichhead,'status':0,'alive':lastlist['alive'],'scene':row[2]})
 
 
-    elif row[0] == 'entityteleport' and int(row[3]) in allhistory and (row[2] == curscene or curscene == 'all') and not noentitys:
+    elif row[0] == 'entityteleport' and int(row[3]) in allhistory and not noentitys:
         
         goodpos = ast.literal_eval(row[4])
         goodpos = (float(goodpos[0])/32, float(goodpos[1])/32, float(goodpos[2])/32)
@@ -510,23 +512,23 @@ for line in aroflines:
         
         yawpichhead = fido( yawpichhead, lastlist['yawpichhead'])
         
-        allhistory[int(row[3])]['positions'].append({'time':int(row[1]),'pos':tuple(map(operator.sub, goodpos, offset)),'yawpichhead':yawpichhead,'status':0,'alive':lastlist['alive']})
+        allhistory[int(row[3])]['positions'].append({'time':int(row[1]),'pos':tuple(map(operator.sub, goodpos, offset)),'yawpichhead':yawpichhead,'status':0,'alive':lastlist['alive'],'scene':row[2]})
 
-    elif row[0] == 'entitystatus' and int(row[2]) in allhistory and (row[2] == curscene or curscene == 'all') and not noentitys:
+    elif row[0] == 'entitystatus' and int(row[2]) in allhistory and not noentitys:
         
         lastlist = allhistory[int(row[3])]['positions'][-1]
         if lastlist['status'] == row[4]:
-            allhistory[int(row[3])]['positions'].append({'time':int(row[1]),'pos':lastlist['pos'],'yawpichhead':lastlist['yawpichhead'],'status':row[4],'alive':lastlist['alive'] })
+            allhistory[int(row[3])]['positions'].append({'time':int(row[1]),'pos':lastlist['pos'],'yawpichhead':lastlist['yawpichhead'],'status':row[4],'alive':lastlist['alive'],'scene':row[2]})
 
     elif row[0] == 'destroyents' and not noentitys:
         entids = row[3:]
         
         for entid in entids:
-            if entid in allhistory and (row[2] == curscene or curscene == 'all'):
+            if entid in allhistory:
                 lastlist = allhistory[entid]['positions'][-1]
-                allhistory[entid]['positions'].append({'time':int(row[1]),'pos':lastlist['pos'],'yawpichhead':yawpichhead,'status':0 ,'alive':0})
+                allhistory[entid]['positions'].append({'time':int(row[1]),'pos':lastlist['pos'],'yawpichhead':yawpichhead,'status':0 ,'alive':0,'scene':'noscene'})
 
-    elif row[0] == 'chunkdata' and (row[2] == curscene or curscene == 'all') and not noentitys:
+    elif row[0] == 'chunkdata':
         length = row[3]
         
         chunks.update({row[1]:{'blocks':[]}})
@@ -560,13 +562,57 @@ for line in aroflines:
             print e
 
 
-print 'Filtering players that dont move'
+print 'Filtering entitys that are not supposed to be in scene move at all'
+
+
+temphistory = {}
 
 for x in allhistory:
+    allhistory[x]['positions'] = sorted(allhistory[x]['positions'], key=lambda positions: positions['time'])
+    temphistory[x] = {'positions':[],'type':allhistory[x]['type']}
+
+    for position in allhistory[x]['positions']:
+        
+        if position['scene'] == curscene or position['alive'] == 0:
+            temphistory[x]['positions'].append(position)
+
+allhistory = temphistory
+temphistory = {}
+
+print 'Filtering entitys that dont move at all'
+
+for x in allhistory:
+
     if len(allhistory[x]['type']) > 35:
-        print len(allhistory[x]['positions'])
+        if len(allhistory[x]['positions']) > 10:
+            temphistory[x] = allhistory[x]
+    else:
+        temphistory[x] = allhistory[x]
+
+allhistory = temphistory
 
 
+maxtime = 0
+mintime = 1000000
+
+for x in allhistory:
+
+    for position in allhistory[x]['positions']:
+
+        if position['time'] > maxtime:
+            maxtime =position['time']
+        if position['time'] < mintime:
+            mintime = position['time']
+
+for x in allhistory:
+    for position in allhistory[x]['positions']:    
+        position['time'] = position['time'] - mintime
+
+print maxtime, mintime
+
+
+
+# print temphistory
 
 print 'parsing ' + str(len(chunkposses)) + ' chunks'
 
