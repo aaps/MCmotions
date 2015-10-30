@@ -47,10 +47,6 @@ class QuietBridge(Bridge):
                 message = "Recording stopped after " + str( self.worldtime - self.begintime) + " ticks of recording!"
                 self.downstream.send_packet("chat_message", self.write_chat(message, "downstream"))
 
-            # elif  string == '/pause':
-            #     self.recording = False
-            #     message = "Recording paused !"
-            #     self.downstream.send_packet("chat_message", self.write_chat(message, "downstream"))
 
             elif string == '/status':
                 message = "Not recording !"
