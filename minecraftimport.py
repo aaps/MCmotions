@@ -19,6 +19,7 @@ from math import pi
 import operator
 import ast
 
+
 from bpy_extras.io_utils import ImportHelper
 from bpy.props import StringProperty
 
@@ -47,8 +48,7 @@ class DataImporter:
         # Create mesh and object
         me = bpy.data.meshes.new(str(material)+'Mesh')
         ob = bpy.data.objects.new(str(material), me)
-        # ob.origin = 'GEOMETRY_ORIGIN'
-        # bpy.ops.object.origin_set(type="GEOMETRY_ORIGIN")
+
         ob.show_name = True
         
         mat = bpy.data.materials.new("PKHG")
@@ -134,7 +134,6 @@ class DataImporter:
             vertices[mat] = None
 
        
-
         
 
         for value in entitys:
@@ -189,20 +188,21 @@ class DataImporter:
                 mobtype = mobtype.replace('-','')
                 request = urllib.request.urlopen('https://sessionserver.mojang.com/session/minecraft/profile/' + mobtype)
                 data = request.read().decode("utf8")
-              
+                time.sleep( 1 )
                 
-                if  len(data) > 10:
+                if len(data) > 10:
                     data = json.loads(data)
+                    ob.name = "player: " + data['name']
                 else:
-                    data = "error decoding name"
-                ob.name = "player:" + data['name']
+                   
+                    ob.name = "player: unknown"
                 mat.diffuse_color = (1,0.6,0.4)
             else:
                 mat.diffuse_color = (0.0,0.0,0.0)
                 ob.name = str(mobtype)
 
             ob.active_material = mat
-            # frame_num = 0
+
             for posses in aentity['positions'][1:]:
                 frame_num = int((posses['time'] / 20) * 25)
                 bpy.context.scene.frame_set(frame_num)
@@ -215,10 +215,6 @@ class DataImporter:
                 bpy.ops.anim.keyframe_insert(type='Rotation',confirm_success=False)
                 ob.keyframe_insert("hide")
                 ob.keyframe_insert("hide_render")
-
-
-                
-        #         # print(frame_num)
 
 
         print("Script finished after {} seconds".format(time.time() - start_time))

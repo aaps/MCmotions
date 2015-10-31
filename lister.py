@@ -200,11 +200,8 @@ def totuplelist(alist):
     return tempfinal
 
 def makestairs(loneneighbors, mat):
-    # print loneneighbors[mat]
     for block in loneneighbors[mat]:
-         
-        # print (loneneighbors[mat][block]['meta'] >> 2) & 1
-        # print loneneighbors[mat][block]['faces']
+
         loweplane = [Point3D(0.5,0.5,-0.5),Point3D(-0.5,0.5,-0.5),Point3D(-0.5,-0.5,-0.5),Point3D(0.5,-0.5,-0.5)]
         
         firststep = [Point3D(0,0.5,0.5),Point3D(0.5,0.5,0.5),Point3D(0.5,-0.5,0.5),Point3D(0,-0.5,0.5)]
@@ -231,22 +228,18 @@ def makestairs(loneneighbors, mat):
         if direction == 0:
             finallist = rotatepointsZ(finallist, 180)
             if upsidedown:
-                # print 'ja'
                 finallist = rotatepointsY(finallist, 180)
         elif direction == 1:
             finallist = rotatepointsZ(finallist, 0)
             if upsidedown:
-                # print 'ja'
                 finallist = rotatepointsY(finallist, 180)
         elif direction == 2:
             finallist = rotatepointsZ(finallist, 270)
             if upsidedown:
-                # print 'ja'
                 finallist = rotatepointsX(finallist, 180)
         else:
             finallist = rotatepointsZ(finallist, 90)
             if upsidedown:
-                # print 'ja'
                 finallist = rotatepointsX(finallist, 180)
 
         
@@ -514,7 +507,7 @@ for line in aroflines:
         
         allhistory[int(row[3])]['positions'].append({'time':int(row[1]),'pos':tuple(map(operator.sub, goodpos, offset)),'yawpichhead':yawpichhead,'status':0,'alive':lastlist['alive'],'scene':row[2]})
 
-    elif row[0] == 'entitystatus' and int(row[2]) in allhistory and not noentitys:
+    elif row[0] == 'entitystatus' and int(row[3]) in allhistory and not noentitys:
         
         lastlist = allhistory[int(row[3])]['positions'][-1]
         if lastlist['status'] == row[4]:
@@ -534,16 +527,15 @@ for line in aroflines:
         chunks.update({row[1]:{'blocks':[]}})
 
         try:
-            # print row
+
             if row[5] != 'None':
                 chunkdata = base64.standard_b64decode(row[5])
                 xzpos = ast.literal_eval(row[1])
-                # print xzpos, cutx, cutz
-
+                
                 if xzpos not in chunkposses and xzpos[0] >= cutx[0] and xzpos[0] <= cutx[1] and xzpos[1] >= cutz[0] and xzpos[1] <= cutz[1]:
                     chunkposses.append(xzpos)
                     for index1 in xrange(0, 16):
-                        # print row
+                       
                         if int(row[3]) & (1 << index1) and index1 >= cuty:
                             for y in xrange(0,16):
 
@@ -622,6 +614,9 @@ print 'make a index of possible materials'
 
 wrongblocks = False
 materials = {}
+
+
+
 for chunk in chunks:
     for block in chunks[chunk]:
         if len(chunks[chunk][block]) > 0:
@@ -636,10 +631,15 @@ for chunk in chunks:
 if wrongblocks:
     print 'there are wrong block types found, there is a good change the parsing in the proxy fase whent wrong !'
 
+print str(len(chunks)) +  ' length of chunks'
+
 print 'put the blocks of materials in their material index for ' + str(len(materials)) + ' materials'
 for chunk in chunks:
+    # print chunk
     for block in chunks[chunk]:
+        # print str(len(chunks[chunk][block])) +  ' length of chunks'
         if len(chunks[chunk][block]) > 0:
+            
             for x in chunks[chunk][block]:
 
                 if x[1] > 0 and x[1] < 256 and x[1] not in norenderblocks:
@@ -760,7 +760,10 @@ loneneighbors = None
 
 
 
+
 allstuff = {'allhistory':allhistory,'vertices':vertices,'faces':faces}
+
+# print ast.literal_eval(str(allstuff))
 
 vertices = None
 faces = None
@@ -768,6 +771,5 @@ faces = None
 print 'entitys with spawnmessage:' + str(len(allhistory)) + ',so used !'
 print 'entitys without spawnmessage:' + str(len(lostcounter)) + ',so ignored !'
 
-    
 f.write(repr(allstuff))
-
+f.close()
