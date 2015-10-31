@@ -1,6 +1,6 @@
 # MCmotions
 A minecraft network recorder to record mob and player motions and render these movements in Blender.
-Now with map data / objects !
+Now with map data / map models !
 
 #requirements !
 quarry, install via pip install quarry !
@@ -39,6 +39,10 @@ Ingame commands for the proxy_recorder.py:
 * /stop (will stop the recording, cant start recording afterwards, since the recorder wil miss out on spawn messages, use it to just play minecraft afterwards i guess, will not stop the proxy part of the script)
 
 
+Example proxy ussage:
+
+./proxy_recorder.py --destip server.torchcraft.nl --dumpfile asession.dump --username aapskarel --profile aapskarel@gmail.com
+(fill in your password when asked) (perhaps i will change this in the future since it is hard to trust this !)
 
 lister has commandline options:
 --sourcefile filename (- extention) the name of the log file where the raw network dump recides
@@ -66,6 +70,13 @@ in the format of: -2,4 or 4,8
 
 --onlyplayerents (only player entity data, also chunks)
 
+Example ussage:
+
+./lister.py --sourcefile asession.dump --cutx -12,-2 --cutz -6,0  --onlyplayerents y --scene superrun (if you made a scene named superrun with /action superrun)
+
+This command can eat big amount of chunks and still work, it is with the belnder import where things will fill up all your ram.
+
+
 DO USE THE CUT OPTIONS FOR SPEED (1 shorter lister script run 2 more important the blender importer will not murder your cpu, ram)
 
 #Files !
@@ -84,10 +95,14 @@ minecraftimporter !
 
 A blender plugin that will take the .mcmo file and import it in blender for map data and entity movement (players, mobs, objects)
 
+info !
+
+this can tell some info about the dumpfile like: max/min chunk numbers to help cutting out the right chunk numbers for lister, it can list the scenes in a dumpfile.
+
 #NEW:
 player names in blender
 scenes
-propper +/-  player positions, tests needed
+the right +/-  player positions, tests needed
 
 #ToDo:
 1
