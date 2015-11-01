@@ -15,7 +15,7 @@ import pdb
 import time
 import json
 import urllib.request
-from math import pi
+import math 
 import operator
 import ast
 
@@ -213,7 +213,7 @@ class DataImporter:
                 bpy.context.scene.frame_set(frame_num)
                 ob.location =  (posses['pos'][0], posses['pos'][2], posses['pos'][1])
                 
-                ob.rotation_euler = ((pi * 90 / 180), 0,(pi * (posses['yawpichhead'][0]-90) / 180) )
+                ob.rotation_euler = (math.radians(90), 0, math.radians(posses['yawpichhead'][0]-90) )
                 ob.hide = not bool(posses['alive'])
                 ob.hide_render = not bool(posses['alive'])
                 bpy.ops.anim.keyframe_insert(type='Location',confirm_success=False)
@@ -221,6 +221,10 @@ class DataImporter:
                 ob.keyframe_insert("hide")
                 ob.keyframe_insert("hide_render")
 
+            for fc in ob.animation_data.action.fcurves:
+                fc.extrapolation = 'LINEAR'
+                for kp in fc.keyframe_points:
+                    kp.interpolation = 'LINEAR'
 
         print("Script finished after {} seconds".format(time.time() - start_time))
         return {'FINISHED'}
