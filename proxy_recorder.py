@@ -452,6 +452,15 @@ class QuietBridge(Bridge):
             buff.restore()
         self.downstream.send_packet("particle", buff.read())
 
+    # def packet_downstream_plugin_message(self, buff):
+    #     buff.save()
+    #     if self.recording:
+    #         towrite = 'plugin|' + buff.unpack_string() + '\n'
+    #         self.dumpsize += len(towrite)
+    #         self.dumpfile.write(towrite)
+    #         buff.restore()
+    #     self.downstream.send_packet("plugin_message", buff.read())
+
 
     # helper functions
 

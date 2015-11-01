@@ -141,8 +141,13 @@ class DataImporter:
             aentity = entitys[value]
             
             firstloc = aentity['positions'][0]['pos']
-            bpy.ops.mesh.primitive_uv_sphere_add(size=0.5, location=firstloc)
+            # bpy.ops.mesh.primitive_uv_sphere_add(size=0.5, location=firstloc)
+            # bpy.ops.mesh.primitive_cube_add(location=firstloc)
+            bpy.ops.mesh.primitive_monkey_add(location=firstloc)
             ob = bpy.context.object
+            ob.rotation_mode = 'XYZ'
+            # ob.rotation_euler = ((pi * 90 / 180), 0,0 )
+            ob.scale = (0.5,0.5,0.5)
 
             mat = bpy.data.materials.new("PKHG")
 
@@ -207,8 +212,8 @@ class DataImporter:
                 frame_num = int((posses['time'] / 20) * 25)
                 bpy.context.scene.frame_set(frame_num)
                 ob.location =  (posses['pos'][0], posses['pos'][2], posses['pos'][1])
-                ob.rotation_mode = 'XYZ'
-                ob.rotation_euler = (0, 0,(pi * posses['yawpichhead'][0] / 180) )
+                
+                ob.rotation_euler = ((pi * 90 / 180), 0,(pi * posses['yawpichhead'][0] / 180) )
                 ob.hide = not bool(posses['alive'])
                 ob.hide_render = not bool(posses['alive'])
                 bpy.ops.anim.keyframe_insert(type='Location',confirm_success=False)

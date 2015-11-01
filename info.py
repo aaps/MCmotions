@@ -23,13 +23,20 @@ def getsourcefile():
 
 
 def makeimage(aroflines,matnum):
-    dims = (2000,2000)
+    dims = (10000,10000)
     halfdims = dims[0]/2,dims[1]/2
     im = Image.new('RGBA', dims, (0, 0, 0, 0))
     draw = ImageDraw.Draw(im)
     
     matcount = []
+    scenelist = []
 
+    for line in aroflines:
+        row = line.split('|')
+        counter = 0
+        if row[0] in ['entityteleport','entitylookandrelmove','entityheadlook','entitylook','entityrelmove']:
+            scenelist.append(row[2])
+    scenelist =  list(set(scenelist))
     
     for line in aroflines:
         row = line.split('|')
@@ -58,13 +65,19 @@ def makeimage(aroflines,matnum):
     font = ImageFont.truetype("FreeMono.ttf", 10)
 
     for mats in matcount:
-        # print mats[1]
+
         chunkxy = ast.literal_eval(mats[1])
         one = (chunkxy[0]*50)+halfdims[0], (chunkxy[1]*50)+halfdims[1]
         two = (chunkxy[0]*50) + 49 + halfdims[0], chunkxy[1]*50 + 49 + halfdims[1]
-        # print multyplier, mats[0]
+
         draw.rectangle([one,two], (int(multyplier* mats[0]),0,0))
-        draw.text(one, str(chunkxy),(255,255,255),font=font)
+        draw.text(one, str(chunkxy[0]) + ',' + str(chunkxy[1]),(255,255,255),font=font)
+    position = 0
+    for scene in scenelist:
+        draw.text((10, 0),"SCENES:" ,(100,100,100),font=font)
+        position += 20
+        draw.text((10, position), scene,(100,100,100),font=font)
+
     im.save("diags.png")
 
 
@@ -95,30 +108,30 @@ def getchunkminmax(aroflines):
     print 'maxminx:' + str(maxminx) + ' maxminz: ' + str(maxminz)
 
 try:
-    opts, args = getopt.getopt(sys.argv[1:],"",["chunkmaxmin=","sourcefile=","scenes=","image=" ])
+    opts, args = getopt.getopt(sys.argv[1:],"",["chunkmaxmin=","sourcefile=","image=" ])
         
 except getopt.GetoptError:
 
-    print 'error: info.py -h --chunkmaxmin --sourcefile --scenes --image'
+    print 'error: info.py -h --chunkmaxmin --sourcefile --image'
     sys.exit(2)
 for opt, arg in opts:
     # print opt
     if opt == '-h':
-        print 'info.py -h --chunkmaxmin --sourcefile --scenes --image'
+        print 'info.py -h --chunkmaxmin --sourcefile --image'
         sys.exit()
     if opt == '--sourcefile':
         sourcefile = arg
         aroflines = getsourcefile()
 
-    if opt == "--scenes":
-        listofscenes = []
-        for line in aroflines:
-            # print line
-            row = line.split('|')
-            if row[0] in ['entityteleport','entitylookandrelmove','entityheadlook','entitylook','entityrelmove']:
-                listofscenes.append(row[2])
-        for scene in list(set(listofscenes)):
-            print scene
+    # if opt == "--scenes":
+    #     listofscenes = []
+    #     for line in aroflines:
+    #         # print line
+    #         row = line.split('|')
+    #         if row[0] in ['entityteleport','entitylookandrelmove','entityheadlook','entitylook','entityrelmove']:
+    #             listofscenes.append(row[2])
+    #     for scene in list(set(listofscenes)):
+    #         print scene
 
     if opt == "--image":
         

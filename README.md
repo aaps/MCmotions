@@ -107,15 +107,16 @@ the right +/-  player positions, tests needed
 #ToDo:
 1
 good rotation of entitys, instead of the muck we have now !
-testing and finetuning entity location/movement
-more block colors on the right blocks
-block textures
 more block shapes for map import
 refactoring like there is no tomorrow
+
+
 
 2
 import blockchanges (after map import is done)
 what to do with block placements that have an interesting shape like stairs ?
+more block colors on the right blocks
+block textures
 
 3
 recording the details, animations of blocks, particles, lightning, rain, etc
@@ -124,17 +125,26 @@ the ability to survive transports to other servers
 
 
 #WARNING 
-This is a work in progress, command line knowledge will help.
-The willingness to dabble in python also
-humility will help as well
+This is a work in progress
+
+Plugin data will as of yet not be recorded
+
+command line knowledge will help.
+
+The willingness to dabble in python will also
+
+humility
 
 #this will work good when !
-crude map data is needed from network play
-crude data from entitys is needed
-you want a super good minecraft recording in belnder and are willing to code
 
+crude map data is needed from network play (not extra wolds pluginstuff, perhaps nether and the end)
+
+crude data from entitys is needed
+
+you want a super good minecraft recording in Blender and are willing to code
 
 
 #Thanks to all the people that where willing to help:
 matthijs25
+GirlFlame
 

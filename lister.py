@@ -375,7 +375,7 @@ def makexblock(loneneighbors, mat):
     for block in loneneighbors[mat]:
         templist = []
         templist.append([Point3D(0.5,0.5,-0.5),Point3D(0.5,0.5,0.5),Point3D(-0.5,-0.5,0.5),Point3D(-0.5,-0.5,-0.5)])
-        templist.append([Point3D(0.5,-0.5,0.5),Point3D(0.5,-0.5,-0.5),Point3D(-0.5,0.5,-0.5),Point3D(0.5,0.5,0.5)])
+        templist.append([Point3D(-0.5,0.5,-0.5),Point3D(-0.5,0.5,0.5),Point3D(0.5,-0.5,0.5),Point3D(0.5,-0.5,-0.5)])
 
         appendto3dlist(templist, block)    
         templist = totuplelist(templist)
@@ -704,7 +704,7 @@ for mat in loneneighbors:
         makeflatblock(loneneighbors, mat)
     elif mat in [6 , 111 , 30 , 31 , 32,37,40, 51, 83, 175]:
         makexblock(loneneighbors, mat)
-    elif mat in [85, 113,188, 189, 190, 191, 191]:
+    elif mat in [85, 113,188, 189, 190, 191]:
         makefence(loneneighbors, mat)
     elif mat in [53, 67, 108, 109, 114, 128, 134, 135, 136, 156, 165, 164, 180]:
         
