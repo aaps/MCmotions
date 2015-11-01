@@ -213,7 +213,7 @@ class DataImporter:
                 bpy.context.scene.frame_set(frame_num)
                 ob.location =  (posses['pos'][0], posses['pos'][2], posses['pos'][1])
                 
-                ob.rotation_euler = ((pi * 90 / 180), 0,(pi * posses['yawpichhead'][0] / 180) )
+                ob.rotation_euler = ((pi * 90 / 180), 0,(pi * (posses['yawpichhead'][0]-90) / 180) )
                 ob.hide = not bool(posses['alive'])
                 ob.hide_render = not bool(posses['alive'])
                 bpy.ops.anim.keyframe_insert(type='Location',confirm_success=False)
