@@ -461,6 +461,32 @@ class QuietBridge(Bridge):
     #         buff.restore()
     #     self.downstream.send_packet("plugin_message", buff.read())
 
+    def packet_upstream_player_position(self, buff):
+        buff.save()
+        if self.recording:
+            towrite = 'playerpos|' + str( self.worldtime - self.begintime) + '|'  + self.scenename + '|' +  str(buff.unpack('ddd')) + '|'  + str(buff.unpack('?'))+ '\n'
+            self.dumpsize += len(towrite)
+            self.dumpfile.write(towrite)
+            buff.restore()
+        self.upstream.send_packet("player_position", buff.read())
+
+    def packet_upstream_player_position_and_look(self, buff):
+        buff.save()
+        if self.recording:
+            towrite = 'playerposlook|' + str( self.worldtime - self.begintime) + '|'  + self.scenename + '|' + str(buff.unpack('ddd')) + '|' + str(buff.unpack('ff')) + '|' + str(buff.unpack('?'))+ '\n'
+            self.dumpsize += len(towrite)
+            self.dumpfile.write(towrite)
+            buff.restore()
+        self.upstream.send_packet("player_position_and_look", buff.read())
+
+    def packet_upstream_player_look(self, buff):
+        buff.save()
+        if self.recording:
+            towrite = 'playerlook|' + str( self.worldtime - self.begintime) + '|'  + self.scenename + '|' + str(buff.unpack('ff')) + '|' + str(buff.unpack('?'))+ '\n'
+            self.dumpsize += len(towrite)
+            self.dumpfile.write(towrite)
+            buff.restore()
+        self.upstream.send_packet("player_look", buff.read())
 
     # helper functions
 
@@ -473,6 +499,7 @@ class QuietBridge(Bridge):
         z = int(xyz & 0xFFFFFFF)
 
         return (x,y,z)
+
 
 
 

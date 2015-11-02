@@ -85,7 +85,7 @@ for opt, arg in opts:
 
 
 
-allhistory = {}
+allhistory = {0:{'type':'player','positions':[]}}
 allblocks = {}
 
 
@@ -404,7 +404,7 @@ if avgmiddle:
         row = line.split('|')
         if 'spawn' in row[0]:
             goodpos = ast.literal_eval(row[5])
-            goodpos = (float(goodpos[0])/32, float(goodpos[1])/32, float(goodpos[2])/32)
+            goodpos = (float(goodpos[0])/32, float(goodpos[1])/32, float(goodpos[2])/-32)
             allposses.append(goodpos)
 
     lentotal = len(allposses)
@@ -412,26 +412,24 @@ if avgmiddle:
     offset = (total[0]/lentotal, total[1]/lentotal, total[2]/lentotal)
     print 'offset:' + str(offset)
 
+ 
+
 for line in aroflines:
     
     row = line.split('|')
-
-
 
         
     if not noentitys and 'spawn' in row[0] and row[4] not in norenderents and not noentitys:
         
         if not onlyplayerents:
             
-            
-
             goodpos = ast.literal_eval(row[5])
             rawyawpichhead = ast.literal_eval(row[6])
             if len(rawyawpichhead) > 2:
                 rawyawpichhead = (rawyawpichhead[0]+ 5) % 360, (rawyawpichhead[1]+ 5) % 360, (rawyawpichhead[2]+ 5) % 360
             else:
                 rawyawpichhead = (rawyawpichhead[0]+ 5) % 360, (rawyawpichhead[1]+ 5) % 360
-            goodpos = (float(goodpos[0])/32, float(goodpos[1])/32, float(goodpos[2])/32)
+            goodpos = (float(goodpos[0])/32, float(goodpos[1])/32, float(goodpos[2])/-32)
             
             mob = {int(row[3]):{'type':row[4],'positions':[{'time':int(row[1]),'pos':tuple(map(operator.sub, goodpos, offset)), 'yawpichhead': rawyawpichhead,'status':0,'alive':1,'scene':'noscene'}]}}
 
@@ -445,13 +443,31 @@ for line in aroflines:
                 rawyawpichhead = (rawyawpichhead[0]+ 5) % 360, (rawyawpichhead[1]+ 5) % 360, (rawyawpichhead[2]+ 5) % 360
             else:
                 rawyawpichhead = (rawyawpichhead[0]+ 5) % 360, (rawyawpichhead[1]+ 5) % 360
-            goodpos = (float(goodpos[0])/32, float(goodpos[1])/32, float(goodpos[2])/32)
+            goodpos = (float(goodpos[0])/32, float(goodpos[1])/32, float(goodpos[2])/-32)
             
             mob = {int(row[3]):{'type':row[4],'positions':[{'time':int(row[1]),'pos':tuple(map(operator.sub, goodpos, offset)), 'yawpichhead': rawyawpichhead,'status':0,'alive':1,'scene':'noscene'}]}}
 
             allhistory.update(mob)
 
-    
+    elif row[0] == 'playerpos' and not noentitys:
+        posses = ast.literal_eval(row[3])
+        posses = posses[0],posses[1],posses[2]*-1
+        lastlist = allhistory[0]['positions'][-1]
+        allhistory[0]['positions'].append({'time':int(row[1]),'pos':posses,'yawpichhead':lastlist['yawpichhead'],'status':0,'alive':1,'scene':row[2]})
+
+    elif row[0] == 'playerposlook' and not noentitys:
+        posses = ast.literal_eval(row[3])
+        posses = posses[0],posses[1],posses[2]*-1
+        look = ast.literal_eval(row[4])
+        
+        allhistory[0]['positions'].append({'time':int(row[1]),'pos':posses,'yawpichhead':look,'status':0,'alive':1,'scene':row[2]})
+
+    elif row[0] == 'playerlook' and not noentitys:
+       
+        look = ast.literal_eval(row[3])
+        lastlist = allhistory[0]['positions'][-1]
+        allhistory[0]['positions'].append({'time':int(row[1]),'pos':lastlist['pos'],'yawpichhead':look,'status':0,'alive':1,'scene':row[2]})
+
     elif row[0] == 'entityrelmove' and int(row[3]) in allhistory and not noentitys:
         
         lastlist = allhistory[int(row[3])]['positions'][-1]
@@ -465,7 +481,7 @@ for line in aroflines:
         
         lastlist = allhistory[int(row[3])]['positions'][-1]
         posses = ast.literal_eval(row[4])
-        posses = posses[0]/32,posses[1]/32,posses[2]/32
+        posses = posses[0]/32,posses[1]/32,posses[2]/-32
         absolutepos = tuple(map(operator.add, lastlist['pos'], posses))
         yawpich = ast.literal_eval(row[5])
         
@@ -494,7 +510,7 @@ for line in aroflines:
     elif row[0] == 'entityteleport' and int(row[3]) in allhistory and not noentitys:
         
         goodpos = ast.literal_eval(row[4])
-        goodpos = (float(goodpos[0])/32, float(goodpos[1])/32, float(goodpos[2])/32)
+        goodpos = (float(goodpos[0])/32, float(goodpos[1])/32, float(goodpos[2])/-32)
         
         lastlist = allhistory[int(row[3])]['positions'][-1]
         yawpich = ast.literal_eval(row[4])
@@ -533,6 +549,7 @@ for line in aroflines:
                 xzpos = ast.literal_eval(row[1])
                 
                 if xzpos not in chunkposses and xzpos[0] >= cutx[0] and xzpos[0] <= cutx[1] and xzpos[1] >= cutz[0] and xzpos[1] <= cutz[1]:
+                    # xzpos = xzpos[0]*1,xzpos[1]*1
                     chunkposses.append(xzpos)
                     for index1 in xrange(0, 16):
                        
@@ -546,6 +563,7 @@ for line in aroflines:
                                         btype = temp >> 4
                                         bmeta = temp & 15
                                         block = ( (x + (xzpos[0]*16),z + (xzpos[1]*16),y+(index1*16)), btype, bmeta)
+                                        
                                         chunks[row[1]]['blocks'].append(block)
                     
 
@@ -641,9 +659,9 @@ for chunk in chunks:
         if len(chunks[chunk][block]) > 0:
             
             for x in chunks[chunk][block]:
-
+                position = x[0][0],x[0][1]*-1,x[0][2]
                 if x[1] > 0 and x[1] < 256 and x[1] not in norenderblocks:
-                    materials[x[1]].update({x[0]:{'meta':x[2],'faces':[]}})
+                    materials[x[1]].update({position:{'meta':x[2],'faces':[]}})
         chunks[chunk][block] = None
 
 chunks = None

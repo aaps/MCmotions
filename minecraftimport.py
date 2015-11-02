@@ -141,8 +141,7 @@ class DataImporter:
             aentity = entitys[value]
             
             firstloc = aentity['positions'][0]['pos']
-            # bpy.ops.mesh.primitive_uv_sphere_add(size=0.5, location=firstloc)
-            # bpy.ops.mesh.primitive_cube_add(location=firstloc)
+
             bpy.ops.mesh.primitive_monkey_add(location=firstloc)
             ob = bpy.context.object
             ob.rotation_mode = 'XYZ'
@@ -189,19 +188,23 @@ class DataImporter:
             elif mobtype == '101':
                 ob.name = "rabbit"
                 mat.diffuse_color = (0.5,0.1,0.05)
-            elif len(mobtype) > 10:
-                mobtype = mobtype.replace('-','')
-                request = urllib.request.urlopen('https://sessionserver.mojang.com/session/minecraft/profile/' + mobtype)
-                data = request.read().decode("utf8")
-                time.sleep( 1 )
-                
-                if len(data) > 10:
-                    data = json.loads(data)
-                    ob.name = "player: " + data['name']
+            elif len(mobtype) > 10 or mobtype == 'player':
+                if mobtype == 'player':
+                    ob.name = "player: RECORDER"
+                    mat.diffuse_color = (1,0,0)
                 else:
-                   
-                    ob.name = "player: unknown"
-                mat.diffuse_color = (1,0.6,0.4)
+                    mobtype = mobtype.replace('-','')
+                    request = urllib.request.urlopen('https://sessionserver.mojang.com/session/minecraft/profile/' + mobtype)
+                    data = request.read().decode("utf8")
+                    time.sleep( 1 )
+                    
+                    if len(data) > 10:
+                        data = json.loads(data)
+                        ob.name = "player: " + data['name']
+                    else:
+                       
+                        ob.name = "player: unknown"
+                    mat.diffuse_color = (1,0.6,0.4)
             else:
                 mat.diffuse_color = (0.0,0.0,0.0)
                 ob.name = str(mobtype)
@@ -213,7 +216,7 @@ class DataImporter:
                 bpy.context.scene.frame_set(frame_num)
                 ob.location =  (posses['pos'][0], posses['pos'][2], posses['pos'][1])
                 
-                ob.rotation_euler = (math.radians(90), 0, math.radians(posses['yawpichhead'][0]-90) )
+                ob.rotation_euler = (math.radians(90), 0, math.radians(posses['yawpichhead'][0]) )
                 ob.hide = not bool(posses['alive'])
                 ob.hide_render = not bool(posses['alive'])
                 bpy.ops.anim.keyframe_insert(type='Location',confirm_success=False)

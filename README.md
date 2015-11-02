@@ -110,13 +110,12 @@ good rotation of entitys, instead of the muck we have now !
 more block shapes for map import
 refactoring like there is no tomorrow
 
-
-
 2
 import blockchanges (after map import is done)
 what to do with block placements that have an interesting shape like stairs ?
 more block colors on the right blocks
 block textures
+proxy command for generating cameras, static cam, traching cam and, chasing cam
 
 3
 recording the details, animations of blocks, particles, lightning, rain, etc
