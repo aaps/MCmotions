@@ -29,7 +29,7 @@ curscene = "noscene"
 cuty = 0
 cutz = (-1000,1000)
 cutx = (-1000,1000)
-
+multymatblocks = [35, 43, 44, 95, 97, 98, 125, 126, 139, 155, 159, 160, 171]
 
 
 try:
@@ -226,21 +226,21 @@ def makestairs(loneneighbors, mat):
 
 
         if direction == 0:
-            finallist = rotatepointsZ(finallist, 180)
-            if upsidedown:
-                finallist = rotatepointsY(finallist, 180)
-        elif direction == 1:
             finallist = rotatepointsZ(finallist, 0)
             if upsidedown:
-                finallist = rotatepointsY(finallist, 180)
+                finallist = rotatepointsX(finallist, 180)
+        elif direction == 1:
+            finallist = rotatepointsZ(finallist, 180)
+            if upsidedown:
+                finallist = rotatepointsX(finallist, 180)
         elif direction == 2:
             finallist = rotatepointsZ(finallist, 270)
             if upsidedown:
-                finallist = rotatepointsX(finallist, 180)
+                finallist = rotatepointsY(finallist, 180)
         else:
             finallist = rotatepointsZ(finallist, 90)
             if upsidedown:
-                finallist = rotatepointsX(finallist, 180)
+                finallist = rotatepointsY(finallist, 180)
 
         
         
@@ -459,12 +459,15 @@ for line in aroflines:
         posses = ast.literal_eval(row[3])
         posses = posses[0],posses[1],posses[2]*-1
         look = ast.literal_eval(row[4])
+        look = look[0]*-1,look[1]
+
         
         allhistory[0]['positions'].append({'time':int(row[1]),'pos':posses,'yawpichhead':look,'status':0,'alive':1,'scene':row[2]})
 
     elif row[0] == 'playerlook' and not noentitys:
        
         look = ast.literal_eval(row[3])
+        look = look[0]*-1,look[1]
         lastlist = allhistory[0]['positions'][-1]
         allhistory[0]['positions'].append({'time':int(row[1]),'pos':lastlist['pos'],'yawpichhead':look,'status':0,'alive':1,'scene':row[2]})
 
@@ -563,7 +566,7 @@ for line in aroflines:
                                         btype = temp >> 4
                                         bmeta = temp & 15
                                         block = ( (x + (xzpos[0]*16),z + (xzpos[1]*16),y+(index1*16)), btype, bmeta)
-                                        
+                                        # print row[1]
                                         chunks[row[1]]['blocks'].append(block)
                     
 
@@ -641,7 +644,10 @@ for chunk in chunks:
             for x in chunks[chunk][block]:
                 if x[1] > 0 and x[1] < 256 and x[1] not in norenderblocks:
                     
-                    matblock = {x[1]:{}}
+                    if x[1] in multymatblocks:
+                        matblock = {(x[1], x[2]) :{}}
+                    else:
+                        matblock = {(x[1],0):{}}
                     materials.update(matblock)
                 elif x[1] < 256:
                     wrongblocks = True
@@ -653,15 +659,17 @@ print str(len(chunks)) +  ' length of chunks'
 
 print 'put the blocks of materials in their material index for ' + str(len(materials)) + ' materials'
 for chunk in chunks:
-    # print chunk
+
     for block in chunks[chunk]:
-        # print str(len(chunks[chunk][block])) +  ' length of chunks'
         if len(chunks[chunk][block]) > 0:
             
             for x in chunks[chunk][block]:
                 position = x[0][0],x[0][1]*-1,x[0][2]
                 if x[1] > 0 and x[1] < 256 and x[1] not in norenderblocks:
-                    materials[x[1]].update({position:{'meta':x[2],'faces':[]}})
+                    if x[1] in multymatblocks:
+                        materials[(x[1], x[2]) ].update({position:{'meta':x[2],'faces':[]}})
+                    else:
+                        materials[(x[1],0)].update({position:{'meta':x[2],'faces':[]}})
         chunks[chunk][block] = None
 
 chunks = None
@@ -716,15 +724,15 @@ vertices = {}
 for mat in loneneighbors:
     faces[mat] = []
     vertices[mat] = []
-    if mat == 182 or mat == 126 or mat == 44:
+    if mat[0] in [182 ,126 ,44]:
         makehalfblock(loneneighbors, mat)
-    elif mat == 171 or mat == 111:
+    elif mat[0] in [171, 111]:
         makeflatblock(loneneighbors, mat)
-    elif mat in [6 , 111 , 30 , 31 , 32,37,40, 51, 83, 175]:
+    elif mat[0] in [6 , 111 , 30 , 31 , 32,37,40, 51, 83, 175]:
         makexblock(loneneighbors, mat)
-    elif mat in [85, 113,188, 189, 190, 191]:
+    elif mat[0] in [85, 113,188, 189, 190, 191]:
         makefence(loneneighbors, mat)
-    elif mat in [53, 67, 108, 109, 114, 128, 134, 135, 136, 156, 165, 164, 180]:
+    elif mat[0] in [53, 67, 108, 109, 114, 128, 134, 135, 136, 156, 165, 164, 180]:
         
         makestairs(loneneighbors, mat)
     else:
@@ -756,12 +764,9 @@ for mat in faces:
     vertcache = OrderedDict()
     
     for index, vert in enumerate(vertices[mat]):
-
         vertcache.update({vert:index})
 
-
     for forverts in faces[mat]:
-        
         tempface = []
 
         for vert in forverts:
@@ -769,19 +774,13 @@ for mat in faces:
                 tempface.append(vertcache[vert])
                 
        
-
         newfaces[mat].append(tempface)
       
 faces = newfaces
 newface = None
 loneneighbors = None
 
-
-
-
 allstuff = {'allhistory':allhistory,'vertices':vertices,'faces':faces}
-
-# print ast.literal_eval(str(allstuff))
 
 vertices = None
 faces = None

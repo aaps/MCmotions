@@ -44,6 +44,44 @@ bl_info = {
 # to construct the model in Blender.
 class DataImporter:
 
+    def createRightColor(self, material):
+        mat = bpy.data.materials.new("PKHG")
+        if material[1] == 0:
+            color = (1,1,1)
+        elif material[1] == 1:
+            color = (1, 0.54902, 0)
+        elif material[1] == 2:
+            color = (0.6, 0.196078, 0.8)
+        elif material[1] == 3:
+            color = (0.690196, 0.878431, 0.901961)
+        elif material[1] == 4:
+            color = (1,1,0)
+        elif material[1] == 5:
+            color = (0.196078, 0.803922, 0.196078)
+        elif material[1] == 6:
+            color = (1, 0.411765, 0.705882)
+        elif material[1] == 7:
+            color = (0.411765, 0.411765, 0.411765)
+        elif material[1] == 8:
+            color = (0.745098, 0.745098, 0.745098)
+        elif material[1] == 9:
+            color = (0, 0.545098, 0.545098)
+        elif material[1] == 10:
+            color = (0.627451, 0.12549, 0.941176)
+        elif material[1] == 11:
+            color = (0, 0, 0.803922)
+        elif material[1] == 12:
+            color = (0.545098, 0.270588, 0.0745098)
+        elif material[1] == 13:
+            color = (0, 0.392157, 0)
+        elif material[1] == 14:
+            color = (1,0,0)
+        elif material[1] == 15:
+            color = (0,0,0)
+        return color
+
+         
+
     def createMeshFromData(self, material, origin, verts, faces):
         # Create mesh and object
         me = bpy.data.meshes.new(str(material)+'Mesh')
@@ -52,48 +90,54 @@ class DataImporter:
         ob.show_name = True
         
         mat = bpy.data.materials.new("PKHG")
-
-        if material == 9:
+        # print(material)
+        if material[0] == 9:
             mat.diffuse_color = (0,0,1)
             mat.alpha = 0.5
             mat.use_transparency = True
             mat.transparency_method = 'RAYTRACE'
-        elif material == 1:
+        elif material[0] == 1:
             mat.diffuse_color = (0.7,0.7,0.7)
-        elif material == 3:
+        elif material[0] == 3:
             mat.diffuse_color = (0.9,0.7,0.6)
-        elif material == 7:
+        elif material[0] == 7:
             mat.diffuse_color = (0.2,0.2,0.2)
-        elif material in [11, 10]:
+        elif material[0] in [11, 10]:
             mat.diffuse_color = (0.9,0.2,0.2)
             mat.emit = 5
-        elif material in [13]:
+        elif material[0] in [13]:
             mat.diffuse_color = (0.5,0.5,0.5)
-        elif material == 15:
+        elif material[0] == 15:
             mat.diffuse_color = (0.6,0.5,0.4)
-        elif material == 16:
+        elif material[0] == 16:
             mat.diffuse_color = (0.4,0.4,0.4)
-        elif material == 17 or material == 5:
+        elif material[0] in [17,5]:
             mat.diffuse_color = (0.5,0.3,0.1)
-        elif material == 18 or material == 2 or material == 111 or material == 31:
+        elif material[0] in [18,2,111, 31]:
             mat.diffuse_color = (0,0.8,0)
-        elif material == 12 or material == 24 :
+        elif material[0] in [12,24] :
             mat.diffuse_color = (1,0.8,0.7)
-        elif material == 49:
+        elif material[0] == 49:
             mat.diffuse_color = (0,0,0.2)
-        elif material in [44, 82]:
+        elif material[0] in [44, 82]:
             mat.diffuse_color = (0.8,0.8,0.8)
-        elif material == 79:
+        elif material[0] == 79:
             mat.diffuse_color = (0.4,0.4,1)
-        elif material in [89, 50, 124, 91, 51, 62] :
+        elif material[0] in [89, 50, 124, 91, 51, 62] :
             mat.diffuse_color = (0.9,0.9,0.2)
             mat.emit = 5
-        elif material == 138:
+        elif material[0] == 138:
             mat.diffuse_color = (0.5,0.5,0.8)
-        elif material in [155, 171, 156]:
+        elif material[0] in [155, 156]:
             mat.diffuse_color = (1,1,1)
-        elif material == 159:
-            mat.diffuse_color = (1,0.8,0.8)
+        elif material[0] in [171, 35, 159]:
+            mat.diffuse_color = self.createRightColor(material)
+        elif material[0] in [95, 160]:
+            mat.diffuse_color = self.createRightColor(material)
+            mat.alpha = 0.5
+            mat.use_transparency = True
+            mat.transparency_method = 'RAYTRACE'
+
         else:
             mat.diffuse_color = (0,0,0)
 
@@ -140,6 +184,8 @@ class DataImporter:
             
             aentity = entitys[value]
             
+            print(aentity['positions'])
+
             firstloc = aentity['positions'][0]['pos']
 
             bpy.ops.mesh.primitive_monkey_add(location=firstloc)

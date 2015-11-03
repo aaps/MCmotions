@@ -51,14 +51,36 @@ class QuietBridge(Bridge):
             elif string == '/status':
                 message = "Not recording !"
                 if self.recording:
-                    # seconds = round(time.time() - self.start_time,2)
+       
                     message = "Recording for: " + str( self.worldtime - self.begintime) + " ticks !, inscene:" + self.scenename + ", filesize: " + str(self.dumpsize/1024)
                 
                 self.downstream.send_packet("chat_message", self.write_chat(message, "downstream"))
 
-            else:
-                buff.restore()
-                self.upstream.send_packet("chat_message", buff.read())
+            elif string[0:7] == '/addcam':
+                message = "Not recording !"
+                if self.recording:
+                    camtype = string[8:]
+
+                    if camtype == 'static':
+                        message = "Adding static cam at: " + self.playerpos + " Angle: " + self.playerangle
+                        towrite = 'addcam|' + '|static|' + self.playerangle +'|' + self.playerpos + '|' + '\n'
+                    elif camtype == 'tracking':
+                        message = "Adding tracking cam at: " + self.playerpos
+                        towrite = 'addcam|' + '|tracking|' + self.playerpos + '|' + '\n'
+                    elif camtype == 'chasing':
+                        message = "Adding chasing cam at: " + self.playerpos
+                        towrite = 'addcam|' + '|chasing|' + self.playerpos + '|' + '\n'
+                    else:
+                        message = "No cam added"
+                        towrite = None
+                    
+
+                    if towrite:
+                        self.dumpsize += len(towrite)
+                        self.dumpfile.write(towrite)
+                self.downstream.send_packet("chat_message", self.write_chat(message, "downstream"))
+
+
         else:
             buff.restore()
             self.upstream.send_packet("chat_message", buff.read())
@@ -81,7 +103,6 @@ class QuietBridge(Bridge):
     def packet_downstream_spawn_player(self, buff):
         buff.save()
         if self.recording:
-            # seconds = round(time.time() - self.start_time,2)
             
             towrite = 'spawnplayer|' + str( self.worldtime - self.begintime) + '|' + self.scenename + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack_uuid()) + '|' + str(buff.unpack('iii')) + '|' +  str(buff.unpack('bb'))+ '|' +  str(buff.unpack('h')) + '\n'
             self.dumpsize += len(towrite)
@@ -92,7 +113,6 @@ class QuietBridge(Bridge):
     def packet_downstream_spawn_object(self, buff):
         buff.save()
         if self.recording:
-            # seconds = round(time.time() - self.start_time,2)
             theid = str(buff.unpack_varint())
             thetype = str(buff.unpack('B'))
             theposition = str(buff.unpack('iii'))
@@ -106,7 +126,6 @@ class QuietBridge(Bridge):
     def packet_downstream_spawn_mob(self, buff):
         buff.save()
         if self.recording:
-            # seconds = round(time.time() - self.start_time,2)
             towrite = 'spawnmob|' + str( self.worldtime - self.begintime) + '|' + self.scenename + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack('B')) + '|' + str(buff.unpack('iii')) + '|' +  str(buff.unpack('bbb')) + '|' +  str(buff.unpack('hhh')) + '\n'
             self.dumpsize += len(towrite)
             self.dumpfile.write(towrite)
@@ -157,7 +176,6 @@ class QuietBridge(Bridge):
     def packet_downstream_entity(self, buff):
         buff.save()
         if self.recording:
-            # seconds = round(time.time() - self.start_time,2)
             towrite = 'entity|' + str( self.worldtime - self.begintime) + '|' + self.scenename + '|' + str(buff.unpack_varint()) + '\n'
             self.dumpsize += len(towrite)
             self.dumpfile.write(towrite)
@@ -168,7 +186,6 @@ class QuietBridge(Bridge):
     def packet_downstream_entity_relative_move(self, buff):
         buff.save()
         if self.recording:
-            # seconds = round(time.time() - self.start_time,2)
             towrite = 'entityrelmove|' + str( self.worldtime - self.begintime) + '|' + self.scenename + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack('bbb')) + '|' + str(buff.unpack('?'))+ '\n'
             self.dumpsize += len(towrite)
             self.dumpfile.write(towrite)
@@ -179,7 +196,6 @@ class QuietBridge(Bridge):
         buff.save()
         
         if self.recording:
-            # seconds = round(time.time() - self.start_time,2)
             towrite = 'entitylook|' + str( self.worldtime - self.begintime) + '|' + self.scenename + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack('bb')) + '|' + str(buff.unpack('?'))+ '\n'
             self.dumpsize += len(towrite)
             self.dumpfile.write(towrite)
@@ -189,7 +205,6 @@ class QuietBridge(Bridge):
     def packet_downstream_entity_look_and_relative_move(self, buff):
         buff.save()
         if self.recording:
-            # seconds = round(time.time() - self.start_time,2)
             towrite = 'entitylookandrelmove|' + str( self.worldtime - self.begintime) + '|' + self.scenename + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack('bbb')) + '|' + str(buff.unpack('bb')) + '|' + str(buff.unpack('?')) + '\n'
             self.dumpfile.write(towrite)
             buff.restore()
@@ -198,7 +213,6 @@ class QuietBridge(Bridge):
     def packet_downstream_entity_teleport(self, buff):
         buff.save()
         if self.recording:   
-            # seconds = round(time.time() - self.start_time,2)
             towrite = 'entityteleport|' + str( self.worldtime - self.begintime) + '|' + self.scenename + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack('iii')) + '|' + str(buff.unpack('bb')) + '|' + str(buff.unpack('?'))+ '\n'
             self.dumpsize += len(towrite)
             self.dumpfile.write(towrite)
@@ -209,7 +223,6 @@ class QuietBridge(Bridge):
     def packet_downstream_entity_velocity(self, buff):
         buff.save()
         if self.recording:
-            # seconds = round(time.time() - self.start_time,2)
             towrite ='entityvelocity|' + str( self.worldtime - self.begintime) + '|' + self.scenename + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack('hhh'))+ '\n'
             self.dumpsize += len(towrite)
             self.dumpfile.write(towrite)
@@ -219,7 +232,6 @@ class QuietBridge(Bridge):
     def packet_downstream_entity_head_look(self, buff):
         buff.save()
         if self.recording:   
-            # seconds = round(time.time() - self.start_time,2)
             towrite = 'entityheadlook|' + str( self.worldtime - self.begintime) + '|' + self.scenename + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack('b'))+ '\n'
             self.dumpsize += len(towrite)
             self.dumpfile.write(towrite)
@@ -229,7 +241,6 @@ class QuietBridge(Bridge):
     def packet_downstream_entity_status(self, buff):
         buff.save()
         if self.recording:
-            # seconds = round(time.time() - self.start_time,2)
             towrite = 'entitystatus|' + str( self.worldtime - self.begintime) +  '|' + self.scenename + '|' + str(buff.unpack('i')) + '|' + str(buff.unpack('b'))+ '\n'
             self.dumpsize += len(towrite)
             self.dumpfile.write(towrite)
@@ -239,7 +250,6 @@ class QuietBridge(Bridge):
     def packet_downstream_entity_effect(self, buff):
         buff.save()
         if self.recording:    
-            # seconds = round(time.time() - self.start_time,2)
             towrite = 'entityeffect|' + str( self.worldtime - self.begintime) +  '|' + self.scenename + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack('b')) + '|' + str(buff.unpack('b')) + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack('?'))+ '\n'
             self.dumpsize += len(towrite)
             self.dumpfile.write(towrite)
@@ -249,7 +259,6 @@ class QuietBridge(Bridge):
     def packet_downstream_remove_entity_effect(self, buff):
         buff.save()
         if self.recording:
-            # seconds = round(time.time() - self.start_time,2)
             towrite = 'rementityeffect|' + str( self.worldtime - self.begintime) + '|' + self.scenename + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack('b'))+ '\n'
             self.dumpsize += len(towrite)
             self.dumpfile.write(towrite)
@@ -263,7 +272,6 @@ class QuietBridge(Bridge):
         if self.recording:
             length = buff.unpack_varint()
             entitys = []
-            # seconds = round(time.time() - self.start_time,2)
             for aent in xrange(0,length):
                 entitys.append(buff.unpack_varint())
             towrite = 'destroyents|' + str( self.worldtime - self.begintime) + '|' + self.scenename + '|' +  '|'.join(map(str, entitys))+ '\n'
@@ -365,7 +373,6 @@ class QuietBridge(Bridge):
         if self.recording:
             chunkxz = buff.unpack('ii')
             reccount = buff.unpack_varint()
-            # seconds = round(time.time() - self.start_time,2)
             for index in xrange(0,reccount):
                 xz = buff.unpack('B')
                 
@@ -388,7 +395,6 @@ class QuietBridge(Bridge):
         if self.recording:
             xyz = self.unpack_blockposition(buff)
 
-            # seconds = round(time.time() - self.start_time,2)
       
             newid = buff.unpack_varint() >> 4
             towrite = 'blockchange|' + str( self.worldtime - self.begintime) + '|' + self.scenename + '|' + str(xyz) + '|' + str(newid)+ '\n'
@@ -407,7 +413,6 @@ class QuietBridge(Bridge):
             bytea = buff.unpack('B')
             byteb = buff.unpack('B')
             blocktype = buff.unpack_varint()
-            # seconds = round(time.time() - self.start_time,2)
             towrite = 'blockaction|' + str( self.worldtime - self.begintime) + '|' + self.scenename + '|' + str(xyz) + '|' + str(bytea) + '|' + str(byteb) + '\n'
             self.dumpsize += len(towrite)
             self.dumpfile.write(towrite)
@@ -420,7 +425,6 @@ class QuietBridge(Bridge):
         buff.save()
         if self.recording:
             
-            # seconds = round(time.time() - self.start_time,2)
             entid = buff.unpack_varint()
             xyz = self.unpack_blockposition(buff)
             if xyz[0] < 33554431 and xyz[0] > -33554431 and xyz[2] < 33554431 and xyz[2] > -33554431:
@@ -435,7 +439,6 @@ class QuietBridge(Bridge):
 
     def packet_downstream_particle(self, buff):
         buff.save()
-        # seconds = round(time.time() - self.start_time,2)
         if self.recording:
             partid = buff.unpack('i')
             longdist = buff.unpack('?')
@@ -464,7 +467,10 @@ class QuietBridge(Bridge):
     def packet_upstream_player_position(self, buff):
         buff.save()
         if self.recording:
-            towrite = 'playerpos|' + str( self.worldtime - self.begintime) + '|'  + self.scenename + '|' +  str(buff.unpack('ddd')) + '|'  + str(buff.unpack('?'))+ '\n'
+            self.playerpos = str(buff.unpack('ddd'))
+
+            towrite = 'playerpos|' + str( self.worldtime - self.begintime) + '|'  + self.scenename + '|' + self.playerpos  + '|'  + str(buff.unpack('?'))+ '\n'
+             
             self.dumpsize += len(towrite)
             self.dumpfile.write(towrite)
             buff.restore()
@@ -473,7 +479,9 @@ class QuietBridge(Bridge):
     def packet_upstream_player_position_and_look(self, buff):
         buff.save()
         if self.recording:
-            towrite = 'playerposlook|' + str( self.worldtime - self.begintime) + '|'  + self.scenename + '|' + str(buff.unpack('ddd')) + '|' + str(buff.unpack('ff')) + '|' + str(buff.unpack('?'))+ '\n'
+            self.playerpos = str(buff.unpack('ddd'))
+            self.playerangle = str(buff.unpack('ff'))
+            towrite = 'playerposlook|' + str( self.worldtime - self.begintime) + '|'  + self.scenename + '|' + self.playerpos + '|' + self.playerangle + '|' + str(buff.unpack('?'))+ '\n'
             self.dumpsize += len(towrite)
             self.dumpfile.write(towrite)
             buff.restore()
@@ -482,7 +490,8 @@ class QuietBridge(Bridge):
     def packet_upstream_player_look(self, buff):
         buff.save()
         if self.recording:
-            towrite = 'playerlook|' + str( self.worldtime - self.begintime) + '|'  + self.scenename + '|' + str(buff.unpack('ff')) + '|' + str(buff.unpack('?'))+ '\n'
+            self.playerangle = str(buff.unpack('ff'))
+            towrite = 'playerlook|' + str( self.worldtime - self.begintime) + '|'  + self.scenename + '|' + self.playerangle + '|' + str(buff.unpack('?'))+ '\n'
             self.dumpsize += len(towrite)
             self.dumpfile.write(towrite)
             buff.restore()
