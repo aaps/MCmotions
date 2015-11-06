@@ -250,9 +250,6 @@ def makestairs(loneneighbors, mat):
         faces[mat] += finallist
         
 
-
-        # print loneneighbors[mat][block]['meta']
-
 def makefence(loneneighbors, mat):
     
     for block in loneneighbors[mat]:
@@ -332,6 +329,9 @@ def makehalfblock(loneneighbors, mat):
         if 2 in listoffaces:
             templist.append([Point3D(0.5,-0.5,-0.5),Point3D(0.5,0.5,-0.5),Point3D(0.5,0.5,0),Point3D(0.5,-0.5,0)])
 
+        if loneneighbors[mat][block]['meta'] > 7:
+            templist = rotatepointsY(templist, 180)
+
         appendto3dlist(templist, block)    
         templist = totuplelist(templist)
 
@@ -345,23 +345,17 @@ def makeflatblock(loneneighbors, mat):
         if 5 in listoffaces:
             templist.append([Point3D(0.5,0.5,-0.5),Point3D(-0.5,0.5,-0.5),Point3D(-0.5,-0.5,-0.5),Point3D(0.5,-0.5,-0.5)])
 
-
         if 6 in listoffaces:
             templist.append([Point3D(0.5,0.5,-0.4),Point3D(-0.5,0.5,-0.4),Point3D(-0.5,-0.5,-0.4),Point3D(0.5,-0.5,-0.4)])
-
 
         if 3 in listoffaces:
             templist.append([Point3D(-0.5,-0.5,-0.5),Point3D(-0.5,-0.5,-0.4),Point3D(0.5,-0.5,-0.4),Point3D(0.5,-0.5,-0.5)])
 
-
         if 4 in listoffaces:
             templist.append([Point3D(-0.5,0.5,-0.5),Point3D(-0.5,0.5,-0.4),Point3D(0.5,0.5,-0.4),Point3D(0.5,0.5,-0.5)])
 
-
-
         if 1 in listoffaces:
             templist.append([Point3D(-0.5,-0.5,-0.5),Point3D(-0.5,0.5,-0.5),Point3D(-0.5,0.5,-0.4),Point3D(-0.5,-0.5,-0.4)])
-
 
         if 2 in listoffaces:
             templist.append([Point3D(0.5,-0.5,-0.5),Point3D(0.5,0.5,-0.5),Point3D(0.5,0.5,-0.4),Point3D(0.5,-0.5,-0.4)])
@@ -382,7 +376,168 @@ def makexblock(loneneighbors, mat):
 
         faces[mat] += templist
 
+def getchunks():
 
+        try:
+
+            if row[5] != 'None':
+                chunkdata = base64.standard_b64decode(row[5])
+                xzpos = ast.literal_eval(row[1])
+                
+                if xzpos not in chunkposses and xzpos[0] >= cutx[0] and xzpos[0] <= cutx[1] and xzpos[1] >= cutz[0] and xzpos[1] <= cutz[1]:
+                    chunkposses.append(xzpos)
+                    for index1 in xrange(0, 16):
+                       
+                        if int(row[3]) & (1 << index1) and index1 >= cuty:
+                            for y in xrange(0,16):
+
+                                for z in xrange(0,16):
+                                    for x in xrange(0,16):
+                                        goodindex = (x+(z*16)+(y*256)+(index1*4096))
+                                        temp = struct.unpack('H',chunkdata[goodindex*2:goodindex*2+2])[0]
+                                        btype = temp >> 4
+                                        bmeta = temp & 15
+                                        block = ( (x + (xzpos[0]*16),z + (xzpos[1]*16),y+(index1*16)), btype, bmeta)
+                                        chunks[row[1]]['blocks'].append(block)
+                    
+                        
+        except Exception as e:
+            print e
+
+
+def filterents(allhistory):
+
+    temphistory = {}
+
+    for x in allhistory:
+        allhistory[x]['positions'] = sorted(allhistory[x]['positions'], key=lambda positions: positions['time'])
+        temphistory[x] = {'positions':[],'type':allhistory[x]['type']}
+
+        for position in allhistory[x]['positions']:
+            
+            if position['scene'] == curscene or position['alive'] == 0:
+                temphistory[x]['positions'].append(position)
+
+    return temphistory
+
+def filterstatics(allhistory):
+    temphistory = {}
+    print 'Filtering entitys that dont move at all'
+
+    for x in allhistory:
+
+        if len(allhistory[x]['type']) > 35:
+            if len(allhistory[x]['positions']) > 10:
+                temphistory[x] = allhistory[x]
+        else:
+            temphistory[x] = allhistory[x]
+
+    return temphistory
+
+def getMaxMinTime(allhistory):
+
+    maxtime = 0
+    mintime = 1000000
+
+    for x in allhistory:
+        for position in allhistory[x]['positions']:
+            if position['time'] > maxtime:
+                maxtime =position['time']
+            if position['time'] < mintime:
+                mintime = position['time']
+
+    for x in allhistory:
+        for position in allhistory[x]['positions']:    
+            position['time'] = position['time'] - mintime
+    return maxtime, mintime
+
+
+def makematindexes(chunks):
+
+    wrongblocks = False
+    materials = {}
+
+
+
+    for chunk in chunks:
+        for block in chunks[chunk]:
+            if len(chunks[chunk][block]) > 0:
+                for x in chunks[chunk][block]:
+                    if x[1] > 0 and x[1] < 256 and x[1] not in norenderblocks:
+                        
+                        if x[1] in multymatblocks:
+                            matblock = {(x[1], x[2]) :{}}
+                        else:
+                            matblock = {(x[1],0):{}}
+                        materials.update(matblock)
+                    elif x[1] < 256:
+                        wrongblocks = True
+
+    if wrongblocks:
+        print 'there are wrong block types found, there is a good change the parsing in the proxy fase whent wrong !'
+    return materials
+
+def fillmatindexes(chunks, materials):
+
+    for chunk in chunks:
+
+        for block in chunks[chunk]:
+            if len(chunks[chunk][block]) > 0:
+                
+                for x in chunks[chunk][block]:
+                    position = x[0][0],x[0][1]*-1,x[0][2]
+                    if x[1] > 0 and x[1] < 256 and x[1] not in norenderblocks:
+                        if x[1] in multymatblocks:
+                            materials[(x[1], x[2]) ].update({position:{'meta':x[2],'faces':[]}})
+                        else:
+                            materials[(x[1],0)].update({position:{'meta':x[2],'faces':[]}})
+            chunks[chunk][block] = None
+
+    chunks = None
+    return materials
+
+
+def genfacesNeighbors(materials):
+
+    neightbors = {}
+
+    print 'find material neightbors for ' + str(len(materials)) + ' materials'         
+    for mat in materials:
+        neightbors[mat] = {}
+
+
+    for mat in materials:
+        
+        for block in materials[mat]:
+            neightbors[mat][block] = {'meta': materials[mat][block]['meta'],'faces':[]}
+            if (block[0]-1, block[1], block[2]) not in materials[mat]:
+                neightbors[mat][block]['faces'].append(1)
+            if (block[0]+1, block[1], block[2]) not in materials[mat]:
+                neightbors[mat][block]['faces'].append(2)
+            if (block[0], block[1]-1, block[2]) not in materials[mat]:
+                neightbors[mat][block]['faces'].append(3)
+            if (block[0], block[1]+1, block[2]) not in materials[mat]:
+                neightbors[mat][block]['faces'].append(4)
+            if (block[0], block[1], block[2]-1) not in materials[mat]:
+                neightbors[mat][block]['faces'].append(5)
+            if (block[0], block[1], block[2]+1) not in materials[mat]:
+                neightbors[mat][block]['faces'].append(6)
+            
+        materials[mat] = None
+
+    return neightbors
+
+def removeSupderCosy(neightbors):
+
+    loneneighbors = {}
+    for mat in neightbors:
+        loneneighbors[mat] = {}
+        for block in neightbors[mat]:
+
+            if len(neightbors[mat][block]['faces']) > 0:
+                loneneighbors[mat][block[0]+0.5, block[1]+0.5, block[2]+0.5]  = neightbors[mat][block]
+        neightbors[mat] = None
+    return loneneighbors
 
 
 def fido(first, second):
@@ -545,87 +700,20 @@ for line in aroflines:
         
         chunks.update({row[1]:{'blocks':[]}})
 
-        try:
+        getchunks()
 
-            if row[5] != 'None':
-                chunkdata = base64.standard_b64decode(row[5])
-                xzpos = ast.literal_eval(row[1])
-                
-                if xzpos not in chunkposses and xzpos[0] >= cutx[0] and xzpos[0] <= cutx[1] and xzpos[1] >= cutz[0] and xzpos[1] <= cutz[1]:
-                    # xzpos = xzpos[0]*1,xzpos[1]*1
-                    chunkposses.append(xzpos)
-                    for index1 in xrange(0, 16):
-                       
-                        if int(row[3]) & (1 << index1) and index1 >= cuty:
-                            for y in xrange(0,16):
-
-                                for z in xrange(0,16):
-                                    for x in xrange(0,16):
-                                        goodindex = (x+(z*16)+(y*256)+(index1*4096))
-                                        temp = struct.unpack('H',chunkdata[goodindex*2:goodindex*2+2])[0]
-                                        btype = temp >> 4
-                                        bmeta = temp & 15
-                                        block = ( (x + (xzpos[0]*16),z + (xzpos[1]*16),y+(index1*16)), btype, bmeta)
-                                        # print row[1]
-                                        chunks[row[1]]['blocks'].append(block)
-                    
-
-                        
-        except Exception as e:
-            print e
+    
 
 
 print 'Filtering entitys that are not supposed to be in scene move at all'
 
+allhistory = filterents(allhistory)
 
-temphistory = {}
-
-for x in allhistory:
-    allhistory[x]['positions'] = sorted(allhistory[x]['positions'], key=lambda positions: positions['time'])
-    temphistory[x] = {'positions':[],'type':allhistory[x]['type']}
-
-    for position in allhistory[x]['positions']:
-        
-        if position['scene'] == curscene or position['alive'] == 0:
-            temphistory[x]['positions'].append(position)
-
-allhistory = temphistory
-temphistory = {}
-
-print 'Filtering entitys that dont move at all'
-
-for x in allhistory:
-
-    if len(allhistory[x]['type']) > 35:
-        if len(allhistory[x]['positions']) > 10:
-            temphistory[x] = allhistory[x]
-    else:
-        temphistory[x] = allhistory[x]
-
-allhistory = temphistory
+allhistory = filterstatics(allhistory)
 
 
-maxtime = 0
-mintime = 1000000
+print getMaxMinTime(allhistory)
 
-for x in allhistory:
-
-    for position in allhistory[x]['positions']:
-
-        if position['time'] > maxtime:
-            maxtime =position['time']
-        if position['time'] < mintime:
-            mintime = position['time']
-
-for x in allhistory:
-    for position in allhistory[x]['positions']:    
-        position['time'] = position['time'] - mintime
-
-print maxtime, mintime
-
-
-
-# print temphistory
 
 print 'parsing ' + str(len(chunkposses)) + ' chunks'
 
@@ -633,89 +721,26 @@ print 'parsing ' + str(len(chunkposses)) + ' chunks'
 
 print 'make a index of possible materials'
 
-wrongblocks = False
-materials = {}
+materials = makematindexes(chunks)
 
 
-
-for chunk in chunks:
-    for block in chunks[chunk]:
-        if len(chunks[chunk][block]) > 0:
-            for x in chunks[chunk][block]:
-                if x[1] > 0 and x[1] < 256 and x[1] not in norenderblocks:
-                    
-                    if x[1] in multymatblocks:
-                        matblock = {(x[1], x[2]) :{}}
-                    else:
-                        matblock = {(x[1],0):{}}
-                    materials.update(matblock)
-                elif x[1] < 256:
-                    wrongblocks = True
-
-if wrongblocks:
-    print 'there are wrong block types found, there is a good change the parsing in the proxy fase whent wrong !'
 
 print str(len(chunks)) +  ' length of chunks'
 
 print 'put the blocks of materials in their material index for ' + str(len(materials)) + ' materials'
-for chunk in chunks:
 
-    for block in chunks[chunk]:
-        if len(chunks[chunk][block]) > 0:
-            
-            for x in chunks[chunk][block]:
-                position = x[0][0],x[0][1]*-1,x[0][2]
-                if x[1] > 0 and x[1] < 256 and x[1] not in norenderblocks:
-                    if x[1] in multymatblocks:
-                        materials[(x[1], x[2]) ].update({position:{'meta':x[2],'faces':[]}})
-                    else:
-                        materials[(x[1],0)].update({position:{'meta':x[2],'faces':[]}})
-        chunks[chunk][block] = None
-
-chunks = None
+materials = fillmatindexes(chunks, materials)
 
 
-neightbors = {}
 
-print 'find material neightbors for ' + str(len(materials)) + ' materials'         
-for mat in materials:
-    neightbors[mat] = {}
+# print 'removing all super neightbors, same type blocks on all sides for ' + str(len(neightbors)) + ' materials'         
 
 
-for mat in materials:
-    
-    for block in materials[mat]:
-        # print neightbors[mat][block]['faces']
-        neightbors[mat][block] = {'meta': materials[mat][block]['meta'],'faces':[]}
-        if (block[0]-1, block[1], block[2]) not in materials[mat]:
-            neightbors[mat][block]['faces'].append(1)
-        if (block[0]+1, block[1], block[2]) not in materials[mat]:
-            neightbors[mat][block]['faces'].append(2)
-        if (block[0], block[1]-1, block[2]) not in materials[mat]:
-            neightbors[mat][block]['faces'].append(3)
-        if (block[0], block[1]+1, block[2]) not in materials[mat]:
-            neightbors[mat][block]['faces'].append(4)
-        if (block[0], block[1], block[2]-1) not in materials[mat]:
-            neightbors[mat][block]['faces'].append(5)
-        if (block[0], block[1], block[2]+1) not in materials[mat]:
-            neightbors[mat][block]['faces'].append(6)
-        
-    materials[mat] = None
+neightbors = genfacesNeighbors(materials)
 
-materials = None
-print 'removing all super neightbors, same type blocks on all sides for ' + str(len(neightbors)) + ' materials'         
 
-loneneighbors = {}
-for mat in neightbors:
-    print mat
-    loneneighbors[mat] = {}
-    for block in neightbors[mat]:
 
-        if len(neightbors[mat][block]['faces']) > 0:
-            loneneighbors[mat][block[0]+0.5, block[1]+0.5, block[2]+0.5]  = neightbors[mat][block]
-    neightbors[mat] = None
-
-neightbors = None
+loneneighbors = removeSupderCosy(neightbors)
 
 print 'generating face positions ' + str(len(loneneighbors)) + ' materials'
 faces = {}
@@ -757,8 +782,6 @@ newfaces = {}
 print 'linking the vert index to the faces, this will take the most time !!!'
 
 for mat in faces:
-    print mat
-
     newfaces[mat] = []
     timenow = None
     vertcache = OrderedDict()

@@ -44,7 +44,7 @@ bl_info = {
 # to construct the model in Blender.
 class DataImporter:
 
-    def createRightColor(self, material):
+    def createRightStandardColor(self, material):
         mat = bpy.data.materials.new("PKHG")
         if material[1] == 0:
             color = (1,1,1)
@@ -80,6 +80,102 @@ class DataImporter:
             color = (0,0,0)
         return color
 
+
+    def createRightStoneSlabColor(self, material):
+        mat = bpy.data.materials.new("PKHG")
+        if material[1] in [0,8]:
+            color = (0.662745, 0.662745, 0.662745)
+        elif material[1] in [1,9]:
+            color = (1, 0.980392, 0.803922)
+        elif material[1] in [2,10]:
+            color = (0.803922, 0.521569, 0.247059)
+        elif material[1] in [3,11]:
+            color = (0.517647, 0.517647, 0.517647)
+        elif material[1] in [4,12]:
+            color = (0.545098, 0, 0)
+        elif material[1] in [5,13]:
+            color = (0.562745, 0.562745, 0.562745)
+        elif material[1] in [6,14]:
+            color = (0.545098, 0, 0)
+        elif material[1] in [7,15]:
+            color = (1,1,1)
+        else:
+            color = (0,0,0)
+        return color
+
+    def createRightWoodeSlabColor(self, material):
+        mat = bpy.data.materials.new("PKHG")
+        if material[1] in [0,6]:
+            color = (0.933333, 0.909804, 0.666667)
+        elif material[1] in [1,7]:
+            color = (0.803922 ,0.521569, 0.247059)
+        elif material[1] in [2,8]:
+            color = (0.980392, 0.980392, 0.823529)
+        elif material[1] in [3,9]:
+            color = (1, 0.627451, 0.478431)
+        elif material[1] in [4,10]:
+            color = (1, 0.388235, 0.278431)
+        elif material[1] in [5,11]:
+            color = (0.545098, 0.270588, 0.0745098)
+        else:
+            color = (0,0,0)
+        return color
+
+    def createRightSaplingColor(self, material):
+        mat = bpy.data.materials.new("PKHG")
+        if material[1] == 0:
+            color = (0.486275, 0.988235, 0)
+        elif material[1] == 1:
+            color = (0.419608, 0.556863, 0.137255)
+        elif material[1] == 2:
+            color = (0.486275, 0.988235, 0)
+        elif material[1] == 3:
+            color = (0, 0.392157, 0)
+        elif material[1] == 4:
+            color = (0.603922, 0.803922, 0.196078)
+        elif material[1] == 5:
+            color = (0.133333, 0.545098, 0.133333)
+        else:
+            color = (0,0,0)
+        return color
+
+    # def createRightFlowerColor(self, material):
+    #     mat = bpy.data.materials.new("PKHG")
+    #     if material[1] == 0:
+    #         color = (1,1,1)
+    #     elif material[1] == 1:
+    #         color = (1, 0.54902, 0)
+    #     elif material[1] == 2:
+    #         color = (0.6, 0.196078, 0.8)
+    #     elif material[1] == 3:
+    #         color = (0.690196, 0.878431, 0.901961)
+    #     elif material[1] == 4:
+    #         color = (1,1,0)
+    #     elif material[1] == 5:
+    #         color = (0.196078, 0.803922, 0.196078)
+    #     elif material[1] == 6:
+    #         color = (1, 0.411765, 0.705882)
+    #     elif material[1] == 7:
+    #         color = (0.411765, 0.411765, 0.411765)
+    #     elif material[1] == 8:
+    #         color = (0.745098, 0.745098, 0.745098)
+    #     elif material[1] == 9:
+    #         color = (0, 0.545098, 0.545098)
+    #     elif material[1] == 10:
+    #         color = (0.627451, 0.12549, 0.941176)
+    #     elif material[1] == 11:
+    #         color = (0, 0, 0.803922)
+    #     elif material[1] == 12:
+    #         color = (0.545098, 0.270588, 0.0745098)
+    #     elif material[1] == 13:
+    #         color = (0, 0.392157, 0)
+    #     elif material[1] == 14:
+    #         color = (1,0,0)
+    #     elif material[1] == 15:
+    #         color = (0,0,0)
+    #     return color
+         
+         
          
 
     def createMeshFromData(self, material, origin, verts, faces):
@@ -100,6 +196,8 @@ class DataImporter:
             mat.diffuse_color = (0.7,0.7,0.7)
         elif material[0] == 3:
             mat.diffuse_color = (0.9,0.7,0.6)
+        elif material[0] == 6:  
+            mat.diffuse_color = self.createRightSaplingColor(material)
         elif material[0] == 7:
             mat.diffuse_color = (0.2,0.2,0.2)
         elif material[0] in [11, 10]:
@@ -111,29 +209,32 @@ class DataImporter:
             mat.diffuse_color = (0.6,0.5,0.4)
         elif material[0] == 16:
             mat.diffuse_color = (0.4,0.4,0.4)
-        elif material[0] in [17,5]:
-            mat.diffuse_color = (0.5,0.3,0.1)
+        elif material[0] in [5, 125, 126]:
+            mat.diffuse_color = self.createRightWoodeSlabColor(material)
+            # mat.diffuse_color = (0.5,0.3,0.1)
         elif material[0] in [18,2,111, 31]:
             mat.diffuse_color = (0,0.8,0)
         elif material[0] in [12,24] :
             mat.diffuse_color = (1,0.8,0.7)
         elif material[0] == 49:
             mat.diffuse_color = (0,0,0.2)
-        elif material[0] in [44, 82]:
-            mat.diffuse_color = (0.8,0.8,0.8)
+        elif material[0] in [44, 43]:
+            mat.diffuse_color = self.createRightStoneSlabColor(material)
+            # mat.diffuse_color = (0.8,0.8,0.8)
         elif material[0] == 79:
             mat.diffuse_color = (0.4,0.4,1)
         elif material[0] in [89, 50, 124, 91, 51, 62] :
             mat.diffuse_color = (0.9,0.9,0.2)
             mat.emit = 5
         elif material[0] == 138:
-            mat.diffuse_color = (0.5,0.5,0.8)
+            mat.diffuse_color = (0.6,0.6,1)
+            mat.emit = 5
         elif material[0] in [155, 156]:
             mat.diffuse_color = (1,1,1)
         elif material[0] in [171, 35, 159]:
-            mat.diffuse_color = self.createRightColor(material)
+            mat.diffuse_color = self.createRightStandardColor(material)
         elif material[0] in [95, 160]:
-            mat.diffuse_color = self.createRightColor(material)
+            mat.diffuse_color = self.createRightStandardColor(material)
             mat.alpha = 0.5
             mat.use_transparency = True
             mat.transparency_method = 'RAYTRACE'
