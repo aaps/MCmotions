@@ -26,6 +26,8 @@ proxy has commandline options:
 
 --userprofile the userprofile/email the proxy will use to login on the minecraft network
 
+--adcam well add cameras that are not used in blender yet, so meh
+
 -h for help
 
 Ingame commands for the proxy_recorder.py: 
@@ -106,21 +108,25 @@ the right +/-  player positions, tests needed
 
 #ToDo:
 1
-good rotation of entitys, instead of the muck we have now !
 more block shapes for map import
 refactoring like there is no tomorrow
+adding cams to heads and perhaps in front of entitys, also the camss from the addcam command
+adding crude player and entity bodys
+some crude stairs corners, this is tricky
 
 2
-import blockchanges (after map import is done)
+import blockchanges
 what to do with block placements that have an interesting shape like stairs ?
+what to do with removing those shapes ?
 more block colors on the right blocks
 block textures
-proxy command for generating cameras, static cam, traching cam and, chasing cam
+
 
 3
 recording the details, animations of blocks, particles, lightning, rain, etc
 recording of packets that are going to the server so the proxy connecting player is also recorded !
 the ability to survive transports to other servers
+the ability to record plugin messages like multyworld
 
 
 #WARNING 
