@@ -29,7 +29,7 @@ bl_info = {
     "name": "Minecraft mejiggest (*.mcmo)",
     "description": "This addon allows you to import minecraft worls and mob motions",
     "author": "Aat Karelse",
-    "version": (0, 2, 1),
+    "version": (0, 3, 0),
     "blender": (2, 6, 3),
     #"api": ???,
     "location": "File > Import > minecraft stuff",
@@ -285,7 +285,7 @@ class DataImporter:
             
             aentity = entitys[value]
             
-            print(aentity['positions'])
+            # print(aentity['positions'])
 
             firstloc = aentity['positions'][0]['pos']
 
@@ -338,6 +338,8 @@ class DataImporter:
             elif len(mobtype) > 10 or mobtype == 'player':
                 if mobtype == 'player':
                     ob.name = "player: RECORDER"
+                
+
                     mat.diffuse_color = (1,0,0)
                 else:
                     mobtype = mobtype.replace('-','')
@@ -352,11 +354,18 @@ class DataImporter:
                        
                         ob.name = "player: unknown"
                     mat.diffuse_color = (1,0.6,0.4)
+
+
             else:
                 mat.diffuse_color = (0.0,0.0,0.0)
                 ob.name = str(mobtype)
 
             ob.active_material = mat
+
+            cam = bpy.data.cameras.new("Camera")
+            cam_ob = bpy.data.objects.new("Camera", cam)
+            cam_ob.parent = ob
+            bpy.context.scene.objects.link(cam_ob)
 
             for posses in aentity['positions'][1:]:
                 frame_num = int((posses['time'] / 20) * 25)
@@ -370,6 +379,14 @@ class DataImporter:
                 bpy.ops.anim.keyframe_insert(type='Rotation',confirm_success=False)
                 ob.keyframe_insert("hide")
                 ob.keyframe_insert("hide_render")
+
+
+
+
+
+
+ 
+
 
             for fc in ob.animation_data.action.fcurves:
                 fc.extrapolation = 'LINEAR'

@@ -26,7 +26,7 @@ proxy has commandline options:
 
 --userprofile the userprofile/email the proxy will use to login on the minecraft network
 
---adcam well add cameras that are not used in blender yet, so meh
+
 
 -h for help
 
@@ -39,6 +39,8 @@ Ingame commands for the proxy_recorder.py:
 * /cut (will stop the current scene, will also mention this in common chat)
 
 * /stop (will stop the recording, cant start recording afterwards, since the recorder wil miss out on spawn messages, use it to just play minecraft afterwards i guess, will not stop the proxy part of the script)
+
+* /addcam well add cameras that are not used in blender yet, so meh
 
 
 Example proxy ussage:
@@ -85,8 +87,7 @@ DO USE THE CUT OPTIONS FOR SPEED (1 shorter lister script run 2 more important t
 proxy_recorder !
 
 A for now quite crude, minecraft recorder.
-This version will not record the position of the player that is connected via the proxy !
-Perhaps a good thing for the invisable cameraman ?!
+This version will also record the recording player, perhaps a option to filter out the recording player in the future.
 
 
 lister !
@@ -101,6 +102,10 @@ info !
 
 this can tell some info about the dumpfile like: max/min chunk numbers to help cutting out the right chunk numbers for lister, it can list the scenes in a dumpfile.
 
+options:
+-h for help (this will show more)
+
+
 #NEW:
 player names in blender
 scenes
@@ -110,7 +115,7 @@ the right +/-  player positions, tests needed
 1
 more block shapes for map import
 refactoring like there is no tomorrow
-adding cams to heads and perhaps in front of entitys, also the camss from the addcam command
+adding cams to heads and perhaps in front of entitys, also the cams from the addcam command
 adding crude player and entity bodys
 some crude stairs corners, this is tricky
 
