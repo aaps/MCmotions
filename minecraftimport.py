@@ -284,16 +284,30 @@ class DataImporter:
         for value in entitys:
             
             aentity = entitys[value]
-            
-            # print(aentity['positions'])
 
             firstloc = aentity['positions'][0]['pos']
+            firstloc = firstloc[0], firstloc[1]+2,firstloc[2]
+            headloc = firstloc[0],firstloc[1]+1, firstloc[2]
 
-            bpy.ops.mesh.primitive_monkey_add(location=firstloc)
+            bpy.ops.mesh.primitive_cube_add(location=headloc)
+            
+            head = bpy.context.object
+            head.rotation_mode = 'XYZ'
+            head.scale = (0.25,0.25,0.25)
+
+
+
+            bpy.ops.mesh.primitive_cube_add(location=firstloc)
+
+            
             ob = bpy.context.object
             ob.rotation_mode = 'XYZ'
-            # ob.rotation_euler = ((pi * 90 / 180), 0,0 )
-            ob.scale = (0.5,0.5,0.5)
+            ob.scale = (0.25,0.75,0.25)
+            
+            # scene = GameLogic.getCurrentScene()
+            # objList = scene.objects
+            # cube = objList["OBCube"]
+            # ob.setParent(head, 1, 0)
 
             mat = bpy.data.materials.new("PKHG")
 
@@ -362,16 +376,31 @@ class DataImporter:
 
             ob.active_material = mat
 
+            bpy.ops.object.select_all(action='DESELECT')
+            ob.select = True
+            head.select = True
+
+            bpy.context.scene.objects.active = ob
+            bpy.ops.object.parent_set()
+
+
+
             cam = bpy.data.cameras.new("Camera")
+            cam.clip_start = 1
+            cam.clip_end = 5000
             cam_ob = bpy.data.objects.new("Camera", cam)
-            cam_ob.parent = ob
+            cam_ob.rotation_euler = (0, math.radians(180),  0)
+    
+            cam_ob.parent = head
             bpy.context.scene.objects.link(cam_ob)
 
             for posses in aentity['positions'][1:]:
                 frame_num = int((posses['time'] / 20) * 25)
                 bpy.context.scene.frame_set(frame_num)
-                ob.location =  (posses['pos'][0], posses['pos'][2], posses['pos'][1])
-                
+                ob.location = (posses['pos'][0], posses['pos'][2], posses['pos'][1]+0.75)
+                yaw = posses['yawpichhead'][1]
+
+                head.rotation_euler = (math.radians(posses['yawpichhead'][1]),0,0)
                 ob.rotation_euler = (math.radians(90), 0, math.radians(posses['yawpichhead'][0]) )
                 ob.hide = not bool(posses['alive'])
                 ob.hide_render = not bool(posses['alive'])
@@ -381,17 +410,6 @@ class DataImporter:
                 ob.keyframe_insert("hide_render")
 
 
-
-
-
-
- 
-
-
-            for fc in ob.animation_data.action.fcurves:
-                fc.extrapolation = 'LINEAR'
-                for kp in fc.keyframe_points:
-                    kp.interpolation = 'LINEAR'
 
         print("Script finished after {} seconds".format(time.time() - start_time))
         return {'FINISHED'}
