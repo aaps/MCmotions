@@ -385,14 +385,23 @@ class DataImporter:
 
 
 
-            cam = bpy.data.cameras.new("Camera")
-            cam.clip_start = 1
-            cam.clip_end = 5000
-            cam_ob = bpy.data.objects.new("Camera", cam)
+            maincam = bpy.data.cameras.new("Camera")
+            maincam.clip_start = 1
+            maincam.clip_end = 5000
+            cam_ob = bpy.data.objects.new("Camera", maincam)
             cam_ob.rotation_euler = (0, math.radians(180),  0)
-    
+
+            selfycam = bpy.data.cameras.new("Camera")
+            selfycam.clip_start = 1
+            selfycam.clip_end = 5000
+            selfy_cam_ob = bpy.data.objects.new("Camera", selfycam)
+            selfy_cam_ob.rotation_euler = (0, 0,  0)
+            selfy_cam_ob.location = (0,0,25)
+
+            selfy_cam_ob.parent = head
             cam_ob.parent = head
             bpy.context.scene.objects.link(cam_ob)
+            bpy.context.scene.objects.link(selfy_cam_ob)
 
             for posses in aentity['positions'][1:]:
                 frame_num = int((posses['time'] / 20) * 25)

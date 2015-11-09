@@ -115,9 +115,9 @@ the right +/-  player positions, tests needed
 1
 more block shapes for map import
 refactoring like there is no tomorrow
-adding cams to heads and perhaps in front of entitys, also the cams from the addcam command
-adding crude player and entity bodys
+cams in fron of players and the cam poses that are recorded
 some crude stairs corners, this is tricky
+right chunk posses or tags for the nether and the end 
 
 2
 import blockchanges
