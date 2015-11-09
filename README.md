@@ -113,15 +113,19 @@ the right +/-  player positions, tests needed
 
 #ToDo:
 1
-more block shapes for map import
+* chunk import is still to sloppy to be usable, lets fix that
+
+* get a differentiation between normal world, the nether and the end for chunk data
+
+* more block shapes for map import
 
 refactoring like there is no tomorrow
-cams in fron of players and the cam poses that are recorded
+
+adding cams that where imported by proxy commands
 
 some crude stairs corners, this is tricky
-right chunk posses or tags for the nether and the end 
 
-get a differentiation between normal world, the nether and the end for chunk data
+
 
 2
 import blockchanges
@@ -138,8 +142,6 @@ block textures
 3
 recording the details, animations of blocks, particles, lightning, rain, etc
 
-recording of packets that are going to the server so the proxy connecting player is also recorded !
-
 the ability to survive transports to other servers
 
 the ability to record plugin messages like multyworld
@@ -154,7 +156,7 @@ command line knowledge will help.
 
 The willingness to dabble in python will also
 
-humility
+humility might help
 
 #this will work good when !
 
