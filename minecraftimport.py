@@ -304,10 +304,7 @@ class DataImporter:
             ob.rotation_mode = 'XYZ'
             ob.scale = (0.25,0.75,0.25)
             
-            # scene = GameLogic.getCurrentScene()
-            # objList = scene.objects
-            # cube = objList["OBCube"]
-            # ob.setParent(head, 1, 0)
+
 
             mat = bpy.data.materials.new("PKHG")
 
@@ -379,6 +376,13 @@ class DataImporter:
             bpy.ops.object.select_all(action='DESELECT')
             ob.select = True
             head.select = True
+            
+
+
+
+            put_on_layers = lambda x: tuple((i in x) for i in range(20))
+
+                
 
             bpy.context.scene.objects.active = ob
             bpy.ops.object.parent_set()
@@ -397,6 +401,15 @@ class DataImporter:
             selfy_cam_ob = bpy.data.objects.new("Camera", selfycam)
             selfy_cam_ob.rotation_euler = (0, 0,  0)
             selfy_cam_ob.location = (0,0,25)
+            
+            selfy_cam_ob.layers[:] = put_on_layers({2})
+            cam_ob.layers[:] = put_on_layers({2})
+            ob.layers[:] = put_on_layers({2})
+            head.layers[:] = put_on_layers({2})
+            
+
+
+
 
             selfy_cam_ob.parent = head
             cam_ob.parent = head
@@ -413,10 +426,17 @@ class DataImporter:
                 ob.rotation_euler = (math.radians(90), 0, math.radians(posses['yawpichhead'][0]) )
                 ob.hide = not bool(posses['alive'])
                 ob.hide_render = not bool(posses['alive'])
-                bpy.ops.anim.keyframe_insert(type='Location',confirm_success=False)
-                bpy.ops.anim.keyframe_insert(type='Rotation',confirm_success=False)
+
+                
                 ob.keyframe_insert("hide")
                 ob.keyframe_insert("hide_render")
+                ob.keyframe_insert(data_path="location")
+                ob.keyframe_insert(data_path="rotation_euler")
+
+            for fc in ob.animation_data.action.fcurves:
+                fc.extrapolation = 'LINEAR'
+                for kp in fc.keyframe_points:
+                    kp.interpolation = 'LINEAR'
 
 
 
