@@ -284,159 +284,159 @@ class DataImporter:
         for value in entitys:
             
             aentity = entitys[value]
+            if len( aentity['positions']) > 0:
+                firstloc = aentity['positions'][0]['pos']
+                firstloc = firstloc[0], firstloc[1]+2,firstloc[2]
+                headloc = firstloc[0],firstloc[1]+1, firstloc[2]
 
-            firstloc = aentity['positions'][0]['pos']
-            firstloc = firstloc[0], firstloc[1]+2,firstloc[2]
-            headloc = firstloc[0],firstloc[1]+1, firstloc[2]
-
-            bpy.ops.mesh.primitive_cube_add(location=headloc)
-            
-            head = bpy.context.object
-            head.rotation_mode = 'XYZ'
-            head.scale = (0.25,0.25,0.25)
-
-
-
-            bpy.ops.mesh.primitive_cube_add(location=firstloc)
-
-            
-            ob = bpy.context.object
-            ob.rotation_mode = 'XYZ'
-            ob.scale = (0.25,0.75,0.25)
-            
+                bpy.ops.mesh.primitive_cube_add(location=headloc)
+                
+                head = bpy.context.object
+                head.rotation_mode = 'XYZ'
+                head.scale = (0.25,0.25,0.25)
 
 
-            mat = bpy.data.materials.new("PKHG")
 
-            mobtype = aentity['type']
-            if mobtype == '50':
-                ob.name = "creeper"
-                mat.diffuse_color = (0.0,1.0,0.0)
-            elif mobtype == '51':
-                ob.name = "skeleton"
-                mat.diffuse_color = (1.0,1.0,1.0)
-            elif mobtype == '52':
-                ob.name = "spider"
-                mat.diffuse_color = (0.2,0.1,0.1)
-            elif mobtype == '54':
-                ob.name = "zombol"
-                mat.diffuse_color = (0.0,0.3,0.0)
-            elif mobtype == '55':
-                ob.name = "slime"
-                mat.diffuse_color = (0.5,1,0.5)
-            elif mobtype == '58':
-                ob.name = "enderman"
-                mat.diffuse_color = (0.5,0.0,0.5)
-            elif mobtype == '90':
-                ob.name = "pig"
-                mat.diffuse_color = (0.5,0.4,0.4)
-            elif mobtype == '65':
-                ob.name = "bat"
-                mat.diffuse_color = (1,0.5,0.2)
-            elif mobtype == '91':
-                ob.name = "sheep"
-                mat.diffuse_color = (1,1,1)
-            elif mobtype == '92':
-                ob.name = "cow"
-                mat.diffuse_color = (1,0.2,0.1)
-            elif mobtype == '94':
-                ob.name = "squid"
-                mat.diffuse_color = (0.2,0.2,1)
-            
-            elif mobtype == '101':
-                ob.name = "rabbit"
-                mat.diffuse_color = (0.5,0.1,0.05)
-            elif len(mobtype) > 10 or mobtype == 'player':
-                if mobtype == 'player':
-                    ob.name = "player: RECORDER"
+                bpy.ops.mesh.primitive_cube_add(location=firstloc)
+
+                
+                ob = bpy.context.object
+                ob.rotation_mode = 'XYZ'
+                ob.scale = (0.25,0.75,0.25)
                 
 
-                    mat.diffuse_color = (1,0,0)
-                else:
-                    mobtype = mobtype.replace('-','')
-                    request = urllib.request.urlopen('https://sessionserver.mojang.com/session/minecraft/profile/' + mobtype)
-                    data = request.read().decode("utf8")
-                    time.sleep( 1 )
+
+                mat = bpy.data.materials.new("PKHG")
+
+                mobtype = aentity['type']
+                if mobtype == '50':
+                    ob.name = "creeper"
+                    mat.diffuse_color = (0.0,1.0,0.0)
+                elif mobtype == '51':
+                    ob.name = "skeleton"
+                    mat.diffuse_color = (1.0,1.0,1.0)
+                elif mobtype == '52':
+                    ob.name = "spider"
+                    mat.diffuse_color = (0.2,0.1,0.1)
+                elif mobtype == '54':
+                    ob.name = "zombol"
+                    mat.diffuse_color = (0.0,0.3,0.0)
+                elif mobtype == '55':
+                    ob.name = "slime"
+                    mat.diffuse_color = (0.5,1,0.5)
+                elif mobtype == '58':
+                    ob.name = "enderman"
+                    mat.diffuse_color = (0.5,0.0,0.5)
+                elif mobtype == '90':
+                    ob.name = "pig"
+                    mat.diffuse_color = (0.5,0.4,0.4)
+                elif mobtype == '65':
+                    ob.name = "bat"
+                    mat.diffuse_color = (1,0.5,0.2)
+                elif mobtype == '91':
+                    ob.name = "sheep"
+                    mat.diffuse_color = (1,1,1)
+                elif mobtype == '92':
+                    ob.name = "cow"
+                    mat.diffuse_color = (1,0.2,0.1)
+                elif mobtype == '94':
+                    ob.name = "squid"
+                    mat.diffuse_color = (0.2,0.2,1)
+                
+                elif mobtype == '101':
+                    ob.name = "rabbit"
+                    mat.diffuse_color = (0.5,0.1,0.05)
+                elif len(mobtype) > 10 or mobtype == 'player':
+                    if mobtype == 'player':
+                        ob.name = "player: RECORDER"
                     
-                    if len(data) > 10:
-                        data = json.loads(data)
-                        ob.name = "player: " + data['name']
+
+                        mat.diffuse_color = (1,0,0)
                     else:
-                       
-                        ob.name = "player: unknown"
-                    mat.diffuse_color = (1,0.6,0.4)
+                        mobtype = mobtype.replace('-','')
+                        request = urllib.request.urlopen('https://sessionserver.mojang.com/session/minecraft/profile/' + mobtype)
+                        data = request.read().decode("utf8")
+                        time.sleep( 1 )
+                        
+                        if len(data) > 10:
+                            data = json.loads(data)
+                            ob.name = "player: " + data['name']
+                        else:
+                           
+                            ob.name = "player: unknown"
+                        mat.diffuse_color = (1,0.6,0.4)
 
 
-            else:
-                mat.diffuse_color = (0.0,0.0,0.0)
-                ob.name = str(mobtype)
+                else:
+                    mat.diffuse_color = (0.0,0.0,0.0)
+                    ob.name = str(mobtype)
 
-            ob.active_material = mat
+                ob.active_material = mat
 
-            bpy.ops.object.select_all(action='DESELECT')
-            ob.select = True
-            head.select = True
-            
-
-
-
-            put_on_layers = lambda x: tuple((i in x) for i in range(20))
-
+                bpy.ops.object.select_all(action='DESELECT')
+                ob.select = True
+                head.select = True
                 
 
-            bpy.context.scene.objects.active = ob
-            bpy.ops.object.parent_set()
+
+
+                put_on_layers = lambda x: tuple((i in x) for i in range(20))
+
+                    
+
+                bpy.context.scene.objects.active = ob
+                bpy.ops.object.parent_set()
 
 
 
-            maincam = bpy.data.cameras.new("Camera")
-            maincam.clip_start = 1
-            maincam.clip_end = 5000
-            cam_ob = bpy.data.objects.new("Camera", maincam)
-            cam_ob.rotation_euler = (0, math.radians(180),  0)
+                maincam = bpy.data.cameras.new("Camera")
+                maincam.clip_start = 1
+                maincam.clip_end = 5000
+                cam_ob = bpy.data.objects.new("Camera", maincam)
+                cam_ob.rotation_euler = (0, math.radians(180),  0)
 
-            selfycam = bpy.data.cameras.new("Camera")
-            selfycam.clip_start = 1
-            selfycam.clip_end = 5000
-            selfy_cam_ob = bpy.data.objects.new("Camera", selfycam)
-            selfy_cam_ob.rotation_euler = (0, 0,  0)
-            selfy_cam_ob.location = (0,0,25)
-            
-            selfy_cam_ob.layers[:] = put_on_layers({2})
-            cam_ob.layers[:] = put_on_layers({2})
-            ob.layers[:] = put_on_layers({2})
-            head.layers[:] = put_on_layers({2})
-            
-
-
-
-
-            selfy_cam_ob.parent = head
-            cam_ob.parent = head
-            bpy.context.scene.objects.link(cam_ob)
-            bpy.context.scene.objects.link(selfy_cam_ob)
-
-            for posses in aentity['positions'][1:]:
-                frame_num = int((posses['time'] / 20) * 25)
-                bpy.context.scene.frame_set(frame_num)
-                ob.location = (posses['pos'][0], posses['pos'][2], posses['pos'][1]+0.75)
-                yaw = posses['yawpichhead'][1]
-
-                head.rotation_euler = (math.radians(posses['yawpichhead'][1]),0,0)
-                ob.rotation_euler = (math.radians(90), 0, math.radians(posses['yawpichhead'][0]) )
-                ob.hide = not bool(posses['alive'])
-                ob.hide_render = not bool(posses['alive'])
-
+                selfycam = bpy.data.cameras.new("Camera")
+                selfycam.clip_start = 1
+                selfycam.clip_end = 5000
+                selfy_cam_ob = bpy.data.objects.new("Camera", selfycam)
+                selfy_cam_ob.rotation_euler = (0, 0,  0)
+                selfy_cam_ob.location = (0,0,25)
                 
-                ob.keyframe_insert("hide")
-                ob.keyframe_insert("hide_render")
-                ob.keyframe_insert(data_path="location")
-                ob.keyframe_insert(data_path="rotation_euler")
+                selfy_cam_ob.layers[:] = put_on_layers({2})
+                cam_ob.layers[:] = put_on_layers({2})
+                ob.layers[:] = put_on_layers({2})
+                head.layers[:] = put_on_layers({2})
+                
 
-            for fc in ob.animation_data.action.fcurves:
-                fc.extrapolation = 'LINEAR'
-                for kp in fc.keyframe_points:
-                    kp.interpolation = 'LINEAR'
+
+
+
+                selfy_cam_ob.parent = head
+                cam_ob.parent = head
+                bpy.context.scene.objects.link(cam_ob)
+                bpy.context.scene.objects.link(selfy_cam_ob)
+
+                for posses in aentity['positions'][1:]:
+                    frame_num = int((posses['time'] / 20) * 25)
+                    bpy.context.scene.frame_set(frame_num)
+                    ob.location = (posses['pos'][0], posses['pos'][2], posses['pos'][1]+0.75)
+                    yaw = posses['yawpichhead'][1]
+
+                    head.rotation_euler = (math.radians(posses['yawpichhead'][1]),0,0)
+                    ob.rotation_euler = (math.radians(90), 0, math.radians(posses['yawpichhead'][0]) )
+                    ob.hide = not bool(posses['alive'])
+                    ob.hide_render = not bool(posses['alive'])
+
+                    
+                    ob.keyframe_insert("hide")
+                    ob.keyframe_insert("hide_render")
+                    ob.keyframe_insert(data_path="location")
+                    ob.keyframe_insert(data_path="rotation_euler")
+
+                for fc in ob.animation_data.action.fcurves:
+                    fc.extrapolation = 'LINEAR'
+                    for kp in fc.keyframe_points:
+                        kp.interpolation = 'LINEAR'
 
 
 

@@ -378,31 +378,34 @@ def makexblock(loneneighbors, mat):
 
 def getchunks():
 
-        try:
 
-            if row[5] != 'None':
-                chunkdata = base64.standard_b64decode(row[5])
-                xzpos = ast.literal_eval(row[1])
-                
-                if xzpos not in chunkposses and xzpos[0] >= cutx[0] and xzpos[0] <= cutx[1] and xzpos[1] >= cutz[0] and xzpos[1] <= cutz[1]:
-                    chunkposses.append(xzpos)
-                    for index1 in xrange(0, 16):
-                       
-                        if int(row[3]) & (1 << index1) and index1 >= cuty:
-                            for y in xrange(0,16):
+    if row[5] != 'None':
+        chunkdata = base64.standard_b64decode(row[5])
+        xzpos = ast.literal_eval(row[1])
+        
+        if xzpos not in chunkposses and xzpos[0] >= cutx[0] and xzpos[0] <= cutx[1] and xzpos[1] >= cutz[0] and xzpos[1] <= cutz[1]:
+            chunkposses.append(xzpos)
+            for index1 in xrange(0, 16):
+               
+                if int(row[3]) & (1 << index1) and index1 >= cuty:
+                    for y in xrange(0,16):
 
-                                for z in xrange(0,16):
-                                    for x in xrange(0,16):
-                                        goodindex = (x+(z*16)+(y*256)+(index1*4096))
-                                        temp = struct.unpack('H',chunkdata[goodindex*2:goodindex*2+2])[0]
-                                        btype = temp >> 4
-                                        bmeta = temp & 15
-                                        block = ( (x + (xzpos[0]*16),z + (xzpos[1]*16),y+(index1*16)), btype, bmeta)
-                                        chunks[row[1]]['blocks'].append(block)
-                    
-                        
-        except Exception as e:
-            print e
+                        for z in xrange(0,16):
+                            for x in xrange(0,16):
+
+                                goodindex = (x+(z*16)+(y*256)+(index1*4096))
+                                # print str(len(chunkdata)) + ':'  + str(x) + '+' +  str(z*16) + '+' + str(y*256) + '+' + str(index1*4096)+ '=' +  str(goodindex)
+                                try:    
+                                    temp = struct.unpack('H',chunkdata[goodindex*2:goodindex*2+2])[0]
+                                    btype = temp >> 4
+                                    bmeta = temp & 15
+                                except Exception as e:
+                                    btype = 666
+                                    bmeta = 666
+
+                                
+                                block = ( (x + (xzpos[0]*16),z + (xzpos[1]*16),y+(index1*16)), btype, bmeta)
+                                chunks[row[1]]['blocks'].append(block)
 
 
 def filterents(allhistory):
@@ -456,9 +459,6 @@ def makematindexes(chunks):
 
     wrongblocks = False
     materials = {}
-
-
-
     for chunk in chunks:
         for block in chunks[chunk]:
             if len(chunks[chunk][block]) > 0:
@@ -802,6 +802,7 @@ for mat in faces:
 faces = newfaces
 newface = None
 loneneighbors = None
+
 
 allstuff = {'allhistory':allhistory,'vertices':vertices,'faces':faces}
 
