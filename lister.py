@@ -365,6 +365,63 @@ def makeflatblock(loneneighbors, mat):
 
         faces[mat] += templist
 
+def makeverticalflatblock(loneneighbors, mat):
+    for block in loneneighbors[mat]:
+        listoffaces = loneneighbors[mat][block]['faces']
+        templist = []
+
+        templist.append([Point3D(0.5,-0.4,-0.5),Point3D(-0.5,-0.4,-0.5),Point3D(-0.5,-0.5,-0.5),Point3D(0.5,-0.5,-0.5)])
+
+        templist.append([Point3D(0.5,-0.4,0.5),Point3D(-0.5,-0.4,0.5),Point3D(-0.5,-0.5,0.5),Point3D(0.5,-0.5,0.5)])
+
+        templist.append([Point3D(-0.5,-0.4,-0.5),Point3D(-0.5,-0.4,0.5),Point3D(0.5,-0.4,0.5),Point3D(0.5,-0.4,-0.5)])
+
+        templist.append([Point3D(-0.5,-0.5,-0.5),Point3D(-0.5,-0.5,0.5),Point3D(0.5,-0.5,0.5),Point3D(0.5,-0.5,-0.5)])
+
+        templist.append([Point3D(-0.5,-0.5,-0.5),Point3D(-0.5,-0.4,-0.5),Point3D(-0.5,-0.4,0.5),Point3D(-0.5,-0.5,0.5)])
+
+        templist.append([Point3D(0.5,-0.5,-0.5),Point3D(0.5,-0.4,-0.5),Point3D(0.5,-0.4,0.5),Point3D(0.5,-0.5,0.5)])
+
+        direction = loneneighbors[mat][block]['meta'] & 3
+
+        if direction == 0:
+            templist = rotatepointsZ(templist, 90)
+        elif direction == 1:
+            templist = rotatepointsZ(templist, -90)
+        elif direction == 2:
+            templist = rotatepointsZ(templist, 0)
+        else:
+            templist = rotatepointsZ(templist, 180)
+
+
+        appendto3dlist(templist, block)    
+        templist = totuplelist(templist)
+
+        faces[mat] += templist
+
+
+def makesmallflatblock(loneneighbors, mat):
+    for block in loneneighbors[mat]:
+        listoffaces = loneneighbors[mat][block]['faces']
+        templist = []
+
+        templist.append([Point3D(0.4,0.4,-0.5),Point3D(-0.4,0.4,-0.5),Point3D(-0.4,-0.4,-0.5),Point3D(0.4,-0.4,-0.5)])
+
+        templist.append([Point3D(0.4,0.4,-0.4),Point3D(-0.4,0.4,-0.4),Point3D(-0.4,-0.4,-0.4),Point3D(0.4,-0.4,-0.4)])
+
+        templist.append([Point3D(-0.4,-0.4,-0.5),Point3D(-0.4,-0.4,-0.4),Point3D(0.4,-0.4,-0.4),Point3D(0.4,-0.4,-0.5)])
+
+        templist.append([Point3D(-0.4,0.4,-0.5),Point3D(-0.4,0.4,-0.4),Point3D(0.4,0.4,-0.4),Point3D(0.4,0.4,-0.5)])
+
+        templist.append([Point3D(-0.4,-0.4,-0.5),Point3D(-0.4,0.4,-0.5),Point3D(-0.4,0.4,-0.4),Point3D(-0.4,-0.4,-0.4)])
+
+        templist.append([Point3D(0.4,-0.4,-0.5),Point3D(0.4,0.4,-0.5),Point3D(0.4,0.4,-0.4),Point3D(0.4,-0.4,-0.4)])
+
+        appendto3dlist(templist, block)    
+        templist = totuplelist(templist)
+
+        faces[mat] += templist
+ 
 def makexblock(loneneighbors, mat):
     for block in loneneighbors[mat]:
         templist = []
@@ -385,28 +442,36 @@ def getchunks():
         
         if xzpos not in chunkposses and xzpos[0] >= cutx[0] and xzpos[0] <= cutx[1] and xzpos[1] >= cutz[0] and xzpos[1] <= cutz[1]:
             chunkposses.append(xzpos)
+            rightcounter = 0
             for index1 in xrange(0, 16):
-               
-                if int(row[3]) & (1 << index1) and index1 >= cuty:
+                
+                if (int(row[3]) & (1 << index1)) and index1 >= cuty and row[3] != '0' :
+                    
                     for y in xrange(0,16):
 
                         for z in xrange(0,16):
                             for x in xrange(0,16):
 
-                                goodindex = (x+(z*16)+(y*256)+(index1*4096))
-                                # print str(len(chunkdata)) + ':'  + str(x) + '+' +  str(z*16) + '+' + str(y*256) + '+' + str(index1*4096)+ '=' +  str(goodindex)
-                                try:    
-                                    temp = struct.unpack('H',chunkdata[goodindex*2:goodindex*2+2])[0]
+                                goodindex = (x+(z*16)+(y*256)+(rightcounter*4096))*2
+                                
+                                # print str(len(chunkdata)) + ':'  + str(x) + '+' +  str(z*16) + '+' + str(y*256) + '+' + str(index1*4096)+ '*2' + '=' +  str(goodindex)
+                                try:
+                                    
+                                    temp = struct.unpack('H',chunkdata[goodindex:goodindex+2])[0]
                                     btype = temp >> 4
                                     bmeta = temp & 15
+
+                                    
                                 except Exception as e:
+                                    print e
                                     btype = 666
                                     bmeta = 666
 
                                 
                                 block = ( (x + (xzpos[0]*16),z + (xzpos[1]*16),y+(index1*16)), btype, bmeta)
                                 chunks[row[1]]['blocks'].append(block)
-
+                    rightcounter += 1
+                    # print rightcounter
 
 def filterents(allhistory):
 
@@ -753,6 +818,10 @@ for mat in loneneighbors:
         makehalfblock(loneneighbors, mat)
     elif mat[0] in [171, 111]:
         makeflatblock(loneneighbors, mat)
+    elif mat[0] in [65, 106]:
+        makeverticalflatblock(loneneighbors, mat)
+    elif mat[0] in [148, 147]:
+        makesmallflatblock(loneneighbors, mat)
     elif mat[0] in [6 , 111 , 30 , 31 , 32,37,40, 51, 83, 175]:
         makexblock(loneneighbors, mat)
     elif mat[0] in [85, 113,188, 189, 190, 191]:

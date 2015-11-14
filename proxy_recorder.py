@@ -312,9 +312,9 @@ class QuietBridge(Bridge):
             chunkxy = buff.unpack('ii')
             groundup = buff.unpack('?')
             pribitmask = buff.unpack('H')
+
             if pribitmask > 0:
                 datalength = buff.unpack_varint()
-                
                 
                 contents = base64.b64encode(buff.unpack(str(datalength) + 's'))
                 towrite = 'chunkdata|' + str(chunkxy) + '|' + str(groundup) + '|' + str(pribitmask) + '|' + str(datalength) + '|' + contents +'\n'
@@ -353,7 +353,7 @@ class QuietBridge(Bridge):
 
                 chunkar.append(base64.b64encode(bigstring))
                 metaar[index] = metaar[index][0], metaar[index][1], counter
-                
+
                 lightstuff = buff.unpack(str(counter) + 's')
                 biomemeta = buff.unpack(str(256) + 's')
 
