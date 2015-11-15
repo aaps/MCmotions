@@ -207,11 +207,11 @@ The torchcraft server admin crew
 
 #Images
 
-![Image of mcmotions render 1](https://github.com/aaps/MCmotions/examples/torchcraft1.png)
+![Image of mcmotions render 1](https://github.com/aaps/MCmotions/blob/master/examples/torchcraft1.png)
 
-![Image of mcmotions render 2](https://github.com/aaps/MCmotions/examples/torchcraft2.png)
+![Image of mcmotions render 2](https://github.com/aaps/MCmotions/blob/master/examples/torchcraft2.png)
 
-![Image of mcmotions render 3](https://github.com/aaps/MCmotions/examples/torchcraft3.png)
+![Image of mcmotions render 3](https://github.com/aaps/MCmotions/blob/master/examples/torchcraft3.png)
 
-![Image of mcmotions render 4](https://github.com/aaps/MCmotions/examples/torchcraft4.png)
+![Image of mcmotions render 4](https://github.com/aaps/MCmotions/blob/master/examples/torchcraft4.png)
 
