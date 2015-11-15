@@ -106,16 +106,49 @@ options:
 -h for help (this will show more)
 
 
+#complete ussage example
+
+1 start proxy and connect proxy to a server, reserve a port localy
+
+./proxy_recorder.py --destip server.torchcraft.nl --dumpfile asession.dump --username aapskarel --profile aapskarel@gmail.com
+
+2 it will ask for a password, this part is a question of trust, hope to fix that in the future, the password is of cource your minecraft password
+
+3 startup minecraft and connect to localhost:6677 (defaultport)
+
+4 now you will connect to the server and data will be logged in asession.dump
+you can use the commands to record a scene, stop the dump or place cameras as you can read at example proxy ussage ^ above
+
+5 stop the proxy with ctrl-c and admire you dump ;p
+
+6 startup the info.py like: ./info.py --sourcefile asession.dump --image 0
+the 0 option is to map air, this will generate diag.png an image with a quite raw map where each block of the image contains chunk coordinates so you find the right options for the next step
+
+7 startup the lister, this will convert the data to be ready for the blender import like so: 
+./lister.py --sourcefile asession.dump --cutx 2,9 --cutz 9,16  --onlyplayerents y --world overworld --scene anyscene
+
+the cutx 2,9 and cuty 9,16 if to cut out the map so you will only use a limited range of chunks, (else you will generate a file blender cant import)
+onlyplayerents will only import players and their movements and not mobs etc.
+world overworld will only import the overwordmap and not nether map chunks you might have recorded
+
+the scene option is important for now, no matter what name, you can test it with a scene that does exist, but you need a scene you get the defaut.mcmo right and to use it in the belnder import
+
+8 after you have run the lister command you will have a default.mcmo (see options above ^ for the lister for other names)
+
+9 open blender, after that go to file->userpreferences->addons->installfromfile, and select the minecraftimport.py
+
+10 now it is time to do: file->import->mcmo import and select the mcmo file you have generated. (wait for some time)
+
+11 if all of this is too much work or if need some more convintion before trusting your password to some strange script, try the examples map for all kinds of example files, like dump files and mcmo files, also nice pictures and blend files generated.
+
+
 #NEW:
-player names in blender
-scenes
-the right +/-  player positions, tests needed
+difrentiate between overworld, nether and theend chunks/maps
+better render of chunks, if all is well it can render all map stuff
+
 
 #ToDo:
 1
-* chunk import is still to sloppy to be usable, lets fix that
-
-* get a differentiation between normal world, the nether and the end for chunk data
 
 * more block shapes for map import
 
@@ -170,4 +203,13 @@ you want a super good minecraft recording in Blender and are willing to code
 #Thanks to all the people that where willing to help:
 matthijs25
 GirlFlame
+The torchcraft server admin crew
+
+#Images
+
+![Image of mcmotions render 1](https://github.com/aaps/MCmotions/blob/master/examples/torchcraft1.png)
+
+![Image of mcmotions render 2](https://github.com/aaps/MCmotions/blob/master/examples/torchcraft2.png)
+
+![Image of mcmotions render 3](https://github.com/aaps/MCmotions/blob/master/examples/torchcraft3.png)
 
