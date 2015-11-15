@@ -1,6 +1,6 @@
-*.pyc
-*.log
-*.json
-*.mcmo
-*.dump
-*.png
+/*.pyc
+/*.log
+/*.json
+/*.mcmo
+/*.dump
+/*.png
