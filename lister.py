@@ -6,7 +6,7 @@ import ast
 import base64
 import struct
 import sys, getopt
-from blist import blist
+# from blist import blist
 import time
 import math
 from collections import OrderedDict
@@ -26,6 +26,7 @@ noentitys = False
 nochunks = False
 onlyplayerents = False
 curscene = "noscene"
+world = "overworld"
 cuty = 0
 cutz = (-1000,1000)
 cutx = (-1000,1000)
@@ -33,15 +34,15 @@ multymatblocks = [35, 43, 44, 95, 97, 98, 125, 126, 139, 155, 159, 160, 171]
 
 
 try:
-    opts, args = getopt.getopt(sys.argv[1:],"",["avgmiddle=","sourcefile=","destfile=","scene=", "excludeent=","excludeblocks=","cutx=","cuty=","cutz=","noentitys=","nochunks=","onlyplayerents=" ])
+    opts, args = getopt.getopt(sys.argv[1:],"",["avgmiddle=","sourcefile=","destfile=","scene=", "excludeent=","excludeblocks=","cutx=","cuty=","cutz=","noentitys=","nochunks=","onlyplayerents=", "world=" ])
         
 except getopt.GetoptError:
-    print 'error: lister.py --onlyplayerents --avgmiddle --sourcefile filename --destfile filename --scene scene name --excludeent commaseperatedlist of entity ids --excludeblocks commaseperatedlist of blockids'
+    print 'error: lister.py --onlyplayerents --avgmiddle --sourcefile filename --destfile filename --scene scene name --excludeent commaseperatedlist of entity ids --excludeblocks commaseperatedlist of blockids --world nether/overworld/theend will only use this world'
     sys.exit(2)
 for opt, arg in opts:
     # print opt
     if opt == '-h':
-        print 'lister.py --onlyplayerents --avgmiddle --sourcefile filename --destfile filename --scene scene name --excludeent commaseperatedlist of entity ids --excludeblocks commaseperatedlist of blockids'
+        print 'lister.py --onlyplayerents --avgmiddle --sourcefile filename --destfile filename --scene scene name --excludeent commaseperatedlist of entity ids --excludeblocks commaseperatedlist of blockids --world nether/overworld/theend will only use this world'
         sys.exit()
 
     if opt == "--onlyplayerents":
@@ -79,6 +80,15 @@ for opt, arg in opts:
 
     if opt == "--noentitys":
         noentitys = True
+
+    if opt == "--world":
+        
+        if arg == "nether":
+            world = 2
+        elif arg == "theend":
+            world = 3
+        else:
+            world = 1
 
     if opt == "--nochunks":
         nochunks = True
@@ -433,11 +443,36 @@ def makexblock(loneneighbors, mat):
 
         faces[mat] += templist
 
+def worldfromsample(sample):
+    overworldblocks = [1,2,3,4,6,8,9,12,13, 15,16,17,18,37,38,39,40]
+    netherblocks = [10,11,87,88, 112,113,114,115,153]
+    theendblocks = [121]
+    overscore = 0
+    endscore = 0
+    netherscore = 0
+
+    for block in sample:
+        if block in overworldblocks:
+            overscore += 1
+        if block in netherblocks:
+            netherscore += 1
+        if block in theendblocks:
+            endscore += 1
+
+    if endscore > overscore and endscore > netherscore:
+        return 3
+    elif netherscore > endscore and netherscore > overscore:
+        return 2
+    else:
+        return 1
+
+
+
 def getchunks():
 
 
-    if row[5] != 'None':
-        chunkdata = base64.standard_b64decode(row[5])
+    if row[6] != 'None' and worldfromsample(row[5]) == world:
+        chunkdata = base64.standard_b64decode(row[6])
         xzpos = ast.literal_eval(row[1])
         
         if xzpos not in chunkposses and xzpos[0] >= cutx[0] and xzpos[0] <= cutx[1] and xzpos[1] >= cutz[0] and xzpos[1] <= cutz[1]:
@@ -445,7 +480,7 @@ def getchunks():
             rightcounter = 0
             for index1 in xrange(0, 16):
                 
-                if (int(row[3]) & (1 << index1)) and index1 >= cuty and row[3] != '0' :
+                if (int(row[3]) & (1 << index1)) and index1 >= cuty and row[3] != '0':
                     
                     for y in xrange(0,16):
 
@@ -463,7 +498,7 @@ def getchunks():
 
                                     
                                 except Exception as e:
-                                    print e
+                                    
                                     btype = 666
                                     bmeta = 666
 
@@ -764,8 +799,8 @@ for line in aroflines:
         length = row[3]
         
         chunks.update({row[1]:{'blocks':[]}})
-
-        getchunks()
+        if not nochunks:
+            getchunks()
 
     
 

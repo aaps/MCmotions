@@ -211,7 +211,7 @@ class DataImporter:
             mat.diffuse_color = (0.4,0.4,0.4)
         elif material[0] in [5, 125, 126]:
             mat.diffuse_color = self.createRightWoodeSlabColor(material)
-            # mat.diffuse_color = (0.5,0.3,0.1)
+            
         elif material[0] in [18,2,111, 31]:
             mat.diffuse_color = (0,0.8,0)
         elif material[0] in [12,24] :
@@ -221,8 +221,13 @@ class DataImporter:
         elif material[0] in [44, 43]:
             mat.diffuse_color = self.createRightStoneSlabColor(material)
             # mat.diffuse_color = (0.8,0.8,0.8)
+        elif material[0] in [80, 78]:
+            mat.diffuse_color = (1,1,1)
         elif material[0] == 79:
             mat.diffuse_color = (0.4,0.4,1)
+            mat.alpha = 0.2
+            mat.use_transparency = True
+            mat.transparency_method = 'RAYTRACE'
         elif material[0] in [89, 50, 124, 91, 51, 62] :
             mat.diffuse_color = (0.9,0.9,0.2)
             mat.emit = 5
@@ -237,6 +242,8 @@ class DataImporter:
             mat.diffuse_color = (1,0,0)
         elif material[0] in [155, 156]:
             mat.diffuse_color = (1,1,1)
+        elif material[0] in [174]:
+            mat.diffuse_color = (0.7,0.7,1)
         elif material[0] in [171, 35, 159]:
             mat.diffuse_color = self.createRightStandardColor(material)
         elif material[0] in [95, 160]:

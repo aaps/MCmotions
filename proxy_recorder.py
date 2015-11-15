@@ -8,6 +8,7 @@ import sys, getopt
 import getpass
 import zlib
 import array
+import struct
 
 class QuietBridge(Bridge):
     quiet_mode = False
@@ -315,9 +316,13 @@ class QuietBridge(Bridge):
 
             if pribitmask > 0:
                 datalength = buff.unpack_varint()
-                
+                matsamples = []
                 contents = base64.b64encode(buff.unpack(str(datalength) + 's'))
-                towrite = 'chunkdata|' + str(chunkxy) + '|' + str(groundup) + '|' + str(pribitmask) + '|' + str(datalength) + '|' + contents +'\n'
+                for x in xrange(1,17):
+                    temp = struct.unpack('H', contents[(256*x):(256*x)+2])[0]
+                    matsamples.append(temp >> 4)
+
+                towrite = 'Schunkdata|' + str(chunkxy) + '|' + str(groundup) + '|' + str(pribitmask) + '|' + str(datalength) + '|' + str(matsamples) + '|' + contents +'\n'
                 self.dumpsize += len(towrite)
                 self.dumpfile.write(towrite)
             
@@ -334,7 +339,7 @@ class QuietBridge(Bridge):
             metaar = []
             skylightsend = buff.unpack('?')
             nrchunks = buff.unpack_varint()
-
+            matsamples = []
 
             for index in xrange(0,nrchunks):
                 chunkxy = buff.unpack('ii')
@@ -350,16 +355,22 @@ class QuietBridge(Bridge):
                     if int(metaar[index][1]) & (1 << height):
                         counter += 4096
                         bigstring += buff.unpack(str(4096*2) + 's')
-
+                        for x in xrange(1,17):
+                            temp = struct.unpack('H', bigstring[(256*x):(256*x)+2])[0]
+                            matsamples.append(temp >> 4)
                 chunkar.append(base64.b64encode(bigstring))
+                
                 metaar[index] = metaar[index][0], metaar[index][1], counter
 
                 lightstuff = buff.unpack(str(counter) + 's')
                 biomemeta = buff.unpack(str(256) + 's')
 
 
+            matsamples = list(set(matsamples))
+
+
             for index in xrange(0,nrchunks):
-                towrite = 'chunkdata|' + str(metaar[index][0]) +  '|True|' + str(metaar[index][1]) + '|' + str(metaar[index][2]) + '|' + chunkar[index] + '\n'
+                towrite = 'chunkdata|' + str(metaar[index][0]) +  '|True|' + str(metaar[index][1]) + '|' + str(metaar[index][2]) + '|' + str(matsamples) + '|' + chunkar[index] + '\n'
                 self.dumpsize += len(towrite)
                 self.dumpfile.write(towrite)
 
