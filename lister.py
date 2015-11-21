@@ -6,13 +6,11 @@ import ast
 import base64
 import struct
 import sys, getopt
-# from blist import blist
+
 import time
 import math
-from collections import OrderedDict
-
-
-# import StringIO
+# from collections import OrderedDict
+import pickle
 
 
 sourcefile = "default.dump"
@@ -102,7 +100,7 @@ allblocks = {}
 
 lostcounter = []
 
-f = open(destfile, 'w')
+# f = open(destfile, 'wb')
 
 try:
     origin = open(sourcefile, 'r')
@@ -127,6 +125,18 @@ class Point3D:
         self.x += tup[0]
         self.y += tup[1]
         self.z += tup[2]
+
+    def mirrorX(self):
+        x = round(self.x * -1)
+        return Point3D(x, self.y, self.z)
+
+    def mirrorY(self):
+        y = round(self.y * -1)
+        return Point3D(self.x, y, self.z)
+
+    def mirrorZ(self):
+        z = round(self.z * -1)
+        return Point3D(self.x, self.y, z)
 
     def rotateX(self, angle):
         """ Rotates the point around the X axis by the given angle in degrees. """
@@ -165,6 +175,36 @@ class Point3D:
     def astuple(self):
         return self.x,self.y,self.z
 
+def mirrorpointsX(alist):
+    tempfinal = []
+    for face in alist:
+        templist = []
+        for point in face:
+            
+            templist.append(point.mirrorX())
+        tempfinal.append(templist)
+    return tempfinal
+
+def mirrorpointsY(alist):
+    tempfinal = []
+    for face in alist:
+        templist = []
+        for point in face:
+            
+            templist.append(point.mirrorY())
+        tempfinal.append(templist)
+    return tempfinal
+
+def mirrorpointsZ(alist):
+    tempfinal = []
+    for face in alist:
+        templist = []
+        for point in face:
+            
+            templist.append(point.mirrorZ())
+        tempfinal.append(templist)
+    return tempfinal
+
 def rotatepointsY(alist, angle):
     tempfinal = []
     for face in alist:
@@ -190,7 +230,6 @@ def rotatepointsZ(alist, angle):
     for face in alist:
         templist = []
         for point in face:
-            
             templist.append(point.rotateZ(angle))
         tempfinal.append(templist)
     return tempfinal
@@ -209,33 +248,66 @@ def totuplelist(alist):
         tempfinal.append(templist)
     return tempfinal
 
+def makenormalstairs(loneneighbors, mat):
+    loweplane = [Point3D(0.5,0.5,-0.5),Point3D(-0.5,0.5,-0.5),Point3D(-0.5,-0.5,-0.5),Point3D(0.5,-0.5,-0.5)]
+    firststep = [Point3D(0,0.5,0.5),Point3D(0.5,0.5,0.5),Point3D(0.5,-0.5,0.5),Point3D(0,-0.5,0.5)]
+    secondstep = [Point3D(0,0.5,0),Point3D(-0.5,0.5,0),Point3D(-0.5,-0.5,0),Point3D(0,-0.5,0)]
+    inbetween = [Point3D(0,0.5,0),Point3D(0,-0.5,0),Point3D(0,-0.5,0.5),Point3D(0,0.5,0.5)]
+    frontpiece = [Point3D(-0.5,0.5,0),Point3D(-0.5,-0.5,0),Point3D(-0.5,-0.5,-0.5),Point3D(-0.5,0.5,-0.5)]
+    backplane = [Point3D(0.5,0.5,-0.5),Point3D(0.5,-0.5,-0.5),Point3D(0.5,-0.5,0.5),Point3D(0.5,0.5,0.5)]
+    rightplane = [Point3D(0,0.5,0.5),Point3D(0,0.5,0),Point3D(-0.5,0.5,0),Point3D(-0.5,0.5,-0.5),Point3D(0.5,0.5,-0.5),Point3D(0.5,0.5,0.5)]
+    leftplane = [Point3D(0,-0.5,0.5),Point3D(0,-0.5,0),Point3D(-0.5,-0.5,0),Point3D(-0.5,-0.5,-0.5),Point3D(0.5,-0.5,-0.5),Point3D(0.5,-0.5,0.5)]
+    finallist = [ loweplane, firststep, secondstep, inbetween, frontpiece, backplane, rightplane, leftplane]
+    return finallist
+
+def makeposcornerstairs(loneneighbors, mat):
+    loweplane = [Point3D(0.5,0.5,-0.5),Point3D(-0.5,0.5,-0.5),Point3D(-0.5,-0.5,-0.5),Point3D(0.5,-0.5,-0.5)]
+    cor1 = [Point3D(0.5,0.5,-0.5),Point3D(-0.5,0.5,-0.5),Point3D(0.5,0.5,+0.5)]
+    cor2 = [Point3D(-0.5,0.5,-0.5),Point3D(-0.5,-0.5,-0.5),Point3D(0.5,0.5,+0.5)]
+    cor3 = [Point3D(-0.5,-0.5,-0.5),Point3D(0.5,-0.5,-0.5),Point3D(0.5,0.5,+0.5)]
+    cor4 = [Point3D(0.5,-0.5,-0.5),Point3D(0.5,0.5,-0.5),Point3D(0.5,0.5,+0.5)]
+    finallist = [loweplane, cor1, cor2, cor3, cor4]
+    return finallist
+
+def makenegcornderstairs(loneneighbors, mat):
+    loweplane = [Point3D(0.5,0.5,-0.5),Point3D(-0.5,0.5,-0.5),Point3D(-0.5,-0.5,-0.5),Point3D(0.5,-0.5,-0.5)]
+    cor1 = [Point3D(0.5,0.5,-0.5),Point3D(-0.5,0.5,-0.5),Point3D(0.5,0.5,+0.5)]
+    cor2 = [Point3D(-0.5,0.5,-0.5),Point3D(-0.5,-0.5,-0.5),Point3D(0.5,0.5,+0.5)]
+    cor3 = [Point3D(-0.5,-0.5,-0.5),Point3D(0.5,-0.5,-0.5),Point3D(0.5,0.5,+0.5)]
+    cor4 = [Point3D(0.5,-0.5,-0.5),Point3D(0.5,0.5,-0.5),Point3D(0.5,0.5,+0.5)]
+    finallist = [loweplane, cor1, cor2, cor3, cor4]
+    return finallist
+
 def makestairs(loneneighbors, mat):
+
     for block in loneneighbors[mat]:
+        left = block[0]-1, block[1], block[2]
+        right = block[0]+1, block[1], block[2]
+        front = block[0], block[1]-1, block[2]
+        back = block[0], block[1]+1, block[2]
 
-        loweplane = [Point3D(0.5,0.5,-0.5),Point3D(-0.5,0.5,-0.5),Point3D(-0.5,-0.5,-0.5),Point3D(0.5,-0.5,-0.5)]
-        
-        firststep = [Point3D(0,0.5,0.5),Point3D(0.5,0.5,0.5),Point3D(0.5,-0.5,0.5),Point3D(0,-0.5,0.5)]
-    
-        secondstep = [Point3D(0,0.5,0),Point3D(-0.5,0.5,0),Point3D(-0.5,-0.5,0),Point3D(0,-0.5,0)]
+        somemeta = loneneighbors[mat][block]['meta'] & 3
+        finallist = []
 
-        inbetween = [Point3D(0,0.5,0),Point3D(0,-0.5,0),Point3D(0,-0.5,0.5),Point3D(0,0.5,0.5)]
-
-        frontpiece = [Point3D(-0.5,0.5,0),Point3D(-0.5,-0.5,0),Point3D(-0.5,-0.5,-0.5),Point3D(-0.5,0.5,-0.5)]
-
-        backplane = [Point3D(0.5,0.5,-0.5),Point3D(0.5,-0.5,-0.5),Point3D(0.5,-0.5,0.5),Point3D(0.5,0.5,0.5)]
-        
-        rightplane = [Point3D(0,0.5,0.5),Point3D(0,0.5,0),Point3D(-0.5,0.5,0),Point3D(-0.5,0.5,-0.5),Point3D(0.5,0.5,-0.5),Point3D(0.5,0.5,0.5)]
-        
-        leftplane = [Point3D(0,-0.5,0.5),Point3D(0,-0.5,0),Point3D(-0.5,-0.5,0),Point3D(-0.5,-0.5,-0.5),Point3D(0.5,-0.5,-0.5),Point3D(0.5,-0.5,0.5)]
-        
-        finallist = [ loweplane, firststep, secondstep, inbetween, frontpiece, backplane, rightplane, leftplane]
+        if left in loneneighbors[mat] and ((loneneighbors[mat][left]['meta'] & 3) + somemeta) % 2 != 0:
+            finallist = makeposcornerstairs(loneneighbors, mat)
+            print 'plusone left crasy corner'
+        elif right in loneneighbors[mat] and ((loneneighbors[mat][right]['meta'] & 3) + somemeta) % 2 != 0:
+            finallist = makenegcornderstairs(loneneighbors, mat) 
+            print 'plusone right crasy corner'
+        elif front in loneneighbors[mat] and ((loneneighbors[mat][front]['meta'] & 3) + somemeta) % 2 != 0:
+            finallist = makeposcornerstairs(loneneighbors, mat)
+            print 'plusone front crasy corner'
+        elif back in loneneighbors[mat] and ((loneneighbors[mat][back]['meta'] & 3) + somemeta) % 2 != 0: 
+            finallist = makenegcornderstairs(loneneighbors, mat)
+            print 'plusone back crasy corner'
+        else:
+            finallist = makenormalstairs(loneneighbors, mat)
 
         direction = loneneighbors[mat][block]['meta'] & 3
         upsidedown = (loneneighbors[mat][block]['meta'] >> 2) & 1
 
-
-
-        if direction == 0:
+        if direction  ==  0:
             finallist = rotatepointsZ(finallist, 0)
             if upsidedown:
                 finallist = rotatepointsX(finallist, 180)
@@ -469,15 +541,24 @@ def worldfromsample(sample):
 
 
 def getchunks():
+    if row[6] != 'None':
 
-
-    if row[6] != 'None' and worldfromsample(row[5]) == world:
         chunkdata = base64.standard_b64decode(row[6])
         xzpos = ast.literal_eval(row[1])
+        matsamples = []
         
-        if xzpos not in chunkposses and xzpos[0] >= cutx[0] and xzpos[0] <= cutx[1] and xzpos[1] >= cutz[0] and xzpos[1] <= cutz[1]:
+        for x in xrange(1,17):
+            
+            if len(chunkdata[(256*x):(256*x)+2]) == 2:
+                temp = struct.unpack('H', chunkdata[(256*x):(256*x)+2])[0]
+                matsamples.append(temp >> 4)
+        matsamples = list(set(matsamples))
+        worldnum = worldfromsample(matsamples)
+
+        if xzpos not in chunkposses and xzpos[0] >= cutx[0] and xzpos[0] <= cutx[1] and xzpos[1] >= cutz[0] and xzpos[1] <= cutz[1] and world == worldnum:
             chunkposses.append(xzpos)
             rightcounter = 0
+
             for index1 in xrange(0, 16):
                 
                 if (int(row[3]) & (1 << index1)) and index1 >= cuty and row[3] != '0':
@@ -486,22 +567,16 @@ def getchunks():
 
                         for z in xrange(0,16):
                             for x in xrange(0,16):
-
                                 goodindex = (x+(z*16)+(y*256)+(rightcounter*4096))*2
                                 
-                                # print str(len(chunkdata)) + ':'  + str(x) + '+' +  str(z*16) + '+' + str(y*256) + '+' + str(index1*4096)+ '*2' + '=' +  str(goodindex)
                                 try:
-                                    
                                     temp = struct.unpack('H',chunkdata[goodindex:goodindex+2])[0]
                                     btype = temp >> 4
                                     bmeta = temp & 15
 
-                                    
                                 except Exception as e:
-                                    
                                     btype = 666
                                     bmeta = 666
-
                                 
                                 block = ( (x + (xzpos[0]*16),z + (xzpos[1]*16),y+(index1*16)), btype, bmeta)
                                 chunks[row[1]]['blocks'].append(block)
@@ -518,7 +593,7 @@ def filterents(allhistory):
 
         for position in allhistory[x]['positions']:
             
-            if position['scene'] == curscene or position['alive'] == 0:
+            if position['scene'] == curscene  or curscene == 'noscene' or position['alive'] == 0:
                 temphistory[x]['positions'].append(position)
 
     return temphistory
@@ -556,7 +631,6 @@ def getMaxMinTime(allhistory):
 
 
 def makematindexes(chunks):
-
     wrongblocks = False
     materials = {}
     for chunk in chunks:
@@ -578,7 +652,6 @@ def makematindexes(chunks):
     return materials
 
 def fillmatindexes(chunks, materials):
-
     for chunk in chunks:
 
         for block in chunks[chunk]:
@@ -598,7 +671,6 @@ def fillmatindexes(chunks, materials):
 
 
 def genfacesNeighbors(materials):
-
     neightbors = {}
 
     print 'find material neightbors for ' + str(len(materials)) + ' materials'         
@@ -628,7 +700,6 @@ def genfacesNeighbors(materials):
     return neightbors
 
 def removeSupderCosy(neightbors):
-
     loneneighbors = {}
     for mat in neightbors:
         loneneighbors[mat] = {}
@@ -640,9 +711,7 @@ def removeSupderCosy(neightbors):
     return loneneighbors
 
 
-def fido(first, second):
-
-        
+def fido(first, second): 
     y = 180 - abs(abs(first[0] - second[0]) - 180)
     p = 180 - abs(abs(first[1] - second[1]) - 180)
     if len(first) > 2 and len(second) > 2:
@@ -651,7 +720,6 @@ def fido(first, second):
         return (y,p,h)
     return (y,p)
     
-
 offset = (0,0,0)
 if avgmiddle:
     allposses = []
@@ -803,17 +871,13 @@ for line in aroflines:
             getchunks()
 
     
-
-
 print 'Filtering entitys that are not supposed to be in scene move at all'
 
 allhistory = filterents(allhistory)
 
 allhistory = filterstatics(allhistory)
 
-
 print getMaxMinTime(allhistory)
-
 
 print 'parsing ' + str(len(chunkposses)) + ' chunks'
 
@@ -822,8 +886,6 @@ print 'parsing ' + str(len(chunkposses)) + ' chunks'
 print 'make a index of possible materials'
 
 materials = makematindexes(chunks)
-
-
 
 print str(len(chunks)) +  ' length of chunks'
 
@@ -835,10 +897,7 @@ materials = fillmatindexes(chunks, materials)
 
 # print 'removing all super neightbors, same type blocks on all sides for ' + str(len(neightbors)) + ' materials'         
 
-
 neightbors = genfacesNeighbors(materials)
-
-
 
 loneneighbors = removeSupderCosy(neightbors)
 
@@ -862,7 +921,6 @@ for mat in loneneighbors:
     elif mat[0] in [85, 113,188, 189, 190, 191]:
         makefence(loneneighbors, mat)
     elif mat[0] in [53, 67, 108, 109, 114, 128, 134, 135, 136, 156, 165, 164, 180]:
-        
         makestairs(loneneighbors, mat)
     else:
         makeblock(loneneighbors, mat)
@@ -888,7 +946,7 @@ print 'linking the vert index to the faces, this will take the most time !!!'
 for mat in faces:
     newfaces[mat] = []
     timenow = None
-    vertcache = OrderedDict()
+    vertcache = {}
     
     for index, vert in enumerate(vertices[mat]):
         vertcache.update({vert:index})
@@ -898,15 +956,12 @@ for mat in faces:
 
         for vert in forverts:
             if vert in vertcache:
-                tempface.append(vertcache[vert])
-                
-       
+                tempface.append(vertcache[vert])     
         newfaces[mat].append(tempface)
       
 faces = newfaces
 newface = None
 loneneighbors = None
-
 
 allstuff = {'allhistory':allhistory,'vertices':vertices,'faces':faces}
 
@@ -916,5 +971,5 @@ faces = None
 print 'entitys with spawnmessage:' + str(len(allhistory)) + ',so used !'
 print 'entitys without spawnmessage:' + str(len(lostcounter)) + ',so ignored !'
 
-f.write(repr(allstuff))
-f.close()
+with open(destfile, 'wb') as handle:
+    pickle.dump(allstuff, handle)

@@ -149,14 +149,19 @@ better render of chunks, if all is well it can render all map stuff
 
 #ToDo:
 1
+* getting rid of if no scene mentioned at lister exported file will be corrupted
 
-* more block shapes for map import
+* making the proxy faster by moving world guesser to lister
+
+* some crude stairs corners, this is tricky
+
+more block shapes for map import
 
 refactoring like there is no tomorrow
 
 adding cams that where imported by proxy commands
 
-some crude stairs corners, this is tricky
+
 
 
 

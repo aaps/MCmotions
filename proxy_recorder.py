@@ -18,7 +18,6 @@ class QuietBridge(Bridge):
     inscene = False
     recording = False
     scenename = "noscene"
-    # start_time = time.time()
 
     # hieronder gaat het over het spawnen van player monsters etc
 
@@ -32,7 +31,7 @@ class QuietBridge(Bridge):
                     self.scenename = string[8:]
                     self.inscene = True
                     message = "Recorder: " + self.scenename + " Action !!!"
-                    
+        
                     self.upstream.send_packet("chat_message", self.write_chat(message, "upstream"))
 
             elif string == '/cut':
@@ -75,7 +74,6 @@ class QuietBridge(Bridge):
                         message = "No cam added"
                         towrite = None
                     
-
                     if towrite:
                         self.dumpsize += len(towrite)
                         self.dumpfile.write(towrite)
@@ -91,12 +89,8 @@ class QuietBridge(Bridge):
         if self.recording:
             unknown = buff.unpack('l')
             self.worldtime = buff.unpack('l')
-            # towrite = "timeupdate| " + str(self.worldtime) +  '|'  +   str(timeofday) +  '\n'
-            # self.dumpfile.write(towrite)
             if self.begintime == 0:
                 self.begintime = self.worldtime
-
-            
   
             buff.restore()
         self.downstream.send_packet("time_update", buff.read())
@@ -104,7 +98,6 @@ class QuietBridge(Bridge):
     def packet_downstream_spawn_player(self, buff):
         buff.save()
         if self.recording:
-            
             towrite = 'spawnplayer|' + str( self.worldtime - self.begintime) + '|' + self.scenename + '|' + str(buff.unpack_varint()) + '|' + str(buff.unpack_uuid()) + '|' + str(buff.unpack('iii')) + '|' +  str(buff.unpack('bb'))+ '|' +  str(buff.unpack('h')) + '\n'
             self.dumpsize += len(towrite)
             self.dumpfile.write(towrite)
@@ -117,7 +110,6 @@ class QuietBridge(Bridge):
             theid = str(buff.unpack_varint())
             thetype = str(buff.unpack('B'))
             theposition = str(buff.unpack('iii'))
-            
             towrite = 'spawnobject|' + str( self.worldtime - self.begintime) + '|' + self.scenename + '|' + theid + '|' + thetype + '|' + theposition + '|' +  str(buff.unpack('bb')) + '\n'
             self.dumpsize += len(towrite)
             self.dumpfile.write(towrite)
@@ -309,20 +301,14 @@ class QuietBridge(Bridge):
         buff.save()
 
         if self.recording:
-            # bytear = bytearray([])
             chunkxy = buff.unpack('ii')
             groundup = buff.unpack('?')
             pribitmask = buff.unpack('H')
 
             if pribitmask > 0:
                 datalength = buff.unpack_varint()
-                matsamples = []
                 contents = base64.b64encode(buff.unpack(str(datalength) + 's'))
-                for x in xrange(1,17):
-                    temp = struct.unpack('H', contents[(256*x):(256*x)+2])[0]
-                    matsamples.append(temp >> 4)
-
-                towrite = 'Schunkdata|' + str(chunkxy) + '|' + str(groundup) + '|' + str(pribitmask) + '|' + str(datalength) + '|' + str(matsamples) + '|' + contents +'\n'
+                towrite = 'chunkdata|' + str(chunkxy) + '|' + str(groundup) + '|' + str(pribitmask) + '|' + str(datalength) + '|' + contents +'\n'
                 self.dumpsize += len(towrite)
                 self.dumpfile.write(towrite)
             
@@ -339,7 +325,6 @@ class QuietBridge(Bridge):
             metaar = []
             skylightsend = buff.unpack('?')
             nrchunks = buff.unpack_varint()
-            matsamples = []
 
             for index in xrange(0,nrchunks):
                 chunkxy = buff.unpack('ii')
@@ -355,9 +340,7 @@ class QuietBridge(Bridge):
                     if int(metaar[index][1]) & (1 << height):
                         counter += 4096
                         bigstring += buff.unpack(str(4096*2) + 's')
-                        for x in xrange(1,17):
-                            temp = struct.unpack('H', bigstring[(256*x):(256*x)+2])[0]
-                            matsamples.append(temp >> 4)
+
                 chunkar.append(base64.b64encode(bigstring))
                 
                 metaar[index] = metaar[index][0], metaar[index][1], counter
@@ -366,14 +349,11 @@ class QuietBridge(Bridge):
                 biomemeta = buff.unpack(str(256) + 's')
 
 
-            matsamples = list(set(matsamples))
-
 
             for index in xrange(0,nrchunks):
-                towrite = 'chunkdata|' + str(metaar[index][0]) +  '|True|' + str(metaar[index][1]) + '|' + str(metaar[index][2]) + '|' + str(matsamples) + '|' + chunkar[index] + '\n'
+                towrite = 'chunkdata|' + str(metaar[index][0]) +  '|True|' + str(metaar[index][1]) + '|' + str(metaar[index][2]) + '|' + chunkar[index] + '\n'
                 self.dumpsize += len(towrite)
                 self.dumpfile.write(towrite)
-
 
         buff.restore()
         self.downstream.send_packet("map_chunk_bulk", buff.read())
@@ -387,7 +367,6 @@ class QuietBridge(Bridge):
             for index in xrange(0,reccount):
                 xz = buff.unpack('B')
                 
-
                 x = ((xz >> 4) & 0xF) + (chunkxz[0] * 16)
                 z = (xz & 0xF) + (chunkxz[1] * 16)
                 y = buff.unpack('B')
@@ -405,8 +384,6 @@ class QuietBridge(Bridge):
         buff.save()
         if self.recording:
             xyz = self.unpack_blockposition(buff)
-
-      
             newid = buff.unpack_varint() >> 4
             towrite = 'blockchange|' + str( self.worldtime - self.begintime) + '|' + self.scenename + '|' + str(xyz) + '|' + str(newid)+ '\n'
             self.dumpsize += len(towrite)
@@ -419,8 +396,6 @@ class QuietBridge(Bridge):
         buff.save()
         if self.recording:
             xyz = self.unpack_blockposition(buff)
-            
-           
             bytea = buff.unpack('B')
             byteb = buff.unpack('B')
             blocktype = buff.unpack_varint()
@@ -462,7 +437,6 @@ class QuietBridge(Bridge):
             self.dumpsize += len(towrite)
             self.dumpfile.write(towrite)
                 
-
             buff.restore()
         self.downstream.send_packet("particle", buff.read())
 
@@ -519,8 +493,6 @@ class QuietBridge(Bridge):
         z = int(xyz & 0xFFFFFFF)
 
         return (x,y,z)
-
-
 
 
     def write_chat(self, text, direction):

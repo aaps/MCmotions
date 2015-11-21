@@ -18,6 +18,7 @@ import urllib.request
 import math 
 import operator
 import ast
+import pickle
 
 
 from bpy_extras.io_utils import ImportHelper
@@ -271,12 +272,10 @@ class DataImporter:
     def run(self, filepath, context):
         start_time = time.time()
         
-        origin = open(filepath, 'r')
-
-        total = ast.literal_eval(origin.read())
+        with open(filepath, 'rb') as handle:
+            total = pickle.load(handle)
         
         indexi = 0
-
         
         vertices = total['vertices']
         faces = total['faces']
@@ -308,17 +307,12 @@ class DataImporter:
                 head.rotation_mode = 'XYZ'
                 head.scale = (0.25,0.25,0.25)
 
-
-
                 bpy.ops.mesh.primitive_cube_add(location=firstloc)
 
-                
                 ob = bpy.context.object
                 ob.rotation_mode = 'XYZ'
                 ob.scale = (0.25,0.75,0.25)
                 
-
-
                 mat = bpy.data.materials.new("PKHG")
 
                 mobtype = aentity['type']
@@ -363,7 +357,6 @@ class DataImporter:
                     if mobtype == 'player':
                         ob.name = "player: RECORDER"
                     
-
                         mat.diffuse_color = (1,0,0)
                     else:
                         mobtype = mobtype.replace('-','')
@@ -375,10 +368,8 @@ class DataImporter:
                             data = json.loads(data)
                             ob.name = "player: " + data['name']
                         else:
-                           
                             ob.name = "player: unknown"
                         mat.diffuse_color = (1,0.6,0.4)
-
 
                 else:
                     mat.diffuse_color = (0.0,0.0,0.0)
@@ -390,17 +381,10 @@ class DataImporter:
                 ob.select = True
                 head.select = True
                 
-
-
-
                 put_on_layers = lambda x: tuple((i in x) for i in range(20))
-
-                    
 
                 bpy.context.scene.objects.active = ob
                 bpy.ops.object.parent_set()
-
-
 
                 maincam = bpy.data.cameras.new("Camera")
                 maincam.clip_start = 1
@@ -420,10 +404,6 @@ class DataImporter:
                 ob.layers[:] = put_on_layers({2})
                 head.layers[:] = put_on_layers({2})
                 
-
-
-
-
                 selfy_cam_ob.parent = head
                 cam_ob.parent = head
                 bpy.context.scene.objects.link(cam_ob)
@@ -440,7 +420,6 @@ class DataImporter:
                     ob.hide = not bool(posses['alive'])
                     ob.hide_render = not bool(posses['alive'])
 
-                    
                     ob.keyframe_insert("hide")
                     ob.keyframe_insert("hide_render")
                     ob.keyframe_insert(data_path="location")
@@ -450,8 +429,6 @@ class DataImporter:
                     fc.extrapolation = 'LINEAR'
                     for kp in fc.keyframe_points:
                         kp.interpolation = 'LINEAR'
-
-
 
         print("Script finished after {} seconds".format(time.time() - start_time))
         return {'FINISHED'}
@@ -492,5 +469,4 @@ def unregister():
 if __name__ == "__main__":
     register()
 
-    # test call
     bpy.ops.something.minecraft('INVOKE_DEFAULT')
