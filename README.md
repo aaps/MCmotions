@@ -143,38 +143,30 @@ the scene option is important for now, no matter what name, you can test it with
 
 
 #NEW:
-difrentiate between overworld, nether and theend chunks/maps
-better render of chunks, if all is well it can render all map stuff
+getting rid of if no scene mentioned at lister exported file will be corrupted (done)
+
+making the proxy faster by moving world guesser to lister (done)
+
+some crude stairs corners, this is tricky (3/4 done)
 
 
 #ToDo:
 1
-* getting rid of if no scene mentioned at lister exported file will be corrupted
+* more block shapes for map import
 
-* making the proxy faster by moving world guesser to lister
-
-* some crude stairs corners, this is tricky
-
-more block shapes for map import
+* more block colors
 
 refactoring like there is no tomorrow
 
 adding cams that where imported by proxy commands
 
 
-
-
-
 2
-import blockchanges
-
-what to do with block placements that have an interesting shape like stairs ?
-
-what to do with removing those shapes ?
-
-more block colors on the right blocks
+importing block changes via blender masks and makeing that mask visible on keyframes (hope that works)
 
 block textures
+
+the ability to record plugin messages like multyworld
 
 
 3
@@ -182,7 +174,7 @@ recording the details, animations of blocks, particles, lightning, rain, etc
 
 the ability to survive transports to other servers
 
-the ability to record plugin messages like multyworld
+
 
 
 #WARNING 

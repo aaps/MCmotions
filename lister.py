@@ -286,21 +286,25 @@ def makestairs(loneneighbors, mat):
         front = block[0], block[1]-1, block[2]
         back = block[0], block[1]+1, block[2]
 
-        somemeta = loneneighbors[mat][block]['meta'] & 3
+        somemeta = (loneneighbors[mat][block]['meta'] & 3) + 1
         finallist = []
 
-        if left in loneneighbors[mat] and ((loneneighbors[mat][left]['meta'] & 3) + somemeta) % 2 != 0:
+        if left in loneneighbors[mat] and ((loneneighbors[mat][left]['meta'] & 3) + 1) != somemeta and somemeta == 2:
             finallist = makeposcornerstairs(loneneighbors, mat)
-            print 'plusone left crasy corner'
-        elif right in loneneighbors[mat] and ((loneneighbors[mat][right]['meta'] & 3) + somemeta) % 2 != 0:
+            thesum = (loneneighbors[mat][left]['meta'] & 3) + 1
+            print str(somemeta) + '+' + str(thesum) + ' % =' + str((somemeta + thesum) % 2)
+        elif right in loneneighbors[mat] and ((loneneighbors[mat][right]['meta'] & 3) + 1) != somemeta and somemeta == 1:
             finallist = makenegcornderstairs(loneneighbors, mat) 
-            print 'plusone right crasy corner'
-        elif front in loneneighbors[mat] and ((loneneighbors[mat][front]['meta'] & 3) + somemeta) % 2 != 0:
+            thesum = (loneneighbors[mat][right]['meta'] & 3) + 1
+            print str(somemeta) + '+' + str(thesum) + ' % =' + str((somemeta + thesum) % 2)
+        elif front in loneneighbors[mat] and ((loneneighbors[mat][front]['meta'] & 3) + 1) != somemeta and somemeta == 3:
             finallist = makeposcornerstairs(loneneighbors, mat)
-            print 'plusone front crasy corner'
-        elif back in loneneighbors[mat] and ((loneneighbors[mat][back]['meta'] & 3) + somemeta) % 2 != 0: 
+            thesum = (loneneighbors[mat][front]['meta'] & 3) + 1
+            print str(somemeta) + '+' + str(thesum) + ' % =' + str((somemeta + thesum) % 2)
+        elif back in loneneighbors[mat] and ((loneneighbors[mat][back]['meta'] & 3) + 1) != somemeta and somemeta == 4: 
             finallist = makenegcornderstairs(loneneighbors, mat)
-            print 'plusone back crasy corner'
+            thesum = (loneneighbors[mat][back]['meta'] & 3) + 1
+            print str(somemeta) + '+' + str(thesum) + ' % =' + str((somemeta + thesum) % 2)
         else:
             finallist = makenormalstairs(loneneighbors, mat)
 
