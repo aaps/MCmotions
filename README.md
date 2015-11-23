@@ -156,6 +156,8 @@ some crude stairs corners, this is tricky (3/4 done)
 
 * more block colors
 
+* testing and tweaking entity movement
+
 refactoring like there is no tomorrow
 
 adding cams that where imported by proxy commands

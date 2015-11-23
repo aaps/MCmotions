@@ -262,20 +262,24 @@ def makenormalstairs(loneneighbors, mat):
 
 def makeposcornerstairs(loneneighbors, mat):
     loweplane = [Point3D(0.5,0.5,-0.5),Point3D(-0.5,0.5,-0.5),Point3D(-0.5,-0.5,-0.5),Point3D(0.5,-0.5,-0.5)]
-    cor1 = [Point3D(0.5,0.5,-0.5),Point3D(-0.5,0.5,-0.5),Point3D(0.5,0.5,+0.5)]
-    cor2 = [Point3D(-0.5,0.5,-0.5),Point3D(-0.5,-0.5,-0.5),Point3D(0.5,0.5,+0.5)]
-    cor3 = [Point3D(-0.5,-0.5,-0.5),Point3D(0.5,-0.5,-0.5),Point3D(0.5,0.5,+0.5)]
-    cor4 = [Point3D(0.5,-0.5,-0.5),Point3D(0.5,0.5,-0.5),Point3D(0.5,0.5,+0.5)]
-    finallist = [loweplane, cor1, cor2, cor3, cor4]
+    firststep = [Point3D(0,0.5,0),Point3D(-0.5,0.5,0),Point3D(-0.5,-0.5,0), Point3D(0.5,-0.5,0), Point3D(0.5,0,0),Point3D(0,0,0)]
+    frontpiece1 = [Point3D(-0.5,0.5,0),Point3D(-0.5,-0.5,0),Point3D(-0.5,-0.5,-0.5),Point3D(-0.5,0.5,-0.5)]
+    frontpiece2 = [Point3D(0.5,-0.5,0), Point3D(-0.5,-0.5,0),Point3D(-0.5,-0.5,-0.5),Point3D(0.5,-0.5,-0.5)]
+    triplane1 = [Point3D(0,0.5,0.5),Point3D(0,0.5,0),Point3D(-0.5,0.5,0),Point3D(-0.5,0.5,-0.5),Point3D(0.5,0.5,-0.5),Point3D(0.5,0.5,0.5)]
+    triplane2 = [Point3D(0.5,0,0.5),Point3D(0.5,0,0),Point3D(0.5,-0.5,0),Point3D(0.5,-0.5,-0.5),Point3D(0.5,0.5,-0.5),Point3D(0.5,0.5,0.5)]
+    smalplanetop = [Point3D(0.5,0.5,0.5),Point3D(0,0.5,0.5),Point3D(0,0,0.5),Point3D(0.5,0,0.5)]
+    smalplaneside1 = [Point3D(0,0,0),Point3D(0,0.5,0),Point3D(0,0.5,0.5),Point3D(0,0,0.5)]
+    smalplaneside2 = [Point3D(0,0,0),Point3D(0.5,0,0),Point3D(0.5,0,0.5),Point3D(0,0,0.5)]
+    finallist = [loweplane, firststep, frontpiece1, frontpiece2, triplane1, triplane2, smalplanetop, smalplaneside1, smalplaneside2]
     return finallist
 
 def makenegcornderstairs(loneneighbors, mat):
     loweplane = [Point3D(0.5,0.5,-0.5),Point3D(-0.5,0.5,-0.5),Point3D(-0.5,-0.5,-0.5),Point3D(0.5,-0.5,-0.5)]
-    cor1 = [Point3D(0.5,0.5,-0.5),Point3D(-0.5,0.5,-0.5),Point3D(0.5,0.5,+0.5)]
-    cor2 = [Point3D(-0.5,0.5,-0.5),Point3D(-0.5,-0.5,-0.5),Point3D(0.5,0.5,+0.5)]
-    cor3 = [Point3D(-0.5,-0.5,-0.5),Point3D(0.5,-0.5,-0.5),Point3D(0.5,0.5,+0.5)]
-    cor4 = [Point3D(0.5,-0.5,-0.5),Point3D(0.5,0.5,-0.5),Point3D(0.5,0.5,+0.5)]
-    finallist = [loweplane, cor1, cor2, cor3, cor4]
+    firststep = [Point3D(0,0.5,0),Point3D(-0.5,0.5,0),Point3D(-0.5,-0.5,0),Point3D(0,-0.5,0)]
+    frontpiece = [Point3D(-0.5,0.5,0),Point3D(-0.5,-0.5,0),Point3D(-0.5,-0.5,-0.5),Point3D(-0.5,0.5,-0.5)]
+    triplane1 = [Point3D(0,-0.5,0.5),Point3D(0,-0.5,0),Point3D(-0.5,-0.5,0),Point3D(-0.5,-0.5,-0.5),Point3D(0.5,-0.5,-0.5),Point3D(0.5,-0.5,0.5)]
+    triplane2 = [Point3D(-0.5,0,0.5),Point3D(-0.5,0,0),Point3D(-0.5,-0.5,0),Point3D(-0.5,-0.5,-0.5),Point3D(-0.5,0.5,-0.5),Point3D(-0.5,0.5,0.5)]
+    finallist = [loweplane, firststep, frontpiece, triplane1, triplane2]
     return finallist
 
 def makestairs(loneneighbors, mat):
@@ -294,7 +298,7 @@ def makestairs(loneneighbors, mat):
             thesum = (loneneighbors[mat][left]['meta'] & 3) + 1
             print str(somemeta) + '+' + str(thesum) + ' % =' + str((somemeta + thesum) % 2)
         elif right in loneneighbors[mat] and ((loneneighbors[mat][right]['meta'] & 3) + 1) != somemeta and somemeta == 1:
-            finallist = makenegcornderstairs(loneneighbors, mat) 
+            finallist = makeposcornerstairs(loneneighbors, mat) 
             thesum = (loneneighbors[mat][right]['meta'] & 3) + 1
             print str(somemeta) + '+' + str(thesum) + ' % =' + str((somemeta + thesum) % 2)
         elif front in loneneighbors[mat] and ((loneneighbors[mat][front]['meta'] & 3) + 1) != somemeta and somemeta == 3:
@@ -302,11 +306,11 @@ def makestairs(loneneighbors, mat):
             thesum = (loneneighbors[mat][front]['meta'] & 3) + 1
             print str(somemeta) + '+' + str(thesum) + ' % =' + str((somemeta + thesum) % 2)
         elif back in loneneighbors[mat] and ((loneneighbors[mat][back]['meta'] & 3) + 1) != somemeta and somemeta == 4: 
-            finallist = makenegcornderstairs(loneneighbors, mat)
+            finallist = makeposcornerstairs(loneneighbors, mat)
             thesum = (loneneighbors[mat][back]['meta'] & 3) + 1
             print str(somemeta) + '+' + str(thesum) + ' % =' + str((somemeta + thesum) % 2)
-        else:
-            finallist = makenormalstairs(loneneighbors, mat)
+        # else:
+        #     finallist = makenormalstairs(loneneighbors, mat)
 
         direction = loneneighbors[mat][block]['meta'] & 3
         upsidedown = (loneneighbors[mat][block]['meta'] >> 2) & 1
@@ -545,9 +549,9 @@ def worldfromsample(sample):
 
 
 def getchunks():
-    if row[6] != 'None':
+    if row[5] != 'None':
 
-        chunkdata = base64.standard_b64decode(row[6])
+        chunkdata = base64.standard_b64decode(row[5])
         xzpos = ast.literal_eval(row[1])
         matsamples = []
         
