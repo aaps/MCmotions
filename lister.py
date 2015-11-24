@@ -293,24 +293,40 @@ def makestairs(loneneighbors, mat):
         somemeta = (loneneighbors[mat][block]['meta'] & 3) + 1
         finallist = []
 
-        if left in loneneighbors[mat] and ((loneneighbors[mat][left]['meta'] & 3) + 1) != somemeta   and somemeta == 2:
+        if left in loneneighbors[mat] and ((loneneighbors[mat][left]['meta'] & 3) + 1) != somemeta and somemeta == 2:
+         
+           
+            finallist = makeposcornerstairs(loneneighbors, mat)
+            if (loneneighbors[mat][left]['meta'] & 3) + 1 == 3:
+                finallist = finallist
+            else:
+                finallist = mirrorpointsY(finallist)
             
-            finallist = makeposcornerstairs(loneneighbors, mat) 
-            finallist = mirrorpointsY(finallist)
+
         elif right in loneneighbors[mat] and ((loneneighbors[mat][right]['meta'] & 3) + 1) != somemeta and somemeta == 1:
-            finallist = makeposcornerstairs(loneneighbors, mat) 
+            finallist = makeposcornerstairs(loneneighbors, mat)
+            if (loneneighbors[mat][right]['meta'] & 3) + 1 == 3:
+                finallist = mirrorpointsY(finallist)
+            else:
+                finallist = finallist
             
-            thesum = (loneneighbors[mat][right]['meta'] & 3) + 1
-            print str(somemeta) + '+' + str(thesum) + ' % =' + str((somemeta + thesum) % 2)
         elif front in loneneighbors[mat] and ((loneneighbors[mat][front]['meta'] & 3) + 1) != somemeta and somemeta == 3:
             finallist = makeposcornerstairs(loneneighbors, mat)
-            thesum = (loneneighbors[mat][front]['meta'] & 3) + 1
-            print str(somemeta) + '+' + str(thesum) + ' % =' + str((somemeta + thesum) % 2)
-        elif back in loneneighbors[mat] and ((loneneighbors[mat][back]['meta'] & 3) + 1) != somemeta and somemeta == 4: 
+            if (loneneighbors[mat][front]['meta'] & 3) + 1 == 1:
+                finallist = finallist   
+            else: 
+                finallist = mirrorpointsY(finallist)
+            
+            
+        elif back in loneneighbors[mat] and ((loneneighbors[mat][back]['meta'] & 3) + 1) != somemeta and somemeta == 4:
             finallist = makeposcornerstairs(loneneighbors, mat)
-            finallist = mirrorpointsY(finallist)
-            thesum = (loneneighbors[mat][back]['meta'] & 3) + 1
-            print str(somemeta) + '+' + str(thesum) + ' % =' + str((somemeta + thesum) % 2)
+            if (loneneighbors[mat][back]['meta'] & 3) + 1 == 1:
+                # finallist = makeposcornerstairs(loneneighbors, mat)
+                finallist = mirrorpointsY(finallist)
+            else:
+                finallist = finallist
+        
+            
         else:
             finallist = makenormalstairs(loneneighbors, mat)
 
