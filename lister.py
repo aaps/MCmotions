@@ -127,15 +127,15 @@ class Point3D:
         self.z += tup[2]
 
     def mirrorX(self):
-        x = round(self.x * -1)
+        x = self.x * -1
         return Point3D(x, self.y, self.z)
 
     def mirrorY(self):
-        y = round(self.y * -1)
+        y = self.y * -1
         return Point3D(self.x, y, self.z)
 
     def mirrorZ(self):
-        z = round(self.z * -1)
+        z = self.z * -1
         return Point3D(self.x, self.y, z)
 
     def rotateX(self, angle):
@@ -293,12 +293,13 @@ def makestairs(loneneighbors, mat):
         somemeta = (loneneighbors[mat][block]['meta'] & 3) + 1
         finallist = []
 
-        if left in loneneighbors[mat] and ((loneneighbors[mat][left]['meta'] & 3) + 1) != somemeta and somemeta == 2:
-            finallist = makeposcornerstairs(loneneighbors, mat)
-            thesum = (loneneighbors[mat][left]['meta'] & 3) + 1
-            print str(somemeta) + '+' + str(thesum) + ' % =' + str((somemeta + thesum) % 2)
+        if left in loneneighbors[mat] and ((loneneighbors[mat][left]['meta'] & 3) + 1) != somemeta   and somemeta == 2:
+            
+            finallist = makeposcornerstairs(loneneighbors, mat) 
+            finallist = mirrorpointsY(finallist)
         elif right in loneneighbors[mat] and ((loneneighbors[mat][right]['meta'] & 3) + 1) != somemeta and somemeta == 1:
             finallist = makeposcornerstairs(loneneighbors, mat) 
+            
             thesum = (loneneighbors[mat][right]['meta'] & 3) + 1
             print str(somemeta) + '+' + str(thesum) + ' % =' + str((somemeta + thesum) % 2)
         elif front in loneneighbors[mat] and ((loneneighbors[mat][front]['meta'] & 3) + 1) != somemeta and somemeta == 3:
@@ -307,10 +308,11 @@ def makestairs(loneneighbors, mat):
             print str(somemeta) + '+' + str(thesum) + ' % =' + str((somemeta + thesum) % 2)
         elif back in loneneighbors[mat] and ((loneneighbors[mat][back]['meta'] & 3) + 1) != somemeta and somemeta == 4: 
             finallist = makeposcornerstairs(loneneighbors, mat)
+            finallist = mirrorpointsY(finallist)
             thesum = (loneneighbors[mat][back]['meta'] & 3) + 1
             print str(somemeta) + '+' + str(thesum) + ' % =' + str((somemeta + thesum) % 2)
-        # else:
-        #     finallist = makenormalstairs(loneneighbors, mat)
+        else:
+            finallist = makenormalstairs(loneneighbors, mat)
 
         direction = loneneighbors[mat][block]['meta'] & 3
         upsidedown = (loneneighbors[mat][block]['meta'] >> 2) & 1
