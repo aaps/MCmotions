@@ -566,12 +566,14 @@ def worldfromsample(sample):
 
 
 
-def getchunks():
+def getchunks(chunkxz):
     if row[5] != 'None':
 
         chunkdata = base64.standard_b64decode(row[5])
-        xzpos = ast.literal_eval(row[1])
         matsamples = []
+        
+        if chunkxz not in chunks:
+            chunks.update({chunkxz:{'blocks':[]}})
         
         for x in xrange(1,17):
             
@@ -581,8 +583,8 @@ def getchunks():
         matsamples = list(set(matsamples))
         worldnum = worldfromsample(matsamples)
 
-        if xzpos not in chunkposses and xzpos[0] >= cutx[0] and xzpos[0] <= cutx[1] and xzpos[1] >= cutz[0] and xzpos[1] <= cutz[1] and world == worldnum:
-            chunkposses.append(xzpos)
+        if chunkxz not in chunkposses and chunkxz[0] >= cutx[0] and chunkxz[0] <= cutx[1] and chunkxz[1] >= cutz[0] and chunkxz[1] <= cutz[1] and world == worldnum:
+            chunkposses.append(chunkxz)
             rightcounter = 0
 
             for index1 in xrange(0, 16):
@@ -604,10 +606,12 @@ def getchunks():
                                     btype = 666
                                     bmeta = 666
                                 
-                                block = ( (x + (xzpos[0]*16),z + (xzpos[1]*16),y+(index1*16)), btype, bmeta)
-                                chunks[row[1]]['blocks'].append(block)
+                                block = ( (x + (chunkxz[0]*16),z + (chunkxz[1]*16),y+(index1*16)), btype, bmeta)
+                                
+                                chunks[chunkxz]['blocks'].append(block)
+
                     rightcounter += 1
-                    # print rightcounter
+
 
 def filterents(allhistory):
 
@@ -891,10 +895,12 @@ for line in aroflines:
 
     elif row[0] == 'chunkdata':
         length = row[3]
-        
-        chunks.update({row[1]:{'blocks':[]}})
         if not nochunks:
-            getchunks()
+            # chunks.update({row[1]:{'blocks':[]}})
+        
+            getchunks(ast.literal_eval(row[1]))
+            # print chunks
+
 
     
 print 'Filtering entitys that are not supposed to be in scene move at all'

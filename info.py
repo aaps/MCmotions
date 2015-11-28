@@ -7,7 +7,7 @@ import base64
 import struct
 
 sourcefile = "default.dump"
-
+blocksize = 200
 
 def getsourcefile():
     try:
@@ -23,11 +23,9 @@ def getsourcefile():
 
 
 def makeimage(aroflines,matnum):
-    dims = (10000,10000)
-    halfdims = dims[0]/2,dims[1]/2
-    im = Image.new('RGBA', dims, (0, 0, 0, 0))
-    draw = ImageDraw.Draw(im)
-    
+
+    dims = (100,100)
+
     matcount = []
     scenelist = []
 
@@ -61,23 +59,47 @@ def makeimage(aroflines,matnum):
 
     matcount = sorted(matcount,key=lambda x: x[0], reverse=True)
 
-    multyplier =   256/float(matcount[0][0])
-    font = ImageFont.truetype("FreeMono.ttf", 10)
+    multyplier = 1
+    if matcount[0][0] != 0:
+        multyplier = 256/float(matcount[0][0])
+    
+    
+    font = ImageFont.truetype("FreeMono.ttf", 14)
 
     for mats in matcount:
-
         chunkxy = ast.literal_eval(mats[1])
-        one = (chunkxy[0]*50)+halfdims[0], (chunkxy[1]*50)+halfdims[1]
-        two = (chunkxy[0]*50) + 49 + halfdims[0], chunkxy[1]*50 + 49 + halfdims[1]
+        if chunkxy[0] * blocksize > dims[0]:
+            dims = chunkxy[0] * blocksize, dims[1]
+        elif (chunkxy[0]*-1) * blocksize > dims[0]:
+            dims = (chunkxy[0]*-1) * blocksize, dims[1]
+
+        if chunkxy[1] * blocksize > dims[1]:
+            dims = dims[0], chunkxy[1] * blocksize
+        elif (chunkxy[1]*-1) * blocksize > dims[1]:
+            dims = dims[0], (chunkxy[1]*-1) * blocksize
+
+
+    halfdims = dims[0]/2,dims[1]/2
+    im = Image.new('RGBA', dims, (0, 0, 0, 0))
+    draw = ImageDraw.Draw(im)
+    draw.rectangle([(0,0),dims],(100,100,100))
+
+    for mats in matcount:
+        chunkxy = ast.literal_eval(mats[1])
+        one = (chunkxy[0]*(blocksize/2))+halfdims[0], (chunkxy[1]*(blocksize/2))+halfdims[1]
+        two = (chunkxy[0]*(blocksize/2)) + (blocksize/2) - 1 + halfdims[0], chunkxy[1]*(blocksize/2) + (blocksize/2) - 1 + halfdims[1]
 
         draw.rectangle([one,two], (int(multyplier* mats[0]),0,0))
-        draw.text(one, str(chunkxy[0]) + ',' + str(chunkxy[1]),(255,255,255),font=font)
+        draw.text(one, 'x' + str(chunkxy[0]) + ',z' + str(chunkxy[1]),(255,255,255),font=font)
     position = 0
     for scene in scenelist:
-        draw.text((10, 0),"SCENES:" ,(100,100,100),font=font)
+        draw.text((10, 10),"SCENES:", (0,0,0),font=font)
         position += 20
-        draw.text((10, position), scene,(100,100,100),font=font)
+        draw.text((10, position), scene, (0,0,0),font=font)
 
+
+    
+    
     im.save("diags.png")
 
 
