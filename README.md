@@ -147,7 +147,7 @@ getting rid of if no scene mentioned at lister exported file will be corrupted (
 
 making the proxy faster by moving world guesser to lister (done)
 
-some crude stairs corners, this is tricky (3/4 done)
+some crude stairs corners, this is tricky (done, not negative stairs tho)
 
 
 #ToDo:

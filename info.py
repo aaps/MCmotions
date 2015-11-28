@@ -42,7 +42,7 @@ def makeimage(aroflines,matnum):
         row = line.split('|')
         counter = 0
         if 'chunkdata' == row[0]:
-            chunkdata = base64.standard_b64decode(row[6])
+            chunkdata = base64.standard_b64decode(row[5])
             xzpos = ast.literal_eval(row[1])
             for index1 in xrange(0, 16):
                         if int(row[3]) & (1 << index1):
