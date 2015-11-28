@@ -64,9 +64,9 @@ lister has commandline options:
 --cutz make a selection of chunks from oneof the horisontal axis, exclude the rest
 in the format of: -2,4 or 4,8
 
---cutx  make a selection of chunks from the other horisontal axis, exclude the rest 
+--CTL the top left of the area to cut out, see diag.png created with info.py
 
---cuty remove x chunks from the bottom
+--CBR the bottom right of the area to cut out, above ditto
 
 --noentitys (only map data for blender to play with)
 
@@ -76,7 +76,7 @@ in the format of: -2,4 or 4,8
 
 Example ussage:
 
-./lister.py --sourcefile asession.dump --cutx -12,-2 --cutz -6,0  --onlyplayerents y --scene superrun (if you made a scene named superrun with /action superrun)
+./lister.py --sourcefile asession.dump --CTL -12,-2 --CBR -6,0  --onlyplayerents y --scene superrun (if you made a scene named superrun with /action superrun)
 
 This command can eat big amount of chunks and still work, it is with the belnder import where things will fill up all your ram.
 
@@ -125,9 +125,9 @@ you can use the commands to record a scene, stop the dump or place cameras as yo
 the 0 option is to map air, this will generate diag.png an image with a quite raw map where each block of the image contains chunk coordinates so you find the right options for the next step
 
 7 startup the lister, this will convert the data to be ready for the blender import like so: 
-./lister.py --sourcefile asession.dump --cutx 2,9 --cutz 9,16  --onlyplayerents y --world overworld --scene anyscene
+./lister.py --sourcefile asession.dump --CTL 2,9 --CBR 9,16  --onlyplayerents y --world overworld --scene anyscene
 
-the cutx 2,9 and cuty 9,16 if to cut out the map so you will only use a limited range of chunks, (else you will generate a file blender cant import)
+the CTL 2,9 and CBR 9,16 are to cut out the map so you will only use a limited range of chunks, (else you will generate a file blender cant import)
 onlyplayerents will only import players and their movements and not mobs etc.
 world overworld will only import the overwordmap and not nether map chunks you might have recorded
 

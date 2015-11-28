@@ -26,13 +26,13 @@ onlyplayerents = False
 curscene = "noscene"
 world = "overworld"
 cuty = 0
-cutz = (-1000,1000)
-cutx = (-1000,1000)
+topleft = (-1000,-1000)
+bottomright = (1000,1000)
 multymatblocks = [35, 43, 44, 95, 97, 98, 125, 126, 139, 155, 159, 160, 171]
 
 
 try:
-    opts, args = getopt.getopt(sys.argv[1:],"",["avgmiddle=","sourcefile=","destfile=","scene=", "excludeent=","excludeblocks=","cutx=","cuty=","cutz=","noentitys=","nochunks=","onlyplayerents=", "world=" ])
+    opts, args = getopt.getopt(sys.argv[1:],"",["avgmiddle=","sourcefile=","destfile=","scene=", "excludeent=","excludeblocks=","CTL=","CBR=","cutz=","noentitys=","nochunks=","onlyplayerents=", "world=" ])
         
 except getopt.GetoptError:
     print 'error: lister.py --onlyplayerents --avgmiddle --sourcefile filename --destfile filename --scene scene name --excludeent commaseperatedlist of entity ids --excludeblocks commaseperatedlist of blockids --world nether/overworld/theend will only use this world'
@@ -67,11 +67,11 @@ for opt, arg in opts:
         norenderblocks = arg.split(",")
         norenderblocks = map(int, norenderblocks)
 
-    if opt == "--cutz":
-        cutz = ast.literal_eval(arg)
+    if opt == "--CTL":
+        topleft = ast.literal_eval(arg)
 
-    if opt == "--cutx":
-        cutx = ast.literal_eval(arg)
+    if opt == "--CBR":
+        bottomright = ast.literal_eval(arg)
 
     if opt == "--cuty":
         cuty = ast.literal_eval(arg)
@@ -583,7 +583,9 @@ def getchunks(chunkxz):
         matsamples = list(set(matsamples))
         worldnum = worldfromsample(matsamples)
 
-        if chunkxz not in chunkposses and chunkxz[0] >= cutx[0] and chunkxz[0] <= cutx[1] and chunkxz[1] >= cutz[0] and chunkxz[1] <= cutz[1] and world == worldnum:
+        
+        if chunkxz not in chunkposses and chunkxz[0] >= topleft[0] and chunkxz[1] >= topleft[1] and chunkxz[0] <= bottomright[0] and chunkxz[1] <= bottomright[1] and world == worldnum:
+            # print chunkxz, topleft, bottomright
             chunkposses.append(chunkxz)
             rightcounter = 0
 
