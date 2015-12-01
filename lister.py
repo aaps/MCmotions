@@ -475,6 +475,38 @@ def makeflatblock(loneneighbors, mat):
 
 def makeverticalflatblock(loneneighbors, mat):
     for block in loneneighbors[mat]:
+        
+
+        left = block[0]-1, block[1], block[2]
+        right = block[0]+1, block[1], block[2]
+        front = block[0], block[1]-1, block[2]
+        back = block[0], block[1]+1, block[2]
+
+
+        listoffaces = loneneighbors[mat][block]['faces']
+        templist = []
+
+        templist.append([Point3D(0.5,-0.1,-0.5),Point3D(-0.5,-0.1,-0.5),Point3D(-0.5,0.1,-0.5),Point3D(0.5,0.1,-0.5)])
+
+        templist.append([Point3D(0.5,-0.1,0.5),Point3D(-0.5,-0.1,0.5),Point3D(-0.5,0.1,0.5),Point3D(0.5,0.1,0.5)])
+
+        templist.append([Point3D(-0.5,-0.1,-0.5),Point3D(-0.5,-0.1,0.5),Point3D(0.5,-0.1,0.5),Point3D(0.5,-0.1,-0.5)])
+
+        templist.append([Point3D(-0.5,0.1,-0.5),Point3D(-0.5,0.1,0.5),Point3D(0.5,0.1,0.5),Point3D(0.5,0.1,-0.5)])
+
+        templist.append([Point3D(-0.5,0.1,-0.5),Point3D(-0.5,-0.1,-0.5),Point3D(-0.5,-0.1,0.5),Point3D(-0.5,0.1,0.5)])
+
+        templist.append([Point3D(0.5,0.1,-0.5),Point3D(0.5,-0.1,-0.5),Point3D(0.5,-0.1,0.5),Point3D(0.5,0.1,0.5)])
+        
+        if right in allneightbors or left in allneightbors:
+            templist = rotatepointsZ(templist, 90)
+        appendto3dlist(templist, block)    
+        templist = totuplelist(templist)
+
+        faces[mat] += templist
+
+def makeladderlikeblock(loneneighbors, mat):
+    for block in loneneighbors[mat]:
         listoffaces = loneneighbors[mat][block]['faces']
         templist = []
 
@@ -714,18 +746,25 @@ def genfacesNeighbors(materials):
         
         for block in materials[mat]:
             neightbors[mat][block] = {'meta': materials[mat][block]['meta'],'faces':[]}
+            allneightbors[block] = 1
             if (block[0]-1, block[1], block[2]) not in materials[mat]:
                 neightbors[mat][block]['faces'].append(1)
+                # allneightbors[block]['faces'].append(1)
             if (block[0]+1, block[1], block[2]) not in materials[mat]:
                 neightbors[mat][block]['faces'].append(2)
+                # allneightbors[block]['faces'].append(2)
             if (block[0], block[1]-1, block[2]) not in materials[mat]:
                 neightbors[mat][block]['faces'].append(3)
+                # allneightbors[block]['faces'].append(3)
             if (block[0], block[1]+1, block[2]) not in materials[mat]:
                 neightbors[mat][block]['faces'].append(4)
+                # allneightbors[block]['faces'].append(4)
             if (block[0], block[1], block[2]-1) not in materials[mat]:
                 neightbors[mat][block]['faces'].append(5)
+                # allneightbors[block]['faces'].append(5)
             if (block[0], block[1], block[2]+1) not in materials[mat]:
                 neightbors[mat][block]['faces'].append(6)
+                # allneightbors[block]['faces'].append(6)
             
         materials[mat] = None
 
@@ -930,7 +969,7 @@ materials = fillmatindexes(chunks, materials)
 
 
 # print 'removing all super neightbors, same type blocks on all sides for ' + str(len(neightbors)) + ' materials'         
-
+allneightbors = {}
 neightbors = genfacesNeighbors(materials)
 
 loneneighbors = removeSupderCosy(neightbors)
@@ -946,8 +985,10 @@ for mat in loneneighbors:
         makehalfblock(loneneighbors, mat)
     elif mat[0] in [171, 111]:
         makeflatblock(loneneighbors, mat)
-    elif mat[0] in [65, 106]:
+    elif mat[0] in [101,102, 160]:
         makeverticalflatblock(loneneighbors, mat)
+    elif mat[0] in [65, 106]:
+        makeladderlikeblock(loneneighbors, mat)
     elif mat[0] in [148, 147]:
         makesmallflatblock(loneneighbors, mat)
     elif mat[0] in [6 , 111 , 30 , 31 , 32,37,40, 51, 83, 175]:

@@ -98,7 +98,7 @@ class DataImporter:
             color = (0.562745, 0.562745, 0.562745)
         elif material[1] in [6,14]:
             color = (0.545098, 0, 0)
-        elif material[1] in [7,15]:
+        elif material[1] in [7,15, 30]:
             color = (1,1,1)
         else:
             color = (0,0,0)
@@ -193,7 +193,7 @@ class DataImporter:
             mat.alpha = 0.5
             mat.use_transparency = True
             mat.transparency_method = 'RAYTRACE'
-        elif material[0] == 1:
+        elif material[0] in [1,42]:
             mat.diffuse_color = (0.7,0.7,0.7)
         elif material[0] == 3:
             mat.diffuse_color = (0.9,0.7,0.6)
@@ -201,6 +201,8 @@ class DataImporter:
             mat.diffuse_color = self.createRightSaplingColor(material)
         elif material[0] == 7:
             mat.diffuse_color = (0.2,0.2,0.2)
+        elif material[0] in [97, 109, 98]:
+            mat.diffuse_color = (0.3,0.3,0.3)
         elif material[0] in [11, 10]:
             mat.diffuse_color = (0.9,0.2,0.2)
             mat.emit = 5
