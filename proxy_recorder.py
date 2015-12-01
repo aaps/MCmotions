@@ -320,6 +320,7 @@ class QuietBridge(Bridge):
     def packet_downstream_map_chunk_bulk(self, buff):
         buff.save()
         if self.recording:
+            
             lengths = 0
             chunkar = []
             metaar = []
@@ -343,10 +344,17 @@ class QuietBridge(Bridge):
 
                 chunkar.append(base64.b64encode(bigstring))
                 
-                towrite = 'chunkdata|' + str(metaar[index][0]) +  '|True|' + str(metaar[index][1]) + '|' + str(counter) + '|' + base64.b64encode(bigstring) + '\n'
+                metaar[index] = metaar[index][0], metaar[index][1], counter
+
+                lightstuff = buff.unpack(str(counter) + 's')
+                biomemeta = buff.unpack(str(256) + 's')
+
+
+
+            for index in xrange(0,nrchunks):
+                towrite = 'chunkdata|' + str(metaar[index][0]) +  '|True|' + str(metaar[index][1]) + '|' + str(metaar[index][2]) + '|' + chunkar[index] + '\n'
                 self.dumpsize += len(towrite)
                 self.dumpfile.write(towrite)
-
 
         buff.restore()
         self.downstream.send_packet("map_chunk_bulk", buff.read())
