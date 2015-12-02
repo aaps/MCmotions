@@ -151,12 +151,17 @@ some crude stairs corners, this is tricky (done, not negative stairs tho)
 
 
 #ToDo:
-1
+1 
+
+* a file that will translate block ids to names, colors, light emittance and some more ?, to by used by minecraftimporter
+
+* a parser
+
 * more block shapes for map import
 
-* more block colors
+* a option for proxy to only record chunks once, to speed up recording
 
-* testing and tweaking entity movement
+* a option for the proxy to relay those recorded chunks to client for huge bandwith save
 
 refactoring like there is no tomorrow
 

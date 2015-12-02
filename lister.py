@@ -498,7 +498,7 @@ def makeverticalflatblock(loneneighbors, mat):
 
         templist.append([Point3D(0.5,0.1,-0.5),Point3D(0.5,-0.1,-0.5),Point3D(0.5,-0.1,0.5),Point3D(0.5,0.1,0.5)])
         
-        if right in allneightbors or left in allneightbors:
+        if front in loneneighbors[mat] or back in loneneighbors[mat]:
             templist = rotatepointsZ(templist, 90)
         appendto3dlist(templist, block)    
         templist = totuplelist(templist)
@@ -746,7 +746,7 @@ def genfacesNeighbors(materials):
         
         for block in materials[mat]:
             neightbors[mat][block] = {'meta': materials[mat][block]['meta'],'faces':[]}
-            allneightbors[block] = 1
+            # allneightbors[block] = 1
             if (block[0]-1, block[1], block[2]) not in materials[mat]:
                 neightbors[mat][block]['faces'].append(1)
                 # allneightbors[block]['faces'].append(1)
@@ -969,7 +969,7 @@ materials = fillmatindexes(chunks, materials)
 
 
 # print 'removing all super neightbors, same type blocks on all sides for ' + str(len(neightbors)) + ' materials'         
-allneightbors = {}
+# allneightbors = {}
 neightbors = genfacesNeighbors(materials)
 
 loneneighbors = removeSupderCosy(neightbors)
