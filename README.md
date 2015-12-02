@@ -145,8 +145,6 @@ the scene option is important for now, no matter what name, you can test it with
 #NEW:
 getting rid of if no scene mentioned at lister exported file will be corrupted (done)
 
-making the proxy faster by moving world guesser to lister (done)
-
 some crude stairs corners, this is tricky (done, not negative stairs tho)
 
 
@@ -181,7 +179,9 @@ recording the details, animations of blocks, particles, lightning, rain, etc
 
 the ability to survive transports to other servers
 
+#PERFORMANCE
 
+When recording players and moving around alot, be sure to have enough bandwith, when player movement in minecraft is choppy movement will also be recorded choppy !, soon there will be some options to save bandwith !
 
 
 #WARNING 
@@ -205,8 +205,18 @@ you want a super good minecraft recording in Blender and are willing to code
 
 
 #Thanks to all the people that where willing to help:
-matthijs25
-GirlFlame
+
+For software:
+https://github.com/barneygale/quarry (making all of this possible)
+https://github.com/TheDuckCow/MCprep (this will pe compatible with that)
+
+Realy checkout the above software, goooood stuff !
+
+
+For testing:
+
+matthijs25,
+GirlFlame,
 The torchcraft server admin crew
 
 #Images
