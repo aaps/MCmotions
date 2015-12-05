@@ -45,7 +45,7 @@ Ingame commands for the proxy_recorder.py:
 
 Example proxy ussage:
 
-./proxy_recorder.py --destip server.torchcraft.nl --dumpfile asession.dump --username aapskarel --profile aapskarel@gmail.com
+./proxy_recorder.py --destip server.torchcraft.nl --dumpfile asession.dump --username aapskarel --profile aapskarel At gmail Dot com
 (fill in your password when asked) (perhaps i will change this in the future since it is hard to trust this !)
 
 lister has commandline options:
@@ -110,7 +110,7 @@ options:
 
 1 start proxy and connect proxy to a server, reserve a port localy
 
-./proxy_recorder.py --destip server.torchcraft.nl --dumpfile asession.dump --username aapskarel --profile aapskarel@gmail.com
+./proxy_recorder.py --destip server.torchcraft.nl --dumpfile asession.dump --username aapskarel --profile aapskarel At gmail Dot com
 
 2 it will ask for a password, this part is a question of trust, hope to fix that in the future, the password is of cource your minecraft password
 
@@ -151,7 +151,7 @@ some crude stairs corners, this is tricky (done, not negative stairs tho)
 #ToDo:
 1 
 
-* a file that will translate block ids to names, colors, light emittance and some more ?, to by used by minecraftimporter
+* a file that will translate block ids to names, colors, light emittance and some more ?, to by used by minecraftimporter.
 
 * a parser
 

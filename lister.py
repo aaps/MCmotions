@@ -473,7 +473,42 @@ def makeflatblock(loneneighbors, mat):
 
         faces[mat] += templist
 
-def makeverticalflatblock(loneneighbors, mat):
+def makeverticalflatblock():
+    templist = []
+
+    templist.append([Point3D(0.5,-0.1,-0.5),Point3D(-0.5,-0.1,-0.5),Point3D(-0.5,0.1,-0.5),Point3D(0.5,0.1,-0.5)])
+
+    templist.append([Point3D(0.5,-0.1,0.5),Point3D(-0.5,-0.1,0.5),Point3D(-0.5,0.1,0.5),Point3D(0.5,0.1,0.5)])
+
+    templist.append([Point3D(-0.5,-0.1,-0.5),Point3D(-0.5,-0.1,0.5),Point3D(0.5,-0.1,0.5),Point3D(0.5,-0.1,-0.5)])
+
+    templist.append([Point3D(-0.5,0.1,-0.5),Point3D(-0.5,0.1,0.5),Point3D(0.5,0.1,0.5),Point3D(0.5,0.1,-0.5)])
+
+    templist.append([Point3D(-0.5,0.1,-0.5),Point3D(-0.5,-0.1,-0.5),Point3D(-0.5,-0.1,0.5),Point3D(-0.5,0.1,0.5)])
+
+    templist.append([Point3D(0.5,0.1,-0.5),Point3D(0.5,-0.1,-0.5),Point3D(0.5,-0.1,0.5),Point3D(0.5,0.1,0.5)])
+    return templist
+
+def makeverticalplusblock():
+    templist = []
+    
+
+    for x in xrange(0,4):
+        temperlist = []
+        temperlist.append([Point3D(0.5,0.1,-0.5),Point3D(0.5,-0.1,-0.5),Point3D(0.5,-0.1,0.5),Point3D(0.5,0.1,0.5)])
+        temperlist.append([Point3D(0.5,-0.1,-0.5),Point3D(0.1,-0.1,-0.5),Point3D(0.1,0.1,-0.5),Point3D(0.5,0.1,-0.5)])
+        temperlist.append([Point3D(0.5,-0.1,0.5),Point3D(0.1,-0.1,0.5),Point3D(0.1,0.1,0.5),Point3D(0.5,0.1,0.5)])
+        temperlist.append([Point3D(0.1,-0.1,-0.5),Point3D(0.1,-0.1,0.5),Point3D(0.5,-0.1,0.5),Point3D(0.5,-0.1,-0.5)])
+        temperlist.append([Point3D(0.1,0.1,-0.5),Point3D(0.1,0.1,0.5),Point3D(0.5,0.1,0.5),Point3D(0.5,0.1,-0.5)])
+        templist += rotatepointsZ(temperlist, 90*x)
+
+    templist.append([Point3D(-0.1,-0.1,-0.5),Point3D(0.1,-0.1,-0.5),Point3D(0.1,0.1,-0.5),Point3D(-0.1,0.1,-0.5)])
+    templist.append([Point3D(-0.1,-0.1,0.5),Point3D(0.1,-0.1,0.5),Point3D(0.1,0.1,0.5),Point3D(-0.1,0.1,0.5)])
+    return templist
+
+
+
+def makeverticalblock(loneneighbors, mat):
     for block in loneneighbors[mat]:
         
 
@@ -483,23 +518,17 @@ def makeverticalflatblock(loneneighbors, mat):
         back = block[0], block[1]+1, block[2]
 
 
-        listoffaces = loneneighbors[mat][block]['faces']
-        templist = []
-
-        templist.append([Point3D(0.5,-0.1,-0.5),Point3D(-0.5,-0.1,-0.5),Point3D(-0.5,0.1,-0.5),Point3D(0.5,0.1,-0.5)])
-
-        templist.append([Point3D(0.5,-0.1,0.5),Point3D(-0.5,-0.1,0.5),Point3D(-0.5,0.1,0.5),Point3D(0.5,0.1,0.5)])
-
-        templist.append([Point3D(-0.5,-0.1,-0.5),Point3D(-0.5,-0.1,0.5),Point3D(0.5,-0.1,0.5),Point3D(0.5,-0.1,-0.5)])
-
-        templist.append([Point3D(-0.5,0.1,-0.5),Point3D(-0.5,0.1,0.5),Point3D(0.5,0.1,0.5),Point3D(0.5,0.1,-0.5)])
-
-        templist.append([Point3D(-0.5,0.1,-0.5),Point3D(-0.5,-0.1,-0.5),Point3D(-0.5,-0.1,0.5),Point3D(-0.5,0.1,0.5)])
-
-        templist.append([Point3D(0.5,0.1,-0.5),Point3D(0.5,-0.1,-0.5),Point3D(0.5,-0.1,0.5),Point3D(0.5,0.1,0.5)])
         
         if front in loneneighbors[mat] or back in loneneighbors[mat]:
+            templist = makeverticalflatblock()
             templist = rotatepointsZ(templist, 90)
+        elif left in loneneighbors[mat] or right in loneneighbors[mat]:
+            templist = makeverticalflatblock()
+        elif left in loneneighbors[mat] and right in loneneighbors[mat] and front in loneneighbors[mat] and back in loneneighbors[mat]:
+            templist = makeverticalplusblock()
+        else:
+            templist = makeverticalplusblock() 
+
         appendto3dlist(templist, block)    
         templist = totuplelist(templist)
 
@@ -986,7 +1015,7 @@ for mat in loneneighbors:
     elif mat[0] in [171, 111]:
         makeflatblock(loneneighbors, mat)
     elif mat[0] in [101,102, 160]:
-        makeverticalflatblock(loneneighbors, mat)
+        makeverticalblock(loneneighbors, mat)
     elif mat[0] in [65, 106]:
         makeladderlikeblock(loneneighbors, mat)
     elif mat[0] in [148, 147]:
