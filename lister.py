@@ -11,6 +11,7 @@ import time
 import math
 # from collections import OrderedDict
 import pickle
+from points import *
 
 
 sourcefile = "default.dump"
@@ -117,136 +118,18 @@ aroflines = total.split('\n')
 chunks = {}
 chunkposses = []
 
-class Point3D:
-    def __init__(self, x = 0, y = 0, z = 0):
-        self.x, self.y, self.z = float(x), float(y), float(z)
-    
-    def append(self, tup):
-        self.x += tup[0]
-        self.y += tup[1]
-        self.z += tup[2]
 
-    def mirrorX(self):
-        x = self.x * -1
-        return Point3D(x, self.y, self.z)
 
-    def mirrorY(self):
-        y = self.y * -1
-        return Point3D(self.x, y, self.z)
+pointops = PointOperators()
 
-    def mirrorZ(self):
-        z = self.z * -1
-        return Point3D(self.x, self.y, z)
 
-    def rotateX(self, angle):
-        """ Rotates the point around the X axis by the given angle in degrees. """
-        rad = angle * math.pi / 180
-        cosa = math.cos(rad)
-        sina = math.sin(rad)
-        y = round(self.y * cosa - self.z * sina,1)
-        z = round(self.y * sina + self.z * cosa,1)
-        return Point3D(self.x, y, z)
- 
-    def rotateY(self, angle):
-        """ Rotates the point around the Y axis by the given angle in degrees. """
-        rad = angle * math.pi / 180
-        cosa = math.cos(rad)
-        sina = math.sin(rad)
-        z = round(self.z * cosa - self.x * sina,1)
-        x = round(self.z * sina + self.x * cosa,1)
-        return Point3D(x, self.y, z)
- 
-    def rotateZ(self, angle):
-        """ Rotates the point around the Z axis by the given angle in degrees. """
-        rad = angle * math.pi / 180
-        cosa = math.cos(rad)
-        sina = math.sin(rad)
-        x = round(self.x * cosa - self.y * sina,1)
-        y = round(self.x * sina + self.y * cosa,1)
-        return Point3D(x, y, self.z)
- 
-    def project(self, win_width, win_height, fov, viewer_distance):
-        """ Transforms this 3D point to 2D using a perspective projection. """
-        factor = fov / (viewer_distance + self.z)
-        x = self.x * factor + win_width / 2
-        y = -self.y * factor + win_height / 2
-        return Point3D(x, y, 1)
-
-    def astuple(self):
-        return self.x,self.y,self.z
-
-def mirrorpointsX(alist):
-    tempfinal = []
-    for face in alist:
-        templist = []
-        for point in face:
-            
-            templist.append(point.mirrorX())
-        tempfinal.append(templist)
-    return tempfinal
-
-def mirrorpointsY(alist):
-    tempfinal = []
-    for face in alist:
-        templist = []
-        for point in face:
-            
-            templist.append(point.mirrorY())
-        tempfinal.append(templist)
-    return tempfinal
-
-def mirrorpointsZ(alist):
-    tempfinal = []
-    for face in alist:
-        templist = []
-        for point in face:
-            
-            templist.append(point.mirrorZ())
-        tempfinal.append(templist)
-    return tempfinal
-
-def rotatepointsY(alist, angle):
-    tempfinal = []
-    for face in alist:
-        templist = []
-        for point in face:
-            
-            templist.append(point.rotateY(angle))
-        tempfinal.append(templist)
-    return tempfinal
-
-def rotatepointsX(alist, angle):
-    tempfinal = []
-    for face in alist:
-        templist = []
-        for point in face:
-            
-            templist.append(point.rotateX(angle))
-        tempfinal.append(templist)
-    return tempfinal
-
-def rotatepointsZ(alist, angle):
-    tempfinal = []
-    for face in alist:
-        templist = []
-        for point in face:
-            templist.append(point.rotateZ(angle))
-        tempfinal.append(templist)
-    return tempfinal
 
 def appendto3dlist(alist, block):
     for face in alist:
         for point in face:
             point.append(block) 
 
-def totuplelist(alist):
-    tempfinal = []
-    for face in alist:
-        templist = []
-        for point in face:
-            templist.append( point.astuple() )
-        tempfinal.append(templist)
-    return tempfinal
+
 
 def makenormalstairs(loneneighbors, mat):
     loweplane = [Point3D(0.5,0.5,-0.5),Point3D(-0.5,0.5,-0.5),Point3D(-0.5,-0.5,-0.5),Point3D(0.5,-0.5,-0.5)]
@@ -300,13 +183,13 @@ def makestairs(loneneighbors, mat):
             if (loneneighbors[mat][left]['meta'] & 3) + 1 == 3:
                 finallist = finallist
             else:
-                finallist = mirrorpointsY(finallist)
+                finallist = pointops.mirrorpointsY(finallist)
             
 
         elif right in loneneighbors[mat] and ((loneneighbors[mat][right]['meta'] & 3) + 1) != somemeta and somemeta == 1:
             finallist = makeposcornerstairs(loneneighbors, mat)
             if (loneneighbors[mat][right]['meta'] & 3) + 1 == 3:
-                finallist = mirrorpointsY(finallist)
+                finallist = pointops.mirrorpointsY(finallist)
             else:
                 finallist = finallist
             
@@ -315,14 +198,14 @@ def makestairs(loneneighbors, mat):
             if (loneneighbors[mat][front]['meta'] & 3) + 1 == 1:
                 finallist = finallist   
             else: 
-                finallist = mirrorpointsY(finallist)
+                finallist = pointops.mirrorpointsY(finallist)
             
             
         elif back in loneneighbors[mat] and ((loneneighbors[mat][back]['meta'] & 3) + 1) != somemeta and somemeta == 4:
             finallist = makeposcornerstairs(loneneighbors, mat)
             if (loneneighbors[mat][back]['meta'] & 3) + 1 == 1:
                 # finallist = makeposcornerstairs(loneneighbors, mat)
-                finallist = mirrorpointsY(finallist)
+                finallist = pointops.mirrorpointsY(finallist)
             else:
                 finallist = finallist
         
@@ -334,27 +217,27 @@ def makestairs(loneneighbors, mat):
         upsidedown = (loneneighbors[mat][block]['meta'] >> 2) & 1
 
         if direction  ==  0:
-            finallist = rotatepointsZ(finallist, 0)
+            finallist = pointops.rotatepointsZ(finallist, 0)
             if upsidedown:
-                finallist = rotatepointsX(finallist, 180)
+                finallist = pointops.rotatepointsX(finallist, 180)
         elif direction == 1:
-            finallist = rotatepointsZ(finallist, 180)
+            finallist = pointops.rotatepointsZ(finallist, 180)
             if upsidedown:
-                finallist = rotatepointsX(finallist, 180)
+                finallist = pointops.rotatepointsX(finallist, 180)
         elif direction == 2:
-            finallist = rotatepointsZ(finallist, 270)
+            finallist = pointops.rotatepointsZ(finallist, 270)
             if upsidedown:
-                finallist = rotatepointsY(finallist, 180)
+                finallist = pointops.rotatepointsY(finallist, 180)
         else:
-            finallist = rotatepointsZ(finallist, 90)
+            finallist = pointops.rotatepointsZ(finallist, 90)
             if upsidedown:
-                finallist = rotatepointsY(finallist, 180)
+                finallist = pointops.rotatepointsY(finallist, 180)
 
         
         
 
-        appendto3dlist(finallist, block)
-        finallist = totuplelist(finallist)
+        # appendto3dlist(finallist, block)
+        finallist = pointops.totuplelist(finallist)
         faces[mat] += finallist
         
 
@@ -375,8 +258,8 @@ def makefence(loneneighbors, mat):
         frontplane = [Point3D(0.1,-0.1,-0.5),Point3D(0.1,0.1,-0.5),Point3D(0.1,0.1,0.5),Point3D(0.1,-0.1,0.5)]
         
         finallist = [loweplane, upperplane, leftplane, rightplane, backplane, frontplane]
-        appendto3dlist(finallist, block)
-        finallist = totuplelist(finallist)
+        # appendto3dlist(finallist, block)
+        finallist = pointops.totuplelist(finallist)
         faces[mat] += finallist
 
 def makeblock(loneneighbors, mat):
@@ -403,8 +286,8 @@ def makeblock(loneneighbors, mat):
         if 2 in listoffaces:
             templist.append([Point3D(0.5,0.5,-0.5),Point3D(0.5,-0.5,-0.5),Point3D(0.5,-0.5,0.5),Point3D(0.5,0.5,0.5)])
         
-        appendto3dlist(templist, block)    
-        templist = totuplelist(templist)
+        # appendto3dlist(templist, block)    
+        templist = pointops.totuplelist(templist)
 
         faces[mat] += templist
 
@@ -438,10 +321,10 @@ def makehalfblock(loneneighbors, mat):
             templist.append([Point3D(0.5,-0.5,-0.5),Point3D(0.5,0.5,-0.5),Point3D(0.5,0.5,0),Point3D(0.5,-0.5,0)])
 
         if loneneighbors[mat][block]['meta'] > 7:
-            templist = rotatepointsY(templist, 180)
+            templist = pointops.rotatepointsY(templist, 180)
 
-        appendto3dlist(templist, block)    
-        templist = totuplelist(templist)
+        # appendto3dlist(templist, block)    
+        templist = pointops.totuplelist(templist)
 
         faces[mat] += templist
 
@@ -468,8 +351,8 @@ def makeflatblock(loneneighbors, mat):
         if 2 in listoffaces:
             templist.append([Point3D(0.5,-0.5,-0.5),Point3D(0.5,0.5,-0.5),Point3D(0.5,0.5,-0.4),Point3D(0.5,-0.5,-0.4)])
 
-        appendto3dlist(templist, block)    
-        templist = totuplelist(templist)
+        # appendto3dlist(templist, block)    
+        templist = pointops.totuplelist(templist)
 
         faces[mat] += templist
 
@@ -500,7 +383,7 @@ def makeverticalplusblock():
         temperlist.append([Point3D(0.5,-0.1,0.5),Point3D(0.1,-0.1,0.5),Point3D(0.1,0.1,0.5),Point3D(0.5,0.1,0.5)])
         temperlist.append([Point3D(0.1,-0.1,-0.5),Point3D(0.1,-0.1,0.5),Point3D(0.5,-0.1,0.5),Point3D(0.5,-0.1,-0.5)])
         temperlist.append([Point3D(0.1,0.1,-0.5),Point3D(0.1,0.1,0.5),Point3D(0.5,0.1,0.5),Point3D(0.5,0.1,-0.5)])
-        templist += rotatepointsZ(temperlist, 90*x)
+        templist += pointops.rotatepointsZ(temperlist, 90*x)
 
     templist.append([Point3D(-0.1,-0.1,-0.5),Point3D(0.1,-0.1,-0.5),Point3D(0.1,0.1,-0.5),Point3D(-0.1,0.1,-0.5)])
     templist.append([Point3D(-0.1,-0.1,0.5),Point3D(0.1,-0.1,0.5),Point3D(0.1,0.1,0.5),Point3D(-0.1,0.1,0.5)])
@@ -521,7 +404,7 @@ def makeverticalblock(loneneighbors, mat):
         
         if front in loneneighbors[mat] or back in loneneighbors[mat]:
             templist = makeverticalflatblock()
-            templist = rotatepointsZ(templist, 90)
+            templist = pointops.rotatepointsZ(templist, 90)
         elif left in loneneighbors[mat] or right in loneneighbors[mat]:
             templist = makeverticalflatblock()
         elif left in loneneighbors[mat] and right in loneneighbors[mat] and front in loneneighbors[mat] and back in loneneighbors[mat]:
@@ -529,8 +412,8 @@ def makeverticalblock(loneneighbors, mat):
         else:
             templist = makeverticalplusblock() 
 
-        appendto3dlist(templist, block)    
-        templist = totuplelist(templist)
+        # appendto3dlist(templist, block)    
+        templist = pointops.totuplelist(templist)
 
         faces[mat] += templist
 
@@ -554,17 +437,17 @@ def makeladderlikeblock(loneneighbors, mat):
         direction = loneneighbors[mat][block]['meta'] & 3
 
         if direction == 0:
-            templist = rotatepointsZ(templist, 90)
+            templist = pointops.rotatepointsZ(templist, 90)
         elif direction == 1:
-            templist = rotatepointsZ(templist, -90)
+            templist = pointops.rotatepointsZ(templist, -90)
         elif direction == 2:
-            templist = rotatepointsZ(templist, 0)
+            templist = pointops.rotatepointsZ(templist, 0)
         else:
-            templist = rotatepointsZ(templist, 180)
+            templist = pointops.rotatepointsZ(templist, 180)
 
 
-        appendto3dlist(templist, block)    
-        templist = totuplelist(templist)
+        # appendto3dlist(templist, block)    
+        templist = pointops.totuplelist(templist)
 
         faces[mat] += templist
 
@@ -586,8 +469,8 @@ def makesmallflatblock(loneneighbors, mat):
 
         templist.append([Point3D(0.4,-0.4,-0.5),Point3D(0.4,0.4,-0.5),Point3D(0.4,0.4,-0.4),Point3D(0.4,-0.4,-0.4)])
 
-        appendto3dlist(templist, block)    
-        templist = totuplelist(templist)
+        # appendto3dlist(templist, block)    
+        templist = pointops.totuplelist(templist)
 
         faces[mat] += templist
  
@@ -597,8 +480,8 @@ def makexblock(loneneighbors, mat):
         templist.append([Point3D(0.5,0.5,-0.5),Point3D(0.5,0.5,0.5),Point3D(-0.5,-0.5,0.5),Point3D(-0.5,-0.5,-0.5)])
         templist.append([Point3D(-0.5,0.5,-0.5),Point3D(-0.5,0.5,0.5),Point3D(0.5,-0.5,0.5),Point3D(0.5,-0.5,-0.5)])
 
-        appendto3dlist(templist, block)    
-        templist = totuplelist(templist)
+        # appendto3dlist(templist, block)    
+        templist = pointops.totuplelist(templist)
 
         faces[mat] += templist
 
