@@ -64,61 +64,61 @@ class PointList(list):
 
 
     def mirrorpointsX(self):
-        tempfinal = PointList()
+        tempfinal = []
         for face in list.__iter__(self):
             templist = []
             for point in face:
                 
                 templist.append(point.mirrorX())
             tempfinal.append(templist)
-        self = tempfinal
+        list.__init__(self, tempfinal)
 
     def mirrorpointsY(self):
-        tempfinal = PointList()
+        tempfinal = []
         for face in list.__iter__(self):
             templist = []
             for point in face:
                 
                 templist.append(point.mirrorY())
             tempfinal.append(templist)
-        self = tempfinal
+        list.__init__(self, tempfinal)
 
     def mirrorpointsZ(self):
-        tempfinal = PointList()
+        tempfinal = []
         for face in list.__iter__(self):
             templist = []
             for point in face:
                 
                 templist.append(point.mirrorZ())
             tempfinal.append(templist)
-        self = tempfinal
+        list.__init__(self, tempfinal)
 
     def rotatepointsY(self, angle):
-        tempfinal = PointList()
+        tempfinal = []
         for face in list.__iter__(self):
             templist = []
             for point in face:
                 templist.append(point.rotateY(angle))
             tempfinal.append(templist)
-        self = tempfinal
+        list.__init__(self, tempfinal)
 
     def rotatepointsX(self, angle):
-        tempfinal = PointList()
+        tempfinal = []
         for face in list.__iter__(self):
             templist = []
             for point in face:
                 templist.append(point.rotateX(angle))
             tempfinal.append(templist)
-        self = tempfinal
+        list.__init__(self, tempfinal)
 
     def rotatepointsZ(self, angle):
-        tempfinal = PointList()
+        tempfinal = []
         for face in list.__iter__(self):
             templist = []
             for point in face:
                 templist.append(point.rotateZ(angle))
             tempfinal.append(templist)
-        # print tempfinal
+
         list.__init__(self, tempfinal)
 
 

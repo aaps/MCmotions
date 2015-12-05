@@ -151,7 +151,7 @@ some crude stairs corners, this is tricky (done, not negative stairs tho)
 #ToDo:
 1 
 
-* a file that will translate block ids to names, colors, light emittance and some more ?, to by used by minecraftimporter.
+* a file that will translate block ids to names, colors, light emittance and some more ?, to be used by minecraftimporter.
 
 * a parser
 
