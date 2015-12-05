@@ -60,70 +60,71 @@ class Point3D:
     def astuple(self):
         return self.x,self.y,self.z
 
-class PointOperators:
+class PointList(list):
 
-    def mirrorpointsX(self, alist):
-        tempfinal = []
-        for face in alist:
+
+    def mirrorpointsX(self):
+        tempfinal = PointList()
+        for face in list.__iter__(self):
             templist = []
             for point in face:
                 
                 templist.append(point.mirrorX())
             tempfinal.append(templist)
-        return tempfinal
+        self = tempfinal
 
-    def mirrorpointsY(self, alist):
-        tempfinal = []
-        for face in alist:
+    def mirrorpointsY(self):
+        tempfinal = PointList()
+        for face in list.__iter__(self):
             templist = []
             for point in face:
                 
                 templist.append(point.mirrorY())
             tempfinal.append(templist)
-        return tempfinal
+        self = tempfinal
 
-    def mirrorpointsZ(self, alist):
-        tempfinal = []
-        for face in alist:
+    def mirrorpointsZ(self):
+        tempfinal = PointList()
+        for face in list.__iter__(self):
             templist = []
             for point in face:
                 
                 templist.append(point.mirrorZ())
             tempfinal.append(templist)
-        return tempfinal
+        self = tempfinal
 
-    def rotatepointsY(self, alist, angle):
-        tempfinal = []
-        for face in alist:
+    def rotatepointsY(self, angle):
+        tempfinal = PointList()
+        for face in list.__iter__(self):
             templist = []
             for point in face:
-                
                 templist.append(point.rotateY(angle))
             tempfinal.append(templist)
-        return tempfinal
+        self = tempfinal
 
-    def rotatepointsX(self, alist, angle):
-        tempfinal = []
-        for face in alist:
+    def rotatepointsX(self, angle):
+        tempfinal = PointList()
+        for face in list.__iter__(self):
             templist = []
             for point in face:
-                
                 templist.append(point.rotateX(angle))
             tempfinal.append(templist)
-        return tempfinal
+        self = tempfinal
 
-    def rotatepointsZ(self, alist, angle):
-        tempfinal = []
-        for face in alist:
+    def rotatepointsZ(self, angle):
+        tempfinal = PointList()
+        for face in list.__iter__(self):
             templist = []
             for point in face:
                 templist.append(point.rotateZ(angle))
             tempfinal.append(templist)
-        return tempfinal
+        # print tempfinal
+        list.__init__(self, tempfinal)
 
-    def totuplelist(self, alist):
+
+    def totuplelist(self):
         tempfinal = []
-        for face in alist:
+        for face in list.__iter__(self):
             templist = []
             for point in face:
                 templist.append( point.astuple() )
