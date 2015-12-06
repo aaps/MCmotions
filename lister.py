@@ -124,8 +124,6 @@ def appendto3dlist(alist, block):
         for point in face:
             point.append(block) 
 
-
-
 def makestairs(loneneighbors, mat):
 
     for block in loneneighbors[mat]:
@@ -136,39 +134,30 @@ def makestairs(loneneighbors, mat):
 
         somemeta = (loneneighbors[mat][block]['meta'] & 3) + 1
         pointops = PointList()
-
         if left in loneneighbors[mat] and ((loneneighbors[mat][left]['meta'] & 3) + 1) != somemeta and somemeta == 2:
-         
             pointops = shapemaker.makeposcornerstairs()
             if (loneneighbors[mat][left]['meta'] & 3) + 1 == 3:
                 pass
-
             else:
                 pointops.mirrorpointsY()
             
-
         elif right in loneneighbors[mat] and ((loneneighbors[mat][right]['meta'] & 3) + 1) != somemeta and somemeta == 1:
             finallist = shapemaker.makeposcornerstairs()
             if (loneneighbors[mat][right]['meta'] & 3) + 1 == 3:
                 pointops.mirrorpointsY()
 
-            
         elif front in loneneighbors[mat] and ((loneneighbors[mat][front]['meta'] & 3) + 1) != somemeta and somemeta == 3:
             finallist = shapemaker.makeposcornerstairs()
             if (loneneighbors[mat][front]['meta'] & 3) + 1 == 1:
                 pass
-
             else: 
                 pointops.mirrorpointsY()
-            
             
         elif back in loneneighbors[mat] and ((loneneighbors[mat][back]['meta'] & 3) + 1) != somemeta and somemeta == 4:
             finallist = shapemaker.makeposcornerstairs()
             if (loneneighbors[mat][back]['meta'] & 3) + 1 == 1:
-                
                 pointops.mirrorpointsY()
         
-            
         else:
             pointops = shapemaker.makenormalstairs()
 
@@ -191,7 +180,6 @@ def makestairs(loneneighbors, mat):
             pointops.rotatepointsZ( 90)
             if upsidedown:
                 pointops.rotatepointsY( 180)
-
 
         appendto3dlist(pointops, block)
         faces[mat] += pointops.totuplelist()
@@ -270,7 +258,6 @@ def makeflatblock(loneneighbors, mat):
             pointops.append([Point3D(0.5,-0.5,-0.5),Point3D(0.5,0.5,-0.5),Point3D(0.5,0.5,-0.4),Point3D(0.5,-0.5,-0.4)])
 
         appendto3dlist(pointops, block)    
-
         faces[mat] += pointops.totuplelist()
 
 
@@ -298,9 +285,7 @@ def makeverticalblock(loneneighbors, mat):
 def makeladderlikeblock(loneneighbors, mat):
     for block in loneneighbors[mat]:
         listoffaces = loneneighbors[mat][block]['faces']
-        
         pointops = shapemaker.makeladdershapes()
-
         direction = loneneighbors[mat][block]['meta'] & 3
 
         if direction == 0:
@@ -323,7 +308,6 @@ def makesmallflatblock(loneneighbors, mat):
         pointops = shapemaker.makeflatblockshape()
         appendto3dlist(pointops, block)    
         templist = pointops.totuplelist()
-
         faces[mat] += templist
  
 def makexblock(loneneighbors, mat):
@@ -332,7 +316,6 @@ def makexblock(loneneighbors, mat):
         pointops = PointList()
         pointops.append([Point3D(0.5,0.5,-0.5),Point3D(0.5,0.5,0.5),Point3D(-0.5,-0.5,0.5),Point3D(-0.5,-0.5,-0.5)])
         pointops.append([Point3D(-0.5,0.5,-0.5),Point3D(-0.5,0.5,0.5),Point3D(0.5,-0.5,0.5),Point3D(0.5,-0.5,-0.5)])
-
         appendto3dlist(pointops, block)    
         templist = pointops.totuplelist()
 
@@ -361,19 +344,13 @@ def worldfromsample(sample):
     else:
         return 1
 
-
-
 def getchunks(chunkxz):
     if row[5] != 'None':
-
         chunkdata = base64.standard_b64decode(row[5])
         matsamples = []
-        
         if chunkxz not in chunks:
             chunks.update({chunkxz:{'blocks':[]}})
-        
         for x in xrange(1,17):
-            
             if len(chunkdata[(256*x):(256*x)+2]) == 2:
                 temp = struct.unpack('H', chunkdata[(256*x):(256*x)+2])[0]
                 matsamples.append(temp >> 4)
@@ -413,15 +390,11 @@ def getchunks(chunkxz):
 
 
 def filterents(allhistory):
-
     temphistory = {}
-
     for x in allhistory:
         allhistory[x]['positions'] = sorted(allhistory[x]['positions'], key=lambda positions: positions['time'])
         temphistory[x] = {'positions':[],'type':allhistory[x]['type']}
-
         for position in allhistory[x]['positions']:
-            
             if position['scene'] == curscene  or curscene == 'noscene' or position['alive'] == 0:
                 temphistory[x]['positions'].append(position)
 
@@ -430,9 +403,7 @@ def filterents(allhistory):
 def filterstatics(allhistory):
     temphistory = {}
     print 'Filtering entitys that dont move at all'
-
     for x in allhistory:
-
         if len(allhistory[x]['type']) > 35:
             if len(allhistory[x]['positions']) > 10:
                 temphistory[x] = allhistory[x]
@@ -442,10 +413,8 @@ def filterstatics(allhistory):
     return temphistory
 
 def getMaxMinTime(allhistory):
-
     maxtime = 0
     mintime = 1000000
-
     for x in allhistory:
         for position in allhistory[x]['positions']:
             if position['time'] > maxtime:
@@ -481,7 +450,6 @@ def makematindexes(chunks):
 
 def fillmatindexes(chunks, materials):
     for chunk in chunks:
-
         for block in chunks[chunk]:
             if len(chunks[chunk][block]) > 0:
                 
@@ -500,11 +468,9 @@ def fillmatindexes(chunks, materials):
 
 def genfacesNeighbors(materials):
     neightbors = {}
-
     print 'find material neightbors for ' + str(len(materials)) + ' materials'         
     for mat in materials:
         neightbors[mat] = {}
-
 
     for mat in materials:
         
@@ -525,7 +491,6 @@ def genfacesNeighbors(materials):
                 neightbors[mat][block]['faces'].append(6)
             
         materials[mat] = None
-
     return neightbors
 
 def removeSupderCosy(neightbors):
@@ -567,10 +532,7 @@ if avgmiddle:
  
 
 for line in aroflines:
-    
-    row = line.split('|')
-
-        
+    row = line.split('|') 
     if not noentitys and 'spawn' in row[0] and row[4] not in norenderents and not noentitys:
         
         if not onlyplayerents:
@@ -582,13 +544,10 @@ for line in aroflines:
             else:
                 rawyawpichhead = (rawyawpichhead[0]+ 5) % 360, (rawyawpichhead[1]+ 5) % 360
             goodpos = (float(goodpos[0])/32, float(goodpos[1])/32, float(goodpos[2])/-32)
-            
             mob = {int(row[3]):{'type':row[4],'positions':[{'time':int(row[1]),'pos':tuple(map(operator.sub, goodpos, offset)), 'yawpichhead': rawyawpichhead,'status':0,'alive':1,'scene':'noscene'}]}}
-
             allhistory.update(mob)
 
         elif 'player' in row[0]:
-
             goodpos = ast.literal_eval(row[5])
             rawyawpichhead = ast.literal_eval(row[6])
             if len(rawyawpichhead) > 2:
@@ -612,81 +571,62 @@ for line in aroflines:
         posses = posses[0],posses[1],posses[2]*-1
         look = ast.literal_eval(row[4])
         look = look[0]*-1,look[1]
-
-        
         allhistory[0]['positions'].append({'time':int(row[1]),'pos':posses,'yawpichhead':look,'status':0,'alive':1,'scene':row[2]})
 
     elif row[0] == 'playerlook' and not noentitys:
-       
         look = ast.literal_eval(row[3])
         look = look[0]*-1,look[1]
         lastlist = allhistory[0]['positions'][-1]
         allhistory[0]['positions'].append({'time':int(row[1]),'pos':lastlist['pos'],'yawpichhead':look,'status':0,'alive':1,'scene':row[2]})
 
     elif row[0] == 'entityrelmove' and int(row[3]) in allhistory and not noentitys:
-        
         lastlist = allhistory[int(row[3])]['positions'][-1]
         posses = ast.literal_eval(row[4])
         posses = posses[0]/32,posses[1]/32,posses[2]/32
         absolutepos = tuple(map(operator.add, lastlist['pos'], posses))
-
         allhistory[int(row[3])]['positions'].append({'time':int(row[1]),'pos':absolutepos,'yawpichhead':lastlist['yawpichhead'],'status':0,'alive':lastlist['alive'],'scene':row[2]})
 
     elif row[0] == 'entitylookandrelmove' and int(row[3]) in allhistory and  not noentitys:
-        
         lastlist = allhistory[int(row[3])]['positions'][-1]
         posses = ast.literal_eval(row[4])
         posses = posses[0]/32,posses[1]/32,posses[2]/-32
         absolutepos = tuple(map(operator.add, lastlist['pos'], posses))
         yawpich = ast.literal_eval(row[5])
-        
         if len(lastlist['yawpichhead']) > 2:
             yawpichhead = (yawpich[0]+ 5) % 360,(yawpich[1]+ 5) % 360,lastlist['yawpichhead'][2]
         else:
             yawpichhead = (yawpich[0]+ 5) % 360,(yawpich[1]+ 5) % 360
         yawpichhead = fido(lastlist['yawpichhead'], yawpichhead)
-
         allhistory[int(row[3])]['positions'].append({'time':int(row[1]),'pos':absolutepos,'yawpichhead':yawpichhead,'status':0,'alive':lastlist['alive'],'scene':row[2]})
 
     elif row[0] == 'entityheadlook' and int(row[3]) in allhistory and  not noentitys:
-        
         lastlist = allhistory[int(row[3])]['positions'][-1]
-        
         if len(lastlist['yawpichhead']) > 2:
             if not ast.literal_eval(row[4]) == lastlist['yawpichhead'][2]:
-            
                 yawpichhead = lastlist['yawpichhead'][0], lastlist['yawpichhead'][1], (ast.literal_eval(row[4])+ 5) % 360
-
             yawpichhead = fido(yawpichhead, lastlist['yawpichhead'])
-
             allhistory[int(row[3])]['positions'].append({'time':int(row[1]),'pos':lastlist['pos'],'yawpichhead':yawpichhead,'status':0,'alive':lastlist['alive'],'scene':row[2]})
 
 
     elif row[0] == 'entityteleport' and int(row[3]) in allhistory and not noentitys:
-        
         goodpos = ast.literal_eval(row[4])
         goodpos = (float(goodpos[0])/32, float(goodpos[1])/32, float(goodpos[2])/-32)
-        
         lastlist = allhistory[int(row[3])]['positions'][-1]
         yawpich = ast.literal_eval(row[4])
         if len(lastlist['yawpichhead']) > 2:
             yawpichhead = (yawpich[0]+ 5) % 360, (yawpich[1]+ 5) % 360, lastlist['yawpichhead'][2]
         else:
             yawpichhead = (yawpich[0]+ 5) % 360, (yawpich[1]+ 5) % 360
-        
         yawpichhead = fido( yawpichhead, lastlist['yawpichhead'])
-        
         allhistory[int(row[3])]['positions'].append({'time':int(row[1]),'pos':tuple(map(operator.sub, goodpos, offset)),'yawpichhead':yawpichhead,'status':0,'alive':lastlist['alive'],'scene':row[2]})
 
     elif row[0] == 'entitystatus' and int(row[3]) in allhistory and not noentitys:
-        
         lastlist = allhistory[int(row[3])]['positions'][-1]
         if lastlist['status'] == row[4]:
             allhistory[int(row[3])]['positions'].append({'time':int(row[1]),'pos':lastlist['pos'],'yawpichhead':lastlist['yawpichhead'],'status':row[4],'alive':lastlist['alive'],'scene':row[2]})
 
     elif row[0] == 'destroyents' and not noentitys:
         entids = row[3:]
-        
         for entid in entids:
             if entid in allhistory:
                 lastlist = allhistory[entid]['positions'][-1]
@@ -695,11 +635,7 @@ for line in aroflines:
     elif row[0] == 'chunkdata':
         length = row[3]
         if not nochunks:
-            # chunks.update({row[1]:{'blocks':[]}})
-        
             getchunks(ast.literal_eval(row[1]))
-            # print chunks
-
 
     
 print 'Filtering entitys that are not supposed to be in scene move at all'
@@ -780,13 +716,10 @@ for mat in faces:
     newfaces[mat] = []
     timenow = None
     vertcache = {}
-    
     for index, vert in enumerate(vertices[mat]):
         vertcache.update({vert:index})
-
     for forverts in faces[mat]:
         tempface = []
-
         for vert in forverts:
             if vert in vertcache:
                 tempface.append(vertcache[vert])     

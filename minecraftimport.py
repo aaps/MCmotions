@@ -19,6 +19,7 @@ import math
 import operator
 import ast
 import pickle
+from materials import *
 
 
 from bpy_extras.io_utils import ImportHelper
@@ -181,83 +182,106 @@ class DataImporter:
 
     def createMeshFromData(self, material, origin, verts, faces):
         # Create mesh and object
-        me = bpy.data.meshes.new(str(material)+'Mesh')
-        ob = bpy.data.objects.new(str(material), me)
-
-        ob.show_name = True
+        
         
         mat = bpy.data.materials.new("PKHG")
-        # print(material)
-        if material[0] == 9:
-            mat.diffuse_color = (0,0,1)
-            mat.alpha = 0.5
-            mat.use_transparency = True
-            mat.transparency_method = 'RAYTRACE'
-        elif material[0] in [1,42]:
-            mat.diffuse_color = (0.7,0.7,0.7)
-        elif material[0] == 3:
-            mat.diffuse_color = (0.9,0.7,0.6)
-        elif material[0] == 6:  
-            mat.diffuse_color = self.createRightSaplingColor(material)
-        elif material[0] == 7:
-            mat.diffuse_color = (0.2,0.2,0.2)
-        elif material[0] in [97, 109, 98]:
-            mat.diffuse_color = (0.3,0.3,0.3)
-        elif material[0] in [11, 10]:
-            mat.diffuse_color = (0.9,0.2,0.2)
-            mat.emit = 5
-        elif material[0] in [13]:
-            mat.diffuse_color = (0.5,0.5,0.5)
-        elif material[0] == 15:
-            mat.diffuse_color = (0.6,0.5,0.4)
-        elif material[0] == 16:
-            mat.diffuse_color = (0.4,0.4,0.4)
-        elif material[0] in [5, 125, 126]:
-            mat.diffuse_color = self.createRightWoodeSlabColor(material)
-            
-        elif material[0] in [18,2,111, 31]:
-            mat.diffuse_color = (0,0.8,0)
-        elif material[0] in [12,24] :
-            mat.diffuse_color = (1,0.8,0.7)
-        elif material[0] == 49:
-            mat.diffuse_color = (0,0,0.2)
-        elif material[0] in [44, 43]:
-            mat.diffuse_color = self.createRightStoneSlabColor(material)
-            # mat.diffuse_color = (0.8,0.8,0.8)
-        elif material[0] in [80, 78]:
-            mat.diffuse_color = (1,1,1)
-        elif material[0] == 79:
-            mat.diffuse_color = (0.4,0.4,1)
-            mat.alpha = 0.2
-            mat.use_transparency = True
-            mat.transparency_method = 'RAYTRACE'
-        elif material[0] in [89, 50, 124, 91, 51, 62] :
-            mat.diffuse_color = (0.9,0.9,0.2)
-            mat.emit = 5
-        elif material[0] == 119:
-            mat.diffuse_color = (0.627451, 0.12549, 0.941176)
-        elif material[0] == 138:
-            mat.diffuse_color = (0.6,0.6,1)
-            mat.emit = 5
-        elif material[0] == 144:
-            mat.diffuse_color = (0.745098, 0.745098, 0.745098)
-        elif material[0] in [152]:
-            mat.diffuse_color = (1,0,0)
-        elif material[0] in [155, 156]:
-            mat.diffuse_color = (1,1,1)
-        elif material[0] in [174]:
-            mat.diffuse_color = (0.7,0.7,1)
-        elif material[0] in [171, 35, 159]:
-            mat.diffuse_color = self.createRightStandardColor(material)
-        elif material[0] in [95, 160]:
-            mat.diffuse_color = self.createRightStandardColor(material)
-            mat.alpha = 0.5
-            mat.use_transparency = True
-            mat.transparency_method = 'RAYTRACE'
+        
 
+        # print(material)
+        # if material[0] == 9:
+        #     mat.diffuse_color = (0,0,1)
+        #     mat.alpha = 0.5
+        #     mat.use_transparency = True
+        #     mat.transparency_method = 'RAYTRACE'
+        # elif material[0] in [1,42]:
+        #     mat.diffuse_color = (0.7,0.7,0.7)
+        # elif material[0] == 3:
+        #     mat.diffuse_color = (0.9,0.7,0.6)
+        # elif material[0] == 6:  
+        #     mat.diffuse_color = (0.9,0.7,0.6)
+        #     # mat.diffuse_color = self.createRightSaplingColor(material)
+        # elif material[0] == 7:
+        #     mat.diffuse_color = (0.2,0.2,0.2)
+        # elif material[0] in [97, 109, 98]:
+        #     mat.diffuse_color = (0.3,0.3,0.3)
+        # elif material[0] in [11, 10]:
+        #     mat.diffuse_color = (0.9,0.2,0.2)
+        #     mat.emit = 5
+        # elif material[0] in [13]:
+        #     mat.diffuse_color = (0.5,0.5,0.5)
+        # elif material[0] == 15:
+        #     mat.diffuse_color = (0.6,0.5,0.4)
+        # elif material[0] == 16:
+        #     mat.diffuse_color = (0.4,0.4,0.4)
+        # elif material[0] in [5, 125, 126]:
+        #     mat.diffuse_color = (0,0.8,0)
+        #     # mat.diffuse_color = self.createRightWoodeSlabColor(material)
+            
+        # elif material[0] in [18,2,111, 31]:
+        #     mat.diffuse_color = (0,0.8,0)
+        # elif material[0] in [12,24] :
+        #     mat.diffuse_color = (1,0.8,0.7)
+        # elif material[0] == 49:
+        #     mat.diffuse_color = (0,0,0.2)
+        # elif material[0] in [44, 43]:
+        #     # mat.diffuse_color = self.createRightStoneSlabColor(material)
+        #     mat.diffuse_color = (0.8,0.8,0.8)
+        # elif material[0] in [80, 78]:
+        #     mat.diffuse_color = (1,1,1)
+        # elif material[0] == 79:
+        #     mat.diffuse_color = (0.4,0.4,1)
+        #     mat.alpha = 0.2
+        #     mat.use_transparency = True
+        #     mat.transparency_method = 'RAYTRACE'
+        # elif material[0] in [89, 50, 124, 91, 51, 62] :
+        #     mat.diffuse_color = (0.9,0.9,0.2)
+        #     mat.emit = 5
+        # elif material[0] == 119:
+        #     mat.diffuse_color = (0.627451, 0.12549, 0.941176)
+        # elif material[0] == 138:
+        #     mat.diffuse_color = (0.6,0.6,1)
+        #     mat.emit = 5
+        # elif material[0] == 144:
+        #     mat.diffuse_color = (0.745098, 0.745098, 0.745098)
+        # elif material[0] in [152]:
+        #     mat.diffuse_color = (1,0,0)
+        # elif material[0] in [155, 156]:
+        #     mat.diffuse_color = (1,1,1)
+        # elif material[0] in [174]:
+        #     mat.diffuse_color = (0.7,0.7,1)
+        # elif material[0] in [171, 35, 159]:
+        #     mat.diffuse_color = (0.7,0.7,1)
+        #     # mat.diffuse_color = self.createRightStandardColor(material)
+        # elif material[0] in [95, 160]:
+        #     mat.diffuse_color = (0.7,0.7,1)
+        #     # mat.diffuse_color = self.createRightStandardColor(material)
+        #     mat.alpha = 0.5
+        #     mat.use_transparency = True
+        #     mat.transparency_method = 'RAYTRACE'
+
+        # else:
+
+
+
+        
+
+        if material in materials:
+            me = bpy.data.meshes.new(materials[material][0]+' Mesh')
+            ob = bpy.data.objects.new(materials[material][0], me)
+            if len(materials[material]) >= 2:
+                mat.diffuse_color = materials[material][1]
+            if len(materials[material]) >= 3 and materials[material][2] != 0:
+                mat.alpha = materials[material][2]
+                mat.use_transparency = True
+                mat.transparency_method = 'RAYTRACE'
+            if len(materials[material]) >= 4 and materials[material][3] != 0:
+                mat.emit = materials[material][3]
         else:
+            me = bpy.data.meshes.new(str(material) + 'Unknown Mesh')
+            ob = bpy.data.objects.new(str(material) + 'Unknown' , me)
             mat.diffuse_color = (0,0,0)
 
+        ob.show_name = True
         ob.active_material = mat
         # Link object to scene and make active
         scn = bpy.context.scene
