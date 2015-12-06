@@ -5,6 +5,9 @@ from bs4 import BeautifulSoup
 import re
 from PIL import Image
 import StringIO
+import ast
+
+
 
 baseurl = 'http://minecraft-ids.grahamedgecombe.com/'
 cssurl = baseurl + 'stylesheets/bundles/all/1440429950.css'
@@ -30,16 +33,25 @@ counter = 0
 
 for arow in soup.find_all("tr", class_="row"):
 	
-	baseoffset = counter * 32
-	cromdim = (0,baseoffset,32,baseoffset+32)
-	
-	allcolors = im.crop(cromdim).getcolors()
-	print allcolors
-	# allcolors.save('out' + str(counter) + '.png')
+	tofind = arow.div["class"]
+	name = arow.find_all("span", class_="name")[0].getText()
+	match = re.search(r"[^a-zA-Z](" + tofind[1] +  ")[^a-zA-Z]", css)
+	num = match.start(1)
+	if len( css[num:num+110].split(" ")[2][1:-2]) > 2:
+		dimtoget = ast.literal_eval(css[num:num+110].split(" ")[2][1:-2])
+		cromdim = (0,dimtoget,32,dimtoget+32)
+		allcolors = im.crop(cromdim).getcolors()
+		tofind = arow.find_all("td", class_="id")[0].getText().split(":")
+		if len(tofind) < 2:
+		 	tofind.append("0")
+		newcolors = []
+		if allcolors:
+			for color in allcolors:
+				if color[1][3] > 0:
+					for x in xrange(1,color[0]):
+						
+						newcolors.append((color[1][0], color[1][1], color[1][2]))
 
-	# tofind = arow.div["class"]
-	# match = re.search(r"[^a-zA-Z](" + tofind[1] +  ")[^a-zA-Z]", css)
-	# num = match.start(1)
-	# dimtoget = css[num:num+15].split("{")[0].split("-")
-	# print (str(dimtoget[2]) + ":" +  str(dimtoget[3]) + " - " + str(counter) +" - "+ str(allcolors))
-	counter += 1
+			print ( ":".join(tofind) + " - " + name + " - " + str(tuple(map(lambda y: (sum(y) / float(len(y))/255), zip(*newcolors)))))
+
+
