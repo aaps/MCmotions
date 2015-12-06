@@ -52,6 +52,6 @@ for arow in soup.find_all("tr", class_="row"):
 						
 						newcolors.append((color[1][0], color[1][1], color[1][2]))
 
-			print ( ":".join(tofind) + " - " + name + " - " + str(tuple(map(lambda y: (sum(y) / float(len(y))/255), zip(*newcolors)))))
+			print ( ":".join(tofind) + " - " + name + " - " + str(tuple(map(lambda y: round(sum(y) / float(len(y))/255, 3), zip(*newcolors)))))
 
 
