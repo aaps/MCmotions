@@ -143,25 +143,21 @@ the scene option is important for now, no matter what name, you can test it with
 
 
 #NEW:
-getting rid of if no scene mentioned at lister exported file will be corrupted (done)
+a file that will translate block ids to names, colors, light emittance.
 
-some crude stairs corners, this is tricky (done, not negative stairs tho)
+a color getter that will scrape a website that will get average colors of textures names and ids for blocks, dont realy kneed it now since it is in the materials.txt , still could use it in the future when there will be more blocks (perhaps ?)
+
+some refactoring so it all looks better and is more understandable
 
 
 #ToDo:
 1 
-
-* a file that will translate block ids to names, colors, light emittance and some more ?, to be used by minecraftimporter.
-
-* a parser
 
 * more block shapes for map import
 
 * a option for proxy to only record chunks once, to speed up recording
 
 * a option for the proxy to relay those recorded chunks to client for huge bandwith save
-
-refactoring like there is no tomorrow
 
 adding cams that where imported by proxy commands
 
