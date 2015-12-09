@@ -10,6 +10,7 @@ import math
 import pickle
 from points import *
 from shapes import *
+import json
 
 
 sourcefile = "default.dump"
@@ -29,16 +30,17 @@ topleft = (-1000,-1000)
 bottomright = (1000,1000)
 multymatblocks = [35, 43, 44, 95, 97, 98, 125, 126, 139, 155, 159, 160, 171]
 shapemaker = Shapes()
+colormaterials = [None, None, None]
 
 try:
-    opts, args = getopt.getopt(sys.argv[1:],"",["avgmiddle=","sourcefile=","destfile=","scene=", "excludeent=","excludeblocks=","CTL=","CBR=","cutz=","noentitys=","nochunks=","onlyplayerents=", "world=" ])
+    opts, args = getopt.getopt(sys.argv[1:],"",["avgmiddle=","materialsfile=","sourcefile=","destfile=","scene=", "excludeent=","excludeblocks=","CTL=","CBR=","cutz=","noentitys=","nochunks=","onlyplayerents=", "world=" ])
         
 except getopt.GetoptError:
-    print 'error: lister.py --onlyplayerents --avgmiddle --sourcefile filename --destfile filename --scene scene name --excludeent commaseperatedlist of entity ids --excludeblocks commaseperatedlist of blockids --world nether/overworld/theend will only use this world'
+    print 'error: lister.py --onlyplayerents --materialsfile --avgmiddle --sourcefile filename --destfile filename --scene scene name --excludeent commaseperatedlist of entity ids --excludeblocks commaseperatedlist of blockids --world nether/overworld/theend will only use this world'
     sys.exit(2)
 for opt, arg in opts:
     if opt == '-h':
-        print 'lister.py --onlyplayerents --avgmiddle --sourcefile filename --destfile filename --scene scene name --excludeent commaseperatedlist of entity ids --excludeblocks commaseperatedlist of blockids --world nether/overworld/theend will only use this world'
+        print 'lister.py --onlyplayerents --materialsfile --avgmiddle --sourcefile filename --destfile filename --scene scene name --excludeent commaseperatedlist of entity ids --excludeblocks commaseperatedlist of blockids --world nether/overworld/theend will only use this world'
         sys.exit()
 
     if opt == "--onlyplayerents":
@@ -60,6 +62,12 @@ for opt, arg in opts:
 
     if opt == "--excludeent":
         norenderents = arg.split(",")
+
+    if opt == "--materialsfile":
+
+        materalsfile = open(arg, 'r')
+        materialsstring = materalsfile.read()
+        colormaterials = ast.literal_eval(materialsstring)
 
     if opt == "--excludeblocks":
         norenderblocks = arg.split(",")
@@ -729,7 +737,11 @@ faces = newfaces
 newface = None
 loneneighbors = None
 
-allstuff = {'allhistory':allhistory,'vertices':vertices,'faces':faces}
+for mat in faces:
+    faces[mat]
+
+
+allstuff = {'allhistory':allhistory,'vertices':vertices,'faces':faces, 'materials': colormaterials}
 
 vertices = None
 faces = None
