@@ -62,7 +62,6 @@ class Point3D:
 
 class PointList(list):
 
-
     def mirrorpointsX(self):
         tempfinal = []
         for face in list.__iter__(self):

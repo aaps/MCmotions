@@ -1,5 +1,8 @@
 #!/usr/bin/python -B
 
+# dont chnage this file to add you own materials, this is yust the default file
+# use mctricky at github
+
 defmaterials = {}
 # name, color, transparency, emittance
 

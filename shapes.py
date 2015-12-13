@@ -4,7 +4,7 @@ from points import *
 
 class Shapes:
 
-	def makenormalstairs(self):
+	def makenormalstairs(self, listoffaces=None):
 		pointops = PointList()
 		pointops.append([Point3D(0.5,0.5,-0.5),Point3D(-0.5,0.5,-0.5),Point3D(-0.5,-0.5,-0.5),Point3D(0.5,-0.5,-0.5)])
 		pointops.append([Point3D(0,0.5,0.5),Point3D(0.5,0.5,0.5),Point3D(0.5,-0.5,0.5),Point3D(0,-0.5,0.5)])
@@ -16,7 +16,7 @@ class Shapes:
 		pointops.append([Point3D(0,-0.5,0.5),Point3D(0,-0.5,0),Point3D(-0.5,-0.5,0),Point3D(-0.5,-0.5,-0.5),Point3D(0.5,-0.5,-0.5),Point3D(0.5,-0.5,0.5)])
 		return pointops
 		
-	def makeposcornerstairs(self):
+	def makeposcornerstairs(self, listoffaces=None):
 		pointops = PointList()
 		pointops.append([Point3D(0.5,0.5,-0.5),Point3D(-0.5,0.5,-0.5),Point3D(-0.5,-0.5,-0.5),Point3D(0.5,-0.5,-0.5)])
 		pointops.append([Point3D(0,0.5,0),Point3D(-0.5,0.5,0),Point3D(-0.5,-0.5,0), Point3D(0.5,-0.5,0), Point3D(0.5,0,0),Point3D(0,0,0)])
@@ -29,7 +29,7 @@ class Shapes:
 		pointops.append([Point3D(0,0,0),Point3D(0.5,0,0),Point3D(0.5,0,0.5),Point3D(0,0,0.5)])
 		return pointops
 
-	def makenegcornderstairs(self):
+	def makenegcornderstairs(self, listoffaces=None):
 		pointops = PointList()
 		pointops.append([Point3D(0.5,0.5,-0.5),Point3D(-0.5,0.5,-0.5),Point3D(-0.5,-0.5,-0.5),Point3D(0.5,-0.5,-0.5)])
 		pointops.append([Point3D(0,0.5,0),Point3D(-0.5,0.5,0),Point3D(-0.5,-0.5,0),Point3D(0,-0.5,0)])
@@ -38,17 +38,17 @@ class Shapes:
 		pointops.append([Point3D(-0.5,0,0.5),Point3D(-0.5,0,0),Point3D(-0.5,-0.5,0),Point3D(-0.5,-0.5,-0.5),Point3D(-0.5,0.5,-0.5),Point3D(-0.5,0.5,0.5)])
 		return pointops
 
-	def makeverticalflatblock(self):
+	def makeverticalflatblock(self, listoffaces=None):
 		pointops = PointList()
 		pointops.append([Point3D(0.5,-0.1,-0.5),Point3D(-0.5,-0.1,-0.5),Point3D(-0.5,0.1,-0.5),Point3D(0.5,0.1,-0.5)])
-		pointops.append([Point3D(0.5,-0.1,0.5),Point3D(-0.5,-0.1,0.5),Point3D(-0.5,0.1,0.5),Point3D(0.5,0.1,0.5)])
-		pointops.append([Point3D(-0.5,-0.1,-0.5),Point3D(-0.5,-0.1,0.5),Point3D(0.5,-0.1,0.5),Point3D(0.5,-0.1,-0.5)])
+		pointops.append([Point3D(0.5,0.1,0.5),Point3D(-0.5,0.1,0.5),Point3D(-0.5,-0.1,0.5),Point3D(0.5,-0.1,0.5)])
+		pointops.append([Point3D(0.5,-0.1,-0.5),Point3D(0.5,-0.1,0.5),Point3D(-0.5,-0.1,0.5),Point3D(-0.5,-0.1,-0.5)])
 		pointops.append([Point3D(-0.5,0.1,-0.5),Point3D(-0.5,0.1,0.5),Point3D(0.5,0.1,0.5),Point3D(0.5,0.1,-0.5)])
 		pointops.append([Point3D(-0.5,0.1,-0.5),Point3D(-0.5,-0.1,-0.5),Point3D(-0.5,-0.1,0.5),Point3D(-0.5,0.1,0.5)])
-		pointops.append([Point3D(0.5,0.1,-0.5),Point3D(0.5,-0.1,-0.5),Point3D(0.5,-0.1,0.5),Point3D(0.5,0.1,0.5)])
+		pointops.append([Point3D(0.5,0.1,0.5),Point3D(0.5,-0.1,0.5),Point3D(0.5,-0.1,-0.5),Point3D(0.5,0.1,-0.5)])
 		return pointops
 
-	def makefenceshape(self):
+	def makefenceshape(self, listoffaces=None):
 		pointops = PointList()
 		pointops.append([Point3D(0.1,0.1,-0.5),Point3D(-0.1,0.1,-0.5),Point3D(-0.1,-0.1,-0.5),Point3D(0.1,-0.1,-0.5)])
 		pointops.append([Point3D(0.1,0.1,+0.5),Point3D(-0.1,0.1,0.5),Point3D(-0.1,-0.1,0.5),Point3D(0.1,-0.1,0.5)])
@@ -59,15 +59,15 @@ class Shapes:
 		return pointops
 
 
-	def makeverticalplusblock(self):
+	def makeverticalplusblock(self, listoffaces=None):
 		pointops = PointList()
 		
 		for x in xrange(0,4):
 			temperlist = PointList()
-			temperlist.append([Point3D(0.5,0.1,-0.5),Point3D(0.5,-0.1,-0.5),Point3D(0.5,-0.1,0.5),Point3D(0.5,0.1,0.5)])
+			temperlist.append([Point3D(0.5,0.1,0.5),Point3D(0.5,-0.1,0.5),Point3D(0.5,-0.1,-0.5),Point3D(0.5,0.1,-0.5)])
 			temperlist.append([Point3D(0.5,-0.1,-0.5),Point3D(0.1,-0.1,-0.5),Point3D(0.1,0.1,-0.5),Point3D(0.5,0.1,-0.5)])
 			temperlist.append([Point3D(0.5,-0.1,0.5),Point3D(0.1,-0.1,0.5),Point3D(0.1,0.1,0.5),Point3D(0.5,0.1,0.5)])
-			temperlist.append([Point3D(0.1,-0.1,-0.5),Point3D(0.1,-0.1,0.5),Point3D(0.5,-0.1,0.5),Point3D(0.5,-0.1,-0.5)])
+			temperlist.append([Point3D(0.5,-0.1,-0.5),Point3D(0.5,-0.1,0.5),Point3D(0.1,-0.1,0.5),Point3D(0.1,-0.1,-0.5)])
 			temperlist.append([Point3D(0.1,0.1,-0.5),Point3D(0.1,0.1,0.5),Point3D(0.5,0.1,0.5),Point3D(0.5,0.1,-0.5)])
 			temperlist.rotatepointsZ(90*x)
 			pointops.extend(temperlist)
@@ -76,17 +76,17 @@ class Shapes:
 		pointops.append([Point3D(-0.1,-0.1,0.5),Point3D(0.1,-0.1,0.5),Point3D(0.1,0.1,0.5),Point3D(-0.1,0.1,0.5)])
 		return pointops
 
-	def makeladdershapes(self):
+	def makeladdershapes(self, listoffaces=None):
 		pointops = PointList()
-		pointops.append([Point3D(0.5,-0.4,-0.5),Point3D(-0.5,-0.4,-0.5),Point3D(-0.5,-0.5,-0.5),Point3D(0.5,-0.5,-0.5)])
+		pointops.append([Point3D(0.5,-0.5,-0.5),Point3D(-0.5,-0.5,-0.5),Point3D(-0.5,-0.4,-0.5),Point3D(0.5,-0.4,-0.5)])
 		pointops.append([Point3D(0.5,-0.4,0.5),Point3D(-0.5,-0.4,0.5),Point3D(-0.5,-0.5,0.5),Point3D(0.5,-0.5,0.5)])
 		pointops.append([Point3D(-0.5,-0.4,-0.5),Point3D(-0.5,-0.4,0.5),Point3D(0.5,-0.4,0.5),Point3D(0.5,-0.4,-0.5)])
-		pointops.append([Point3D(-0.5,-0.5,-0.5),Point3D(-0.5,-0.5,0.5),Point3D(0.5,-0.5,0.5),Point3D(0.5,-0.5,-0.5)])
-		pointops.append([Point3D(-0.5,-0.5,-0.5),Point3D(-0.5,-0.4,-0.5),Point3D(-0.5,-0.4,0.5),Point3D(-0.5,-0.5,0.5)])
+		pointops.append([Point3D(0.5,-0.5,-0.5),Point3D(0.5,-0.5,0.5),Point3D(-0.5,-0.5,0.5),Point3D(-0.5,-0.5,-0.5)])
+		pointops.append([Point3D(-0.5,-0.5,0.5),Point3D(-0.5,-0.4,0.5),Point3D(-0.5,-0.4,-0.5),Point3D(-0.5,-0.5,-0.5)])
 		pointops.append([Point3D(0.5,-0.5,-0.5),Point3D(0.5,-0.4,-0.5),Point3D(0.5,-0.4,0.5),Point3D(0.5,-0.5,0.5)])
 		return pointops
 
-	def makeflatblockshape(self):
+	def makeflatblockshape(self, listoffaces=None):
 		pointops = PointList()
 		pointops.append([Point3D(0.4,0.4,-0.5),Point3D(-0.4,0.4,-0.5),Point3D(-0.4,-0.4,-0.5),Point3D(0.4,-0.4,-0.5)])
 		pointops.append([Point3D(0.4,0.4,-0.4),Point3D(-0.4,0.4,-0.4),Point3D(-0.4,-0.4,-0.4),Point3D(0.4,-0.4,-0.4)])
