@@ -198,6 +198,8 @@ def makefence(loneneighbors, mat):
     for block in loneneighbors[mat]:
         listoffaces = loneneighbors[mat][block]['faces']
         pointops = shapemaker.makefenceshape(listoffaces)
+        
+        shapemaker.removeneibors(pointops, listoffaces)
         appendto3dlist(pointops, block)
         faces[mat] += pointops.totuplelist()
 
@@ -206,20 +208,15 @@ def makeblock(loneneighbors, mat):
         listoffaces = loneneighbors[mat][block]['faces']
         
         pointops = PointList()
-
-        if 5 in listoffaces:
-            pointops.append([Point3D(-0.5,0.5,-0.5),Point3D(0.5,0.5,-0.5),Point3D(0.5,-0.5,-0.5),Point3D(-0.5,-0.5,-0.5)])
-        if 6 in listoffaces:
-            pointops.append([Point3D(-0.5,-0.5,0.5),Point3D(0.5,-0.5,0.5),Point3D(0.5,0.5,0.5),Point3D(-0.5,0.5,0.5)])
-        if 3 in listoffaces:
-            pointops.append([Point3D(-0.5,-0.5,0.5),Point3D(-0.5,-0.5,-0.5),Point3D(0.5,-0.5,-0.5),Point3D(0.5,-0.5,0.5)])
-        if 4 in listoffaces:
-            pointops.append([Point3D(0.5,0.5,0.5),Point3D(0.5,0.5,-0.5),Point3D(-0.5,0.5,-0.5),Point3D(-0.5,0.5,0.5)])
-        if 1 in listoffaces:
-            pointops.append([Point3D(-0.5,0.5,-0.5),Point3D(-0.5,-0.5,-0.5),Point3D(-0.5,-0.5,0.5),Point3D(-0.5,0.5,0.5)])
-        if 2 in listoffaces:
-            pointops.append([Point3D(0.5,0.5,0.5),Point3D(0.5,-0.5,0.5),Point3D(0.5,-0.5,-0.5),Point3D(0.5,0.5,-0.5)])
+        pointops.append([Point3D(-0.5,0.5,-0.5),Point3D(0.5,0.5,-0.5),Point3D(0.5,-0.5,-0.5),Point3D(-0.5,-0.5,-0.5)])
+        pointops.append([Point3D(-0.5,-0.5,0.5),Point3D(0.5,-0.5,0.5),Point3D(0.5,0.5,0.5),Point3D(-0.5,0.5,0.5)])
+        pointops.append([Point3D(-0.5,-0.5,0.5),Point3D(-0.5,-0.5,-0.5),Point3D(0.5,-0.5,-0.5),Point3D(0.5,-0.5,0.5)])
+        pointops.append([Point3D(0.5,0.5,0.5),Point3D(0.5,0.5,-0.5),Point3D(-0.5,0.5,-0.5),Point3D(-0.5,0.5,0.5)])
+        pointops.append([Point3D(-0.5,0.5,-0.5),Point3D(-0.5,-0.5,-0.5),Point3D(-0.5,-0.5,0.5),Point3D(-0.5,0.5,0.5)])
+        pointops.append([Point3D(0.5,0.5,0.5),Point3D(0.5,-0.5,0.5),Point3D(0.5,-0.5,-0.5),Point3D(0.5,0.5,-0.5)])
         
+        shapemaker.removeneibors(pointops, listoffaces)
+
         appendto3dlist(pointops, block)    
         faces[mat] += pointops.totuplelist()
 
@@ -229,21 +226,17 @@ def makehalfblock(loneneighbors, mat):
         listoffaces = loneneighbors[mat][block]['faces']
         pointops = PointList()
 
-        if 5 in listoffaces:
-            pointops.append([Point3D(0.5,0.5,0),Point3D(-0.5,0.5,0),Point3D(-0.5,-0.5,0),Point3D(0.5,-0.5,0)])
-        if 6 in listoffaces:
-            pointops.append([Point3D(0.5,-0.5,-0.5),Point3D(-0.5,-0.5,-0.5),Point3D(-0.5,0.5,-0.5),Point3D(0.5,0.5,-0.5)])
-        if 3 in listoffaces:
-            pointops.append([Point3D(0.5,-0.5,-0.5),Point3D(0.5,-0.5,0),Point3D(-0.5,-0.5,0),Point3D(-0.5,-0.5,-0.5)])
-        if 4 in listoffaces:
-            pointops.append([Point3D(-0.5,0.5,-0.5),Point3D(-0.5,0.5,0),Point3D(0.5,0.5,0),Point3D(0.5,0.5,-0.5)])
-        if 1 in listoffaces:
-            pointops.append([Point3D(-0.5,-0.5,0),Point3D(-0.5,0.5,0),Point3D(-0.5,0.5,-0.5),Point3D(-0.5,-0.5,-0.5)])
-        if 2 in listoffaces:
-            pointops.append([Point3D(0.5,-0.5,-0.5),Point3D(0.5,0.5,-0.5),Point3D(0.5,0.5,0),Point3D(0.5,-0.5,0)])
+        pointops.append([Point3D(0.5,0.5,0),Point3D(-0.5,0.5,0),Point3D(-0.5,-0.5,0),Point3D(0.5,-0.5,0)])
+        pointops.append([Point3D(0.5,-0.5,-0.5),Point3D(-0.5,-0.5,-0.5),Point3D(-0.5,0.5,-0.5),Point3D(0.5,0.5,-0.5)])
+        pointops.append([Point3D(0.5,-0.5,-0.5),Point3D(0.5,-0.5,0),Point3D(-0.5,-0.5,0),Point3D(-0.5,-0.5,-0.5)])
+        pointops.append([Point3D(-0.5,0.5,-0.5),Point3D(-0.5,0.5,0),Point3D(0.5,0.5,0),Point3D(0.5,0.5,-0.5)])
+        pointops.append([Point3D(-0.5,-0.5,0),Point3D(-0.5,0.5,0),Point3D(-0.5,0.5,-0.5),Point3D(-0.5,-0.5,-0.5)])
+        pointops.append([Point3D(0.5,-0.5,-0.5),Point3D(0.5,0.5,-0.5),Point3D(0.5,0.5,0),Point3D(0.5,-0.5,0)])
+        
         if loneneighbors[mat][block]['meta'] > 7:
             pointops.rotatepointsY(180)
 
+        shapemaker.removeneibors(pointops, listoffaces)
         appendto3dlist(pointops, block)    
 
         faces[mat] += pointops.totuplelist()
@@ -253,19 +246,20 @@ def makeflatblock(loneneighbors, mat):
         listoffaces = loneneighbors[mat][block]['faces']
         pointops = PointList()
 
-        if 5 in listoffaces:
-            pointops.append([Point3D(0.5,0.5,-0.5),Point3D(-0.5,0.5,-0.5),Point3D(-0.5,-0.5,-0.5),Point3D(0.5,-0.5,-0.5)])
-        if 6 in listoffaces:
-            pointops.append([Point3D(0.5,0.5,-0.4),Point3D(-0.5,0.5,-0.4),Point3D(-0.5,-0.5,-0.4),Point3D(0.5,-0.5,-0.4)])
-        if 3 in listoffaces:
-            pointops.append([Point3D(-0.5,-0.5,-0.5),Point3D(-0.5,-0.5,-0.4),Point3D(0.5,-0.5,-0.4),Point3D(0.5,-0.5,-0.5)])
-        if 4 in listoffaces:
-            pointops.append([Point3D(-0.5,0.5,-0.5),Point3D(-0.5,0.5,-0.4),Point3D(0.5,0.5,-0.4),Point3D(0.5,0.5,-0.5)])
-        if 1 in listoffaces:
-            pointops.append([Point3D(-0.5,-0.5,-0.5),Point3D(-0.5,0.5,-0.5),Point3D(-0.5,0.5,-0.4),Point3D(-0.5,-0.5,-0.4)])
-        if 2 in listoffaces:
-            pointops.append([Point3D(0.5,-0.5,-0.5),Point3D(0.5,0.5,-0.5),Point3D(0.5,0.5,-0.4),Point3D(0.5,-0.5,-0.4)])
+        # if 5 in listoffaces:
+        pointops.append([Point3D(0.5,0.5,-0.5),Point3D(-0.5,0.5,-0.5),Point3D(-0.5,-0.5,-0.5),Point3D(0.5,-0.5,-0.5)])
+        # if 6 in listoffaces:
+        pointops.append([Point3D(0.5,0.5,-0.4),Point3D(-0.5,0.5,-0.4),Point3D(-0.5,-0.5,-0.4),Point3D(0.5,-0.5,-0.4)])
+        # if 3 in listoffaces:
+        pointops.append([Point3D(-0.5,-0.5,-0.5),Point3D(-0.5,-0.5,-0.4),Point3D(0.5,-0.5,-0.4),Point3D(0.5,-0.5,-0.5)])
+        # if 4 in listoffaces:
+        pointops.append([Point3D(-0.5,0.5,-0.5),Point3D(-0.5,0.5,-0.4),Point3D(0.5,0.5,-0.4),Point3D(0.5,0.5,-0.5)])
+        # if 1 in listoffaces:
+        pointops.append([Point3D(-0.5,-0.5,-0.5),Point3D(-0.5,0.5,-0.5),Point3D(-0.5,0.5,-0.4),Point3D(-0.5,-0.5,-0.4)])
+        # if 2 in listoffaces:
+        pointops.append([Point3D(0.5,-0.5,-0.5),Point3D(0.5,0.5,-0.5),Point3D(0.5,0.5,-0.4),Point3D(0.5,-0.5,-0.4)])
 
+        shapemaker.removeneibors(pointops, listoffaces)
         appendto3dlist(pointops, block)    
         faces[mat] += pointops.totuplelist()
 
@@ -277,6 +271,7 @@ def makeverticalblock(loneneighbors, mat):
         right = block[0]+1, block[1], block[2]
         front = block[0], block[1]-1, block[2]
         back = block[0], block[1]+1, block[2]
+        listoffaces = loneneighbors[mat][block]['faces']
 
         if front in loneneighbors[mat] or back in loneneighbors[mat]:
             templist = shapemaker.makeverticalflatblock()
@@ -288,6 +283,7 @@ def makeverticalblock(loneneighbors, mat):
         else:
             templist = shapemaker.makeverticalplusblock() 
 
+        shapemaker.removeneibors(pointops, listoffaces)
         appendto3dlist(templist, block)    
         faces[mat] += templist.totuplelist()
 
@@ -306,6 +302,8 @@ def makeladderlikeblock(loneneighbors, mat):
         else:
             pointops.rotatepointsZ(180)
 
+        
+        shapemaker.removeneibors(pointops, listoffaces)
         appendto3dlist(pointops, block)    
         faces[mat] += pointops.totuplelist()
 
@@ -316,6 +314,8 @@ def makesmallflatblock(loneneighbors, mat):
         
         pointops = shapemaker.makeflatblockshape()
         appendto3dlist(pointops, block)    
+
+        shapemaker.removeneibors(pointops, listoffaces)
         templist = pointops.totuplelist()
         faces[mat] += templist
  
@@ -688,8 +688,8 @@ for mat in loneneighbors:
         makehalfblock(loneneighbors, mat)
     elif mat[0] in [171, 111]:
         makeflatblock(loneneighbors, mat)
-    elif mat[0] in [101,102, 160]:
-        makeverticalblock(loneneighbors, mat)
+    # elif mat[0] in [101,102, 160]:
+    #     makeverticalblock(loneneighbors, mat)
     elif mat[0] in [65, 106]:
         makeladderlikeblock(loneneighbors, mat)
     elif mat[0] in [148, 147]:
