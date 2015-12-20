@@ -129,3 +129,13 @@ class PointList(list):
                 templist.append( point.astuple() )
             tempfinal.append(templist)
         return tempfinal
+
+    def fromtuplelist(self, alist):
+        tempfinal = []
+        for face in alist:
+            newface = []
+            for atuple in face:
+                point = Point3D(x=atuple[0],y=atuple[1],z=atuple[2])
+                newface.append(point)
+            tempfinal.append(newface)
+        list.__init__(self, tempfinal) 
