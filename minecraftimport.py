@@ -17,7 +17,7 @@ import math
 import operator
 import ast
 import pickle
-from materials import *
+# from materials import *
 
 
 from bpy_extras.io_utils import ImportHelper
@@ -53,8 +53,8 @@ class DataImporter:
 
         if material in self.materials:
             themat = self.materials
-        elif material in defmaterials:
-            themat = defmaterials
+        # elif material in defmaterials:
+        #     themat = defmaterials
         else:
             themat = {material:{'name': 'Unknown', 'color': (0,0,0),'alpha':0,'emittance':0}}
 
