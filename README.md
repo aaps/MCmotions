@@ -152,17 +152,41 @@ some refactoring so it all looks better and is more understandable
 
 #ToDo:
 1 
+* making sure mctricky has block shapes in it
 
-* more block shapes for map import
+* making a texture start
 
-* a option for proxy to only record chunks once, to speed up recording
+* some refactoring, makeing a chunk class or something
 
-* a option for the proxy to relay those recorded chunks to client for huge bandwith save
+* fixing the unknown blocks that are most likely a meta info offset problem
+
+* option not to remove all neighbor blocks for example in case of fences, or
+cobwebs
+
+* add negative stair corners.
+
+* add option for more agressive neighbor face removal
+
+* a beginning of a blender exporter to a blockmodel[faces[points]] format
+called MCsimple.
+
+* all of this in a branch so my work will not scare new downloaders
+
+* see that the minecraftimport users will have tome usefull text messages
+avalable like current version and a github release, etc
+
+2
+
+sync with theduckcow on how to replace my very basic mob/entity models to something more fancy like used in mob spawner in mcprep.
+
+more block shapes for map import
+
+a option for proxy to only record chunks once, to speed up recording
+
+a option for the proxy to relay those recorded chunks to client for huge bandwith save
 
 adding cams that where imported by proxy commands
 
-
-2
 importing block changes via blender masks and makeing that mask visible on keyframes (hope that works)
 
 block textures
@@ -173,7 +197,6 @@ the ability to record plugin messages like multyworld
 3
 recording the details, animations of blocks, particles, lightning, rain, etc
 
-the ability to survive transports to other servers
 
 #PERFORMANCE
 
