@@ -34,12 +34,12 @@ defmaterials[(5,4)] = {'name': 'Acacia Wood Plank', 'color': (1, 0.627451, 0.478
 defmaterials[(5,5)] = {'name': 'Dark Oak Wood Plank', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
 
 
-defmaterials[(6,0)] = {'name': 'Oak Sapling', 'color': (0.9,0.7,0.6),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
-defmaterials[(6,1)] = {'name': 'Spruce Sapling', 'color': (0.9,0.7,0.6),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
-defmaterials[(6,2)] = {'name': 'Birch Sapling', 'color': (0.9,0.7,0.6),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
-defmaterials[(6,3)] = {'name': 'Jungle Sapling', 'color': (0.9,0.7,0.6),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
-defmaterials[(6,4)] = {'name': 'Acacia Sapling', 'color': (0.9,0.7,0.6),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
-defmaterials[(6,5)] = {'name': 'Dark Oak Sapling', 'color': (0.9,0.7,0.6),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
+defmaterials[(6,0)] = {'name': 'Oak Sapling', 'color': (0.9,0.7,0.6),'alpha':0,'emittance':0,'model': shapemaker.makexblock().totuplelist()}
+defmaterials[(6,1)] = {'name': 'Spruce Sapling', 'color': (0.9,0.7,0.6),'alpha':0,'emittance':0,'model': shapemaker.makexblock().totuplelist()}
+defmaterials[(6,2)] = {'name': 'Birch Sapling', 'color': (0.9,0.7,0.6),'alpha':0,'emittance':0,'model': shapemaker.makexblock().totuplelist()}
+defmaterials[(6,3)] = {'name': 'Jungle Sapling', 'color': (0.9,0.7,0.6),'alpha':0,'emittance':0,'model': shapemaker.makexblock().totuplelist()}
+defmaterials[(6,4)] = {'name': 'Acacia Sapling', 'color': (0.9,0.7,0.6),'alpha':0,'emittance':0,'model': shapemaker.makexblock().totuplelist()}
+defmaterials[(6,5)] = {'name': 'Dark Oak Sapling', 'color': (0.9,0.7,0.6),'alpha':0,'emittance':0,'model': shapemaker.makexblock().totuplelist()}
 
 defmaterials[(7,0)] = {'name': 'Bedrock', 'color': (0.2,0.2,0.2),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
 
@@ -87,13 +87,13 @@ defmaterials[(26,0)] = {'name': 'Bed', 'color': (1, 0.627451, 0.478431),'alpha':
 defmaterials[(27,0)] = {'name': 'Powered Rail', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
 defmaterials[(28,0)] = {'name': 'Detector Rail', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
 defmaterials[(29,0)] = {'name': 'Sticky Piston', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
-defmaterials[(30,0)] = {'name': 'Cobweb', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
+defmaterials[(30,0)] = {'name': 'Cobweb', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makexblock().totuplelist()}
 
-defmaterials[(31,0)] = {'name': 'Dead Shrub', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
-defmaterials[(31,1)] = {'name': 'Grass', 'color': (0,0.8,0),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
-defmaterials[(31,2)] = {'name': 'Fern', 'color': (0,0.8,0),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
+defmaterials[(31,0)] = {'name': 'Dead Shrub', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makexblock().totuplelist()}
+defmaterials[(31,1)] = {'name': 'Grass', 'color': (0,0.8,0),'alpha':0,'emittance':0,'model': shapemaker.makexblock().totuplelist()}
+defmaterials[(31,2)] = {'name': 'Fern', 'color': (0,0.8,0),'alpha':0,'emittance':0,'model': shapemaker.makexblock().totuplelist()}
 
-defmaterials[(32,0)] = {'name': 'Dead Bush', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
+defmaterials[(32,0)] = {'name': 'Dead Bush', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makexblock().totuplelist()}
 defmaterials[(33,0)] = {'name': 'Piston', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
 defmaterials[(34,0)] = {'name': 'Piston Head', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
 
@@ -116,18 +116,18 @@ defmaterials[(35,15)] = {'name': 'Black Wool', 'color': (1, 0.627451, 0.478431),
 
 defmaterials[(37,0)] = {'name': 'Dandelion', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
 
-defmaterials[(38,0)] = {'name': 'Poppy', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
-defmaterials[(38,1)] = {'name': 'Blue Orchid', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
-defmaterials[(38,2)] = {'name': 'Allium', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
-defmaterials[(38,3)] = {'name': 'Azure Bluet', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
-defmaterials[(38,4)] = {'name': 'Red Tulip', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
-defmaterials[(38,5)] = {'name': 'Orange Tulip', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
-defmaterials[(38,6)] = {'name': 'White Tulip', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
-defmaterials[(38,7)] = {'name': 'Pink Tulip', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
-defmaterials[(38,8)] = {'name': 'Oxeye Daisy', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
+defmaterials[(38,0)] = {'name': 'Poppy', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makexblock().totuplelist()}
+defmaterials[(38,1)] = {'name': 'Blue Orchid', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makexblock().totuplelist()}
+defmaterials[(38,2)] = {'name': 'Allium', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makexblock().totuplelist()}
+defmaterials[(38,3)] = {'name': 'Azure Bluet', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makexblock().totuplelist()}
+defmaterials[(38,4)] = {'name': 'Red Tulip', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makexblock().totuplelist()}
+defmaterials[(38,5)] = {'name': 'Orange Tulip', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makexblock().totuplelist()}
+defmaterials[(38,6)] = {'name': 'White Tulip', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makexblock().totuplelist()}
+defmaterials[(38,7)] = {'name': 'Pink Tulip', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makexblock().totuplelist()}
+defmaterials[(38,8)] = {'name': 'Oxeye Daisy', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makexblock().totuplelist()}
 
-defmaterials[(39,0)] = {'name': 'Brown Mushroom', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
-defmaterials[(40,0)] = {'name': 'Red Mushroom', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
+defmaterials[(39,0)] = {'name': 'Brown Mushroom', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makexblock().totuplelist()}
+defmaterials[(40,0)] = {'name': 'Red Mushroom', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makexblock().totuplelist()}
 
 defmaterials[(41,0)] = {'name': 'Gold Block', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
 defmaterials[(42,0)] = {'name': 'Iron Block', 'color': (0.7,0.7,0.7),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
@@ -141,14 +141,14 @@ defmaterials[(43,5)] = {'name': 'Double Stone Brick Slab', 'color': (1, 0.627451
 defmaterials[(43,6)] = {'name': 'Double Nether Brick Slab', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
 defmaterials[(43,7)] = {'name': 'Double Quartz Slab', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
 
-defmaterials[(44,0)] = {'name': 'Stone Slab', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
-defmaterials[(44,1)] = {'name': 'Sandstone Slab', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
-defmaterials[(44,2)] = {'name': 'Wooden Slab', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
-defmaterials[(44,3)] = {'name': 'Cobblestone Slab', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
-defmaterials[(44,4)] = {'name': 'Brick Slab', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
-defmaterials[(44,5)] = {'name': 'Stone Brick Slab', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
-defmaterials[(44,6)] = {'name': 'Nether Brick Slab', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
-defmaterials[(44,7)] = {'name': 'Quartz Slab', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
+defmaterials[(44,0)] = {'name': 'Stone Slab', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makehalfblocks().totuplelist()}
+defmaterials[(44,1)] = {'name': 'Sandstone Slab', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makehalfblocks().totuplelist()}
+defmaterials[(44,2)] = {'name': 'Wooden Slab', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makehalfblocks().totuplelist()}
+defmaterials[(44,3)] = {'name': 'Cobblestone Slab', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makehalfblocks().totuplelist()}
+defmaterials[(44,4)] = {'name': 'Brick Slab', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makehalfblocks().totuplelist()}
+defmaterials[(44,5)] = {'name': 'Stone Brick Slab', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makehalfblocks().totuplelist()}
+defmaterials[(44,6)] = {'name': 'Nether Brick Slab', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makehalfblocks().totuplelist()}
+defmaterials[(44,7)] = {'name': 'Quartz Slab', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makehalfblocks().totuplelist()}
 
 defmaterials[(45,0)] = {'name': 'Bricks', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
 defmaterials[(46,0)] = {'name': 'TNT', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
@@ -156,7 +156,7 @@ defmaterials[(47,0)] = {'name': 'Bookshelf', 'color': (1, 0.627451, 0.478431),'a
 defmaterials[(48,0)] = {'name': 'Moss Stone', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
 defmaterials[(49,0)] = {'name': 'Obsidian', 'color': (0,0,0.2),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
 defmaterials[(50,0)] = {'name': 'Torch', 'color': (0.9,0.9,0.2),'alpha':0,'emittance':5,'model': shapemaker.makeblockshape().totuplelist()}
-defmaterials[(51,0)] = {'name': 'Fire', 'color': (0.9,0.9,0.2),'alpha':0,'emittance':5,'model': shapemaker.makeblockshape().totuplelist()}
+defmaterials[(51,0)] = {'name': 'Fire', 'color': (0.9,0.9,0.2),'alpha':0,'emittance':5,'model': shapemaker.makexblock().totuplelist()}
 
 defmaterials[(52,0)] = {'name': 'Monster Spawner', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
 defmaterials[(53,0)] = {'name': 'Oak Wood Stairs', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
@@ -172,7 +172,7 @@ defmaterials[(61,0)] = {'name': 'Furnace', 'color': (1, 0.627451, 0.478431),'alp
 defmaterials[(62,0)] = {'name': 'Burning Furnace', 'color': (0.9,0.9,0.2),'alpha':0,'emittance':4}
 defmaterials[(63,0)] = {'name': 'Standing Sign Block', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
 defmaterials[(64,0)] = {'name': 'Oak Door Block', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
-defmaterials[(65,0)] = {'name': 'Ladder', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
+defmaterials[(65,0)] = {'name': 'Ladder', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeladdershapes().totuplelist()}
 defmaterials[(66,0)] = {'name': 'Rail', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
 defmaterials[(67,0)] = {'name': 'Cobblestone Stairs', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
 defmaterials[(68,0)] = {'name': 'Wall-mounted Sign Block', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
@@ -190,7 +190,7 @@ defmaterials[(79,0)] = {'name': 'Ice', 'color': (0.4,0.4,1),'alpha':0.2,'emittan
 defmaterials[(80,0)] = {'name': 'Snow Block', 'color': (1,1,1),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
 defmaterials[(81,0)] = {'name': 'Cactus', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
 defmaterials[(82,0)] = {'name': 'Clay', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
-defmaterials[(83,0)] = {'name': 'Sugar Canes', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
+defmaterials[(83,0)] = {'name': 'Sugar Canes', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makexblock().totuplelist()}
 defmaterials[(84,0)] = {'name': 'Jukebox', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
 defmaterials[(85,0)] = {'name': 'Oak Fence', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
 defmaterials[(86,0)] = {'name': 'Pumpkin', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
@@ -243,7 +243,7 @@ defmaterials[(103,0)] = {'name': 'Melon Block', 'color': (1, 0.627451, 0.478431)
 
 defmaterials[(104,0)] = {'name': 'Pumpkin Stem', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
 defmaterials[(105,0)] = {'name': 'Melon Stem', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
-defmaterials[(106,0)] = {'name': 'Vines', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
+defmaterials[(106,0)] = {'name': 'Vines', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeladdershapes().totuplelist()}
 defmaterials[(107,0)] = {'name': 'Oak Fence Gate', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
 defmaterials[(108,0)] = {'name': 'Brick Stairs', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
 defmaterials[(109,0)] = {'name': 'Stone Brick Stairs', 'color': (0.3,0.3,0.3),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
@@ -271,9 +271,9 @@ defmaterials[(125,3)] = {'name': 'Double Jungle Wood Slab', 'color': (1, 0.62745
 defmaterials[(125,4)] = {'name': 'Double Acacia Wood Slab', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
 defmaterials[(125,5)] = {'name': 'Double Dark Oak Wood Slab', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
 
-defmaterials[(126,0)] = {'name': 'Oak Wood Slab', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
-defmaterials[(126,1)] = {'name': 'Spruce Wood Slab', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
-defmaterials[(126,2)] = {'name': 'Birch Wood Slab', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
-defmaterials[(126,3)] = {'name': 'Jungle Wood Slab', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
-defmaterials[(126,4)] = {'name': 'Acacia Wood Slab', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
-defmaterials[(126,5)] = {'name': 'Dark Oak Wood Slab', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makeblockshape().totuplelist()}
+defmaterials[(126,0)] = {'name': 'Oak Wood Slab', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makehalfblocks().totuplelist()}
+defmaterials[(126,1)] = {'name': 'Spruce Wood Slab', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makehalfblocks().totuplelist()}
+defmaterials[(126,2)] = {'name': 'Birch Wood Slab', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makehalfblocks().totuplelist()}
+defmaterials[(126,3)] = {'name': 'Jungle Wood Slab', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makehalfblocks().totuplelist()}
+defmaterials[(126,4)] = {'name': 'Acacia Wood Slab', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makehalfblocks().totuplelist()}
+defmaterials[(126,5)] = {'name': 'Dark Oak Wood Slab', 'color': (1, 0.627451, 0.478431),'alpha':0,'emittance':0,'model': shapemaker.makehalfblocks().totuplelist()}

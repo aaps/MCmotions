@@ -142,6 +142,7 @@ def makestairs(loneneighbors, mat):
         right = block[0]+1, block[1], block[2]
         front = block[0], block[1]-1, block[2]
         back = block[0], block[1]+1, block[2]
+        listoffaces = loneneighbors[mat][block]['faces']
 
         somemeta = (loneneighbors[mat][block]['meta'] & 3) + 1
         pointops = PointList()
@@ -192,6 +193,7 @@ def makestairs(loneneighbors, mat):
             if upsidedown:
                 pointops.rotatepointsY( 180)
 
+        shapemaker.removeneibors(pointops, listoffaces)
         appendto3dlist(pointops, block)
         faces[mat] += pointops.totuplelist()
         
@@ -320,7 +322,8 @@ def makeladderlikeblock(loneneighbors, mat):
         shapemaker.removeneibors(pointops, listoffaces)
 
         appendto3dlist(pointops, block)    
-        faces[mat] += pointops.totuplelist()
+        templist = pointops.totuplelist()
+        faces[mat] += templist
 
 
 def makesmallflatblock(loneneighbors, mat):
@@ -337,7 +340,7 @@ def makesmallflatblock(loneneighbors, mat):
         appendto3dlist(pointops, block)
 
         shapemaker.removeneibors(pointops, listoffaces)
-        templist = pointops.totuplelist()
+        pointops.totuplelist()
         faces[mat] += templist
  
 def makexblock(loneneighbors, mat):

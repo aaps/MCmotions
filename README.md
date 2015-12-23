@@ -152,27 +152,27 @@ some refactoring so it all looks better and is more understandable
 
 #ToDo:
 1 
-* making sure mctricky has block shapes in it
+* (first)making sure mctricky has block shapes in it
 
-* making a texture start
+* (sixth)making a texture start
 
-* some refactoring, makeing a chunk class or something
+* (third)some refactoring, makeing a chunk class or something
 
-* fixing the unknown blocks that are most likely a meta info offset problem
+* (second)fixing the unknown blocks that are most likely a meta info offset problem
 
-* option not to remove all neighbor blocks for example in case of fences, or
+* (fifth)option not to remove all neighbor blocks for example in case of fences, or
 cobwebs
 
-* add negative stair corners.
+* (forth)add negative stair corners.(the one that im missing anyway)
 
-* add option for more agressive neighbor face removal
+* (senventh)add option for more agressive neighbor face removal
 
-* a beginning of a blender exporter to a blockmodel[faces[points]] format
+* (eighth)a beginning of a blender exporter to a blockmodel[faces[points]] format
 called MCsimple.
 
 * all of this in a branch so my work will not scare new downloaders
 
-* see that the minecraftimport users will have tome usefull text messages
+* (ninth) see that the minecraftimport users will have some usefull text messages
 avalable like current version and a github release, etc
 
 2
