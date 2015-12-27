@@ -51,12 +51,12 @@ class DataImporter:
         
         mat = bpy.data.materials.new("PKHG")
 
+        
         if material in self.materials:
             themat = self.materials
-        # elif material in defmaterials:
-        #     themat = defmaterials
+
         else:
-            themat = {material:{'name': 'Unknown', 'color': (0,0,0),'alpha':0,'emittance':0}}
+            themat = {material:{'name': 'Unknown - ' + str(material), 'color': (0,0,0),'alpha':0,'emittance':0}}
 
             # print(type(material))
 

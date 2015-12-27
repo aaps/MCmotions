@@ -152,13 +152,13 @@ some refactoring so it all looks better and is more understandable
 
 #ToDo:
 1 
-* (first)making sure mctricky has block shapes in it
+* (first)making sure mctricky has block shapes in it (done)
 
 * (sixth)making a texture start
 
-* (third)some refactoring, makeing a chunk class or something
+* (third)some refactoring, makeing a chunk class or something (some cleaning up of lister instead)
 
-* (second)fixing the unknown blocks that are most likely a meta info offset problem
+* (second)fixing the unknown blocks that are most likely a meta info offset problem (nope double slabs have seamless bool, done)
 
 * (fifth)option not to remove all neighbor blocks for example in case of fences, or
 cobwebs

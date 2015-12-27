@@ -31,6 +31,16 @@ class Shapes:
                 pointcount += 1
         return pointcount >= numofpoints
 
+    def removetopdownneighbors(self, pointslist, lisoffaces):
+
+        if 6 not in lisoffaces:
+            for index, points in enumerate(pointslist):
+                if self.pointsonedgeZ(points, 0.5):
+                    del pointslist[index]
+        if 5 not in lisoffaces:
+            for index, points in enumerate(pointslist):
+                if self.pointsonedgeZ(points, -0.5):
+                    del pointslist[index]
 
     def removeneibors(self, pointslist, lisoffaces):
         

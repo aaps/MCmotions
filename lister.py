@@ -216,56 +216,36 @@ def makefence(loneneighbors, mat):
         faces[mat] += pointops.totuplelist()
 
 def makeblock(loneneighbors, mat):
+    
+ 
+    if mat in colormaterials and 'niceneighbor' in colormaterials[mat] and colormaterials[mat]['niceneighbor']:
+        removeneibors = False
+        print str(mat) + ' removed in makeblock'
+    else:
+        removeneibors = True
+        
+
+
+
     for block in loneneighbors[mat]:
         listoffaces = loneneighbors[mat][block]['faces']
-        
+    
+
         if mat in colormaterials and 'model' in colormaterials[mat]:
             pointlist = PointList()
+            
             pointlist.fromtuplelist(colormaterials[mat]['model'])
             pointops = pointlist
         else:
             pointops = shapemaker.makeblockshape()
     
-        shapemaker.removeneibors(pointops, listoffaces)
+        if removeneibors:
+            shapemaker.removeneibors(pointops, listoffaces)
         
         appendto3dlist(pointops, block)    
 
         faces[mat] += pointops.totuplelist()
 
-
-def makehalfblock(loneneighbors, mat):
-    for block in loneneighbors[mat]:
-        listoffaces = loneneighbors[mat][block]['faces']
-        
-        if mat in colormaterials and 'model' in colormaterials[mat]:
-            pointlist = PointList()
-            pointlist.fromtuplelist(colormaterials[mat]['model'])
-            pointops = pointlist
-        else:
-            pointops = shapemaker.makehalfblocks()
-        
-        if loneneighbors[mat][block]['meta'] > 7:
-            pointops.rotatepointsY(180)
-
-        shapemaker.removeneibors(pointops, listoffaces)
-        appendto3dlist(pointops, block)    
-
-        faces[mat] += pointops.totuplelist()
-
-def makeflatblock(loneneighbors, mat):
-    for block in loneneighbors[mat]:
-        listoffaces = loneneighbors[mat][block]['faces']
-
-        if mat in colormaterials and 'model' in colormaterials[mat]:
-            pointlist = PointList()
-            pointlist.fromtuplelist(colormaterials[mat]['model'])
-            pointops = pointlist
-        else:
-            pointops = shapemaker.makeflatblocks()
-
-        shapemaker.removeneibors(pointops, listoffaces)
-        appendto3dlist(pointops, block)    
-        faces[mat] += pointops.totuplelist()
 
 
 def makeverticalblock(loneneighbors, mat):
@@ -298,6 +278,7 @@ def makeverticalblock(loneneighbors, mat):
         faces[mat] += templist.totuplelist()
 
 def makeladderlikeblock(loneneighbors, mat):
+
     for block in loneneighbors[mat]:
         listoffaces = loneneighbors[mat][block]['faces']
 
@@ -319,45 +300,12 @@ def makeladderlikeblock(loneneighbors, mat):
         else:
             pointops.rotatepointsZ(180)
 
-        shapemaker.removeneibors(pointops, listoffaces)
+        shapemaker.removetopdownneighbors(pointops, listoffaces)
 
         appendto3dlist(pointops, block)    
         templist = pointops.totuplelist()
         faces[mat] += templist
 
-
-def makesmallflatblock(loneneighbors, mat):
-    for block in loneneighbors[mat]:
-        listoffaces = loneneighbors[mat][block]['faces']
-        
-        if mat in colormaterials and 'model' in colormaterials[mat]:
-            pointlist = PointList()
-            pointlist.fromtuplelist(colormaterials[mat]['model'])
-            pointops = pointlist
-        else:
-            pointops = shapemaker.makeflatblockshape()
-
-        appendto3dlist(pointops, block)
-
-        shapemaker.removeneibors(pointops, listoffaces)
-        pointops.totuplelist()
-        faces[mat] += templist
- 
-def makexblock(loneneighbors, mat):
-    
-    for block in loneneighbors[mat]:
-        
-        if mat in colormaterials and 'model' in colormaterials[mat]:
-            pointlist = PointList()
-            pointlist.fromtuplelist(colormaterials[mat]['model'])
-            pointops = pointlist
-        else:
-            pointops = shapemaker.makexblock()
-
-        appendto3dlist(pointops, block)    
-        templist = pointops.totuplelist()
-
-        faces[mat] += templist
 
 def worldfromsample(sample):
     overworldblocks = [1,2,3,4,6,8,9,12,13, 15,16,17,18,37,38,39,40]
@@ -512,9 +460,12 @@ def genfacesNeighbors(materials):
 
     for mat in materials:
         
+
+
         for block in materials[mat]:
             neightbors[mat][block] = {'meta': materials[mat][block]['meta'],'faces':[]}
-
+            
+            
             if (block[0]-1, block[1], block[2]) not in materials[mat]:
                 neightbors[mat][block]['faces'].append(1)
             if (block[0]+1, block[1], block[2]) not in materials[mat]:
@@ -534,11 +485,21 @@ def genfacesNeighbors(materials):
 def removeSupderCosy(neightbors):
     loneneighbors = {}
     for mat in neightbors:
+        
+        if mat in colormaterials and 'niceneighbor' in colormaterials[mat] and colormaterials[mat]['niceneighbor']:
+            removeneibors = False
+            print str(mat) + ' removed in superduper'
+        else:
+            removeneibors = True
+
+
+
         loneneighbors[mat] = {}
         for block in neightbors[mat]:
 
-            if len(neightbors[mat][block]['faces']) > 0:
+            if len(neightbors[mat][block]['faces']) > 0 or not removeneibors:
                 loneneighbors[mat][block[0]+0.5, block[1]+0.5, block[2]+0.5]  = neightbors[mat][block]
+
         neightbors[mat] = None
     return loneneighbors
 
@@ -692,13 +653,13 @@ print 'make a index of possible materials'
 
 materials = makematindexes(chunks)
 
-print str(len(chunks)) +  ' length of chunks'
 
 print 'put the blocks of materials in their material index for ' + str(len(materials)) + ' materials'
 
 materials = fillmatindexes(chunks, materials)
 
-
+# for mat in materials:
+#     print mat, len(materials[mat])
 
 # print 'removing all super neightbors, same type blocks on all sides for ' + str(len(neightbors)) + ' materials'         
 # allneightbors = {}
@@ -711,29 +672,25 @@ faces = {}
 vertices = {}
 
 for mat in loneneighbors:
+    
     faces[mat] = []
     vertices[mat] = []
-    if mat[0] in [182 ,126 ,44]:
-        makehalfblock(loneneighbors, mat)
-    elif mat[0] in [171, 111]:
-        makeflatblock(loneneighbors, mat)
-    elif mat[0] in [101,102, 160]:
-        makeverticalblock(loneneighbors, mat)
-    elif mat[0] in [65, 106]:
-        makeladderlikeblock(loneneighbors, mat)
-    elif mat[0] in [148, 147]:
-        makesmallflatblock(loneneighbors, mat)
-    elif mat[0] in [6 , 111 , 30 , 31 , 32,37,40, 51, 83, 175]:
-        makexblock(loneneighbors, mat)
-    elif mat[0] in [85, 113,188, 189, 190, 191]:
-        makefence(loneneighbors, mat)
-    elif mat[0] in [53, 67, 108, 109, 114, 128, 134, 135, 136, 156, 165, 164, 180]:
-        makestairs(loneneighbors, mat)
-    else:
-        makeblock(loneneighbors, mat)
+
+    # if mat[0] in [101,102, 160]:
+    #     makeverticalblock(loneneighbors, mat)
+    # elif mat[0] in [65, 106]:
+    #     makeladderlikeblock(loneneighbors, mat)
+
+    # elif mat[0] in [85, 113,188, 189, 190, 191]:
+    #     makefence(loneneighbors, mat)
+    # elif mat[0] in [53, 67, 108, 109, 114, 128, 134, 135, 136, 156, 165, 164, 180]:
+    #     makestairs(loneneighbors, mat)
+    # else:
+    makeblock(loneneighbors, mat)
 
 
     loneneighbors[mat] = []
+
 
 print 'generating the vertices'
 
@@ -780,6 +737,7 @@ for mat in colormaterials:
         del colormaterials[mat]['model']
 
 allstuff = {'allhistory':allhistory,'vertices':vertices,'faces':faces, 'materials': colormaterials}
+
 
 vertices = None
 faces = None
