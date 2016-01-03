@@ -2,14 +2,29 @@
 
 import math
 
-class Point3D:
+class Point3D(object):
     def __init__(self, x = 0, y = 0, z = 0):
         self.x, self.y, self.z = float(x), float(y), float(z)
     
-    def append(self, tup):
+    def appendtup(self, tup):
         self.x += tup[0]
         self.y += tup[1]
         self.z += tup[2]
+
+    def append(self, point):
+        self.x += point.x
+        self.y += point.y
+        self.z += point.z
+
+    def divide(self, divider):
+        self.x = self.x / divider
+        self.y = self.y / divider
+        self.z = self.z / divider
+
+    def substracttup(self, point):
+        self.x = self.x - point[0]
+        self.y = self.y - point[1]
+        self.z = self.z - point[2]
 
     def mirrorX(self):
         x = self.x * -1
@@ -60,6 +75,9 @@ class Point3D:
     def astuple(self):
         return self.x,self.y,self.z
 
+    def aslist(self):
+        return [self.x,self.y,self.z]
+
 class PointList(list):
 
     def mirrorpointsX(self):
@@ -69,6 +87,7 @@ class PointList(list):
             for point in face:
                 
                 templist.append(point.mirrorX())
+            templist.reverse()
             tempfinal.append(templist)
         list.__init__(self, tempfinal)
 
@@ -79,6 +98,7 @@ class PointList(list):
             for point in face:
                 
                 templist.append(point.mirrorY())
+            templist.reverse()
             tempfinal.append(templist)
         list.__init__(self, tempfinal)
 
@@ -89,6 +109,7 @@ class PointList(list):
             for point in face:
                 
                 templist.append(point.mirrorZ())
+            templist.reverse()
             tempfinal.append(templist)
         list.__init__(self, tempfinal)
 
@@ -138,4 +159,32 @@ class PointList(list):
                 point = Point3D(x=atuple[0],y=atuple[1],z=atuple[2])
                 newface.append(point)
             tempfinal.append(newface)
-        list.__init__(self, tempfinal) 
+        list.__init__(self, tempfinal)
+
+    def getavgpoint(self):
+        tottup = Point3D(0,0,0)
+        length = 0
+        for face in list.__iter__(self):
+            length  += len(face)
+            for point in face:
+                tottup.append(point)
+        tottup.divide(length)
+        return tottup
+
+    def getrawavgpoint(self):
+        tottup = Point3D(0,0,0)
+        length = len(self)
+        for point in list.__iter__(self):
+            tottup.append(point)
+        tottup.divide(length)
+        return tottup
+
+    def getavgpoint(self):
+        tottup = Point3D(0,0,0)
+        length = 0
+        for face in list.__iter__(self):
+            length  += len(face)
+            for point in face:
+                tottup.append(point)
+        tottup.divide(length)
+        return tottup

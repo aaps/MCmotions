@@ -63,6 +63,7 @@ class DataImporter:
         # print('ok' + )
         me = bpy.data.meshes.new(themat[material]['name']+' Mesh')
         ob = bpy.data.objects.new(themat[material]['name'], me)
+        ob.location = origin
         if len(themat[material]) >= 2:
             mat.diffuse_color = themat[material]['color']
         if len(themat[material]) >= 3 and themat[material]['alpha'] != 0:
@@ -98,6 +99,7 @@ class DataImporter:
         vertices = total['vertices']
         faces = total['faces']
         entitys = total['allhistory']
+        origins = total['origins']
         self.materials = total['materials']
         total = None
 
@@ -105,7 +107,17 @@ class DataImporter:
 
         for mat in vertices:
 
-            self.createMeshFromData(mat, (0,0,0), vertices[mat], faces[mat] )
+            if mat not in vertices:
+                print('vertices doesnt have: ' + str(mat))
+                print(vertices.keys())
+                exit()
+            if mat not in faces:
+                print('faces doesnt have: ' + str(mat))
+                print(faces.keys())
+                exit()
+
+
+            self.createMeshFromData(mat, origins[mat], vertices[mat], faces[mat] )
             faces[mat] = None
             vertices[mat] = None
 

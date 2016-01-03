@@ -88,17 +88,32 @@ class Shapes:
         pointops.append([Point3D(0.5,0.5,-0.5),Point3D(0.5,0.5,0.5),Point3D(-0.5,-0.5,0.5),Point3D(-0.5,-0.5,-0.5)])
         pointops.append([Point3D(-0.5,0.5,-0.5),Point3D(-0.5,0.5,0.5),Point3D(0.5,-0.5,0.5),Point3D(0.5,-0.5,-0.5)])
         return pointops
-        
+    
+    def makenegcornerstairs(self):
+        pointops = PointList()
+        pointops.append([Point3D(0.5,-0.5,-0.5),Point3D(-0.5,-0.5,-0.5), Point3D(-0.5,0.5,-0.5),Point3D(0.5,0.5,-0.5)])
+
+        pointops.append([Point3D(0,-0.5,0.5),Point3D(0,-0.5,0),Point3D(-0.5,-0.5,0),Point3D(-0.5,-0.5,-0.5),Point3D(0.5,-0.5,-0.5), Point3D(0.5,-0.5,0.5)])
+        pointops.append([Point3D(-0.5,0.5,0.5),Point3D(-0.5,0.5,-0.5),Point3D(-0.5,-0.5,-0.5),Point3D(-0.5,-0.5,0),Point3D(-0.5,0,0),Point3D(-0.5,0,0.5)])
+        pointops.append([Point3D(0,-0.5,0.5),Point3D(0.5,-0.5,0.5),Point3D(0.5,0.5,0.5), Point3D(-0.5,0.5,0.5), Point3D(-0.5,0,0.5),Point3D(0,0,0.5)])
+        pointops.append([Point3D(0,-0.5,0.5),Point3D(0,0,0.5),Point3D(0,0,0), Point3D(0,-0.5,0)])
+        pointops.append([Point3D(-0.5,0,0),Point3D(0,0,0),Point3D(0,0,0.5),Point3D(-0.5,0,0.5)])
+        pointops.append([Point3D(-0.5,-0.5,0),Point3D(0,-0.5,0),Point3D(0,0,0),Point3D(-0.5,0,0)])
+        pointops.append([Point3D(0.5,-0.5,-0.5),Point3D(0.5,0.5,-0.5),Point3D(0.5,0.5,0.5),Point3D(0.5,-0.5,0.5) ])
+        pointops.append([Point3D(-0.5,0.5,0.5),Point3D(0.5,0.5,0.5),Point3D(0.5,0.5,-0.5),Point3D(-0.5,0.5,-0.5) ])
+
+        return pointops
+
     def makeposcornerstairs(self):
         pointops = PointList()
-        pointops.append([Point3D(0.5,0.5,-0.5),Point3D(-0.5,0.5,-0.5),Point3D(-0.5,-0.5,-0.5),Point3D(0.5,-0.5,-0.5)])
+        pointops.append([Point3D(0.5,-0.5,-0.5),Point3D(-0.5,-0.5,-0.5), Point3D(-0.5,0.5,-0.5),Point3D(0.5,0.5,-0.5)])
         pointops.append([Point3D(0,0.5,0),Point3D(-0.5,0.5,0),Point3D(-0.5,-0.5,0), Point3D(0.5,-0.5,0), Point3D(0.5,0,0),Point3D(0,0,0)])
-        pointops.append([Point3D(-0.5,0.5,0),Point3D(-0.5,-0.5,0),Point3D(-0.5,-0.5,-0.5),Point3D(-0.5,0.5,-0.5)])
+        pointops.append([Point3D(-0.5,0.5,-0.5),Point3D(-0.5,-0.5,-0.5),Point3D(-0.5,-0.5,0),Point3D(-0.5,0.5,0)])
         pointops.append([Point3D(0.5,-0.5,0), Point3D(-0.5,-0.5,0),Point3D(-0.5,-0.5,-0.5),Point3D(0.5,-0.5,-0.5)])
-        pointops.append([Point3D(0,0.5,0.5),Point3D(0,0.5,0),Point3D(-0.5,0.5,0),Point3D(-0.5,0.5,-0.5),Point3D(0.5,0.5,-0.5),Point3D(0.5,0.5,0.5)])
+        pointops.append([Point3D(0.5,0.5,0.5),Point3D(0.5,0.5,-0.5),Point3D(-0.5,0.5,-0.5), Point3D(-0.5,0.5,0),Point3D(0,0.5,0),Point3D(0,0.5,0.5)])
         pointops.append([Point3D(0.5,0,0.5),Point3D(0.5,0,0),Point3D(0.5,-0.5,0),Point3D(0.5,-0.5,-0.5),Point3D(0.5,0.5,-0.5),Point3D(0.5,0.5,0.5)])
         pointops.append([Point3D(0.5,0.5,0.5),Point3D(0,0.5,0.5),Point3D(0,0,0.5),Point3D(0.5,0,0.5)])
-        pointops.append([Point3D(0,0,0),Point3D(0,0.5,0),Point3D(0,0.5,0.5),Point3D(0,0,0.5)])
+        pointops.append([Point3D(0,0,0.5),Point3D(0,0.5,0.5),Point3D(0,0.5,0), Point3D(0,0,0)])
         pointops.append([Point3D(0,0,0),Point3D(0.5,0,0),Point3D(0.5,0,0.5),Point3D(0,0,0.5)])
         return pointops
 
