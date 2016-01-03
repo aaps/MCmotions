@@ -156,19 +156,21 @@ some refactoring so it all looks better and is more understandable
 
 * (sixth)making a texture start
 
-* (third)some refactoring, makeing a chunk class or something (some cleaning up of lister instead)
+* (third)some refactoring, makeing a chunk class or something (some cleaning up of lister instead) (done)
 
 * (second)fixing the unknown blocks that are most likely a meta info offset problem (nope double slabs have seamless bool, done)
 
 * (fifth)option not to remove all neighbor blocks for example in case of fences, or
-cobwebs
+cobwebs (done)
 
-* (forth)add negative stair corners.(the one that im missing anyway)
+* (forth)add negative stair corners.(the one that im missing anyway) (done)
 
 * (senventh)add option for more agressive neighbor face removal
 
 * (eighth)a beginning of a blender exporter to a blockmodel[faces[points]] format
 called MCsimple.
+
+* also done, make sure the pivots are all in the center of the material (done)
 
 * all of this in a branch so my work will not scare new downloaders
 
