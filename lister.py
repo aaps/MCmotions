@@ -181,18 +181,12 @@ def makestairs(loneneighbors, mat):
         else:
             pointops.rotatepointsZ( 90)
             
-
         if upsidedown:
             pointops.rotatepointsY(180)
 
-        
+        origins[mat] = pointops.getavgpoint().astuple()
         appendto3dlist(pointops, block)
-        faces[mat] += pointops.totuplelist()
-    
-
-    
-
-
+        faces[mat] += pointops
 
 
 def makefence(loneneighbors, mat):
@@ -210,7 +204,7 @@ def makefence(loneneighbors, mat):
         
         shapemaker.removeneibors(pointops, listoffaces)
         appendto3dlist(pointops, block)
-        # origins[mat] = pointops.getavgpoint()
+        origins[mat] = pointops.getavgpoint().astuple()
         faces[mat] += pointops
 
 
@@ -266,7 +260,7 @@ def makehalfblock(loneneighbors, mat):
 
         shapemaker.removeneibors(pointops, listoffaces)
         appendto3dlist(pointops, block)    
-        # origins[mat] = pointops.getavgpoint()
+        origins[mat] = pointops.getavgpoint().astuple()
         faces[mat] += pointops
 
 def makeverticalblock(loneneighbors, mat):
@@ -296,7 +290,7 @@ def makeverticalblock(loneneighbors, mat):
 
         shapemaker.removeneibors(templist, listoffaces)
         appendto3dlist(templist, block)   
-        # origins[mat] = pointops.getavgpoint() 
+        origins[mat] = pointops.getavgpoint().astuple()
         faces[mat] += templist
 
 def makeladderlikeblock(loneneighbors, mat):
@@ -325,7 +319,8 @@ def makeladderlikeblock(loneneighbors, mat):
         shapemaker.removetopdownneighbors(pointops, listoffaces)
 
         appendto3dlist(pointops, block)
-        # origins[mat] = pointops.getavgpoint()  
+        
+        origins[mat] = pointops.getavgpoint().astuple()
         faces[mat] += pointops
 
 
@@ -716,27 +711,27 @@ for mat in loneneighbors:
     vertices[mat] = []
     # origins[mat] = []
 
-    # if mat[0] in [182 ,126 ,44]:
-    #     makehalfblock(loneneighbors, mat)
-    # elif mat[0] in [101,102, 160]:
-    #     makeverticalblock(loneneighbors, mat)
-    # elif mat[0] in [65, 106]:
-    #     makeladderlikeblock(loneneighbors, mat)
-    # elif mat[0] in [85, 113,188, 189, 190, 191]:
-    #     makefence(loneneighbors, mat)
-    # elif mat[0] in [53, 67, 108, 109, 114, 128, 134, 135, 136, 156, 165, 164, 180]:
-    #     makestairs(loneneighbors, mat)
-    # else:
-    makeblock(loneneighbors, mat)
+    if mat[0] in [182 ,126 ,44]:
+        makehalfblock(loneneighbors, mat)
+    elif mat[0] in [101,102, 160]:
+        makeverticalblock(loneneighbors, mat)
+    elif mat[0] in [65, 106]:
+        makeladderlikeblock(loneneighbors, mat)
+    elif mat[0] in [85, 113,188, 189, 190, 191]:
+        makefence(loneneighbors, mat)
+    elif mat[0] in [53, 67, 108, 109, 114, 128, 134, 135, 136, 156, 165, 164, 180]:
+        makestairs(loneneighbors, mat)
+    else:
+        makeblock(loneneighbors, mat)
 
     temp = PointList()
     for points in faces[mat]:
         for point in points:
             temp.append(point)
 
-    somepoint = temp.getrawavgpoint().astuple()
+    # somepoint = temp.getrawavgpoint().astuple()
     
-    origins[mat] = somepoint
+    # origins[mat] = somepoint
     loneneighbors[mat] = []
 
 
@@ -778,7 +773,7 @@ for mat in faces:
 for mat in vertices:
     tempverts = []
     for vert in vertices[mat]:
-        
+        # print vert
         vert.substracttup(origins[mat])
         tup = vert.aslist()
         tempverts.append(tup)

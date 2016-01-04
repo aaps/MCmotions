@@ -143,38 +143,41 @@ the scene option is important for now, no matter what name, you can test it with
 
 
 #NEW:
-a file that will translate block ids to names, colors, light emittance.
 
-a color getter that will scrape a website that will get average colors of textures names and ids for blocks, dont realy kneed it now since it is in the materials.txt , still could use it in the future when there will be more blocks (perhaps ?)
+mctricky now has block shapes in it !
 
-some refactoring so it all looks better and is more understandable
+fixing the unknown blocks, it was the seamless meta of doubleslabs
 
+cleaned up the lister code (and made a new mess of it)
+
+option not to remove neighbor blocks in case of cobwebs and fences for example
+
+added negative stair corners
+
+all pivots of the materials in the center of their materials
 
 #ToDo:
 1 
-* (first)making sure mctricky has block shapes in it (done)
 
-* (sixth)making a texture start
+* (first)making a texture start
 
-* (third)some refactoring, makeing a chunk class or something (some cleaning up of lister instead) (done)
+* (first and a half) see if an update of the readme is needed sonce the working of lister has changed.
 
-* (second)fixing the unknown blocks that are most likely a meta info offset problem (nope double slabs have seamless bool, done)
+* (second) an option for multyple meshes per block in mctricky all of this in a dict of perhaps files names, where the files contain meshes ?
 
-* (fifth)option not to remove all neighbor blocks for example in case of fences, or
-cobwebs (done)
+* (second and a half) replace examples, since changes here and there.
 
-* (forth)add negative stair corners.(the one that im missing anyway) (done)
+* (third)add option for more agressive neighbor face removal
 
-* (senventh)add option for more agressive neighbor face removal
+* (forth)more cleaning up of the code
 
-* (eighth)a beginning of a blender exporter to a blockmodel[faces[points]] format
-called MCsimple.
+* (forth and a half) more meshes like torches, crops, doors
 
-* also done, make sure the pivots are all in the center of the material (done)
+* (sixth)a beginning of a blender exporter to a blockmodel[faces[points]] format called MCsimple.
 
 * all of this in a branch so my work will not scare new downloaders
 
-* (ninth) see that the minecraftimport users will have some usefull text messages
+* (fifth) see that the minecraftimport users will have some usefull text messages
 avalable like current version and a github release, etc
 
 2
