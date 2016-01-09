@@ -70,6 +70,9 @@ for opt, arg in opts:
         materalsfile = open(arg, 'r')
         materialsstring = materalsfile.read()
         colormaterials = ast.literal_eval(materialsstring)
+        textures = colormaterials["textures"]
+        colormaterials = colormaterials["materials"]
+        
 
     if opt == "--excludeblocks":
         norenderblocks = arg.split(",")
@@ -791,7 +794,7 @@ for mat in colormaterials:
         del colormaterials[mat]['model']
 
 
-allstuff = {'allhistory':allhistory,'vertices':vertices,'faces':faces, 'materials': colormaterials,'origins':origins }
+allstuff = {'allhistory':allhistory,'vertices':vertices,'faces':faces, 'materials': colormaterials,'origins':origins,'textures': textures }
 
 
 vertices = None

@@ -182,6 +182,8 @@ avalable like current version and a github release, etc
 
 2
 
+make sure water is a bit lower at top so it is more clear it is water
+
 sync with theduckcow on how to replace my very basic mob/entity models to something more fancy like used in mob spawner in mcprep.
 
 more block shapes for map import

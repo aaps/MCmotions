@@ -17,7 +17,10 @@ import math
 import operator
 import ast
 import pickle
+import os
+import base64
 # from materials import *
+
 
 
 from bpy_extras.io_utils import ImportHelper
@@ -49,16 +52,21 @@ class DataImporter:
     def createMeshFromData(self, material, origin, verts, faces):
         # Create mesh and object
         
-        mat = bpy.data.materials.new("PKHG")
+        mat = bpy.data.materials.new('TexMat')
 
-        
+
+
         if material in self.materials:
             themat = self.materials
-
         else:
-            themat = {material:{'name': 'Unknown - ' + str(material), 'color': (0,0,0),'alpha':0,'emittance':0}}
+            themat = {material:{'name': 'Unknown - ' + str(material), 'color': (0,0,0),'alpha':0,'emittance':0,'textures':[]}}
 
-            # print(type(material))
+        # print(themat[material])
+        if 'textures' in themat[material] and len(themat[material]['textures']) > 0:
+
+            for texpath in themat[material]['textures']:
+                mtex = mat.texture_slots.add()
+                mtex.texture = self.textures[texpath]
 
         # print('ok' + )
         me = bpy.data.meshes.new(themat[material]['name']+' Mesh')
@@ -101,9 +109,55 @@ class DataImporter:
         entitys = total['allhistory']
         origins = total['origins']
         self.materials = total['materials']
+        self.textures = total['textures']
+
+        
+
         total = None
 
         extralist = {}
+
+        self.tempdir = os.path.dirname(os.path.realpath(__file__)) + os.sep + 'textures' 
+        try:
+            os.makedirs(self.tempdir)
+        except Exception:
+            print('some dir error should be ok !')
+
+        
+        filelist = [ f for f in os.listdir(self.tempdir) ]
+        for f in filelist:
+            try:
+                os.remove(f)
+            except Exception:
+                print('file removal trouble no biggy')
+
+            
+        
+        for texture in self.textures:
+
+          
+            fileh = open(self.tempdir + os.sep + texture + ".png", "wb")
+            fileh.write(base64.b64decode(self.textures[texture]))
+
+
+        temp = {}
+        for material in self.materials:
+            
+
+            if 'textures' in self.materials[material] and len(self.materials[material]['textures']) > 0:
+                
+                for texpath in self.materials[material]['textures']:
+                    
+                    img = bpy.data.images.load(self.tempdir + os.sep + texpath + '.png')
+                    
+                    cTex = bpy.data.textures.new('ColorTex', type = 'IMAGE')
+                    cTex.image = img
+                    temp[texpath] = cTex
+        self.textures = temp
+        print(self.textures)
+                    
+                
+
 
         for mat in vertices:
 
@@ -191,7 +245,7 @@ class DataImporter:
                         mobtype = mobtype.replace('-','')
                         request = urllib.request.urlopen('https://sessionserver.mojang.com/session/minecraft/profile/' + mobtype)
                         data = request.read().decode("utf8")
-                        time.sleep( 1 )
+                        
                         
                         if len(data) > 10:
                             data = json.loads(data)
