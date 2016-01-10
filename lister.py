@@ -149,6 +149,11 @@ def makestairs(loneneighbors, mat):
 
         somemeta = (loneneighbors[mat][block]['meta'] & 3) + 1
         pointops = PointList()
+        
+        # if left in loneneighbors[mat] and ((loneneighbors[mat][left]['meta'] & 3) + 1) == somemeta:
+        #     print 'OK'
+        #     pointops = shapemaker.makenegcornerstairs()
+
         if left in loneneighbors[mat] and ((loneneighbors[mat][left]['meta'] & 3) + 1) != somemeta and somemeta == 2:
             pointops = shapemaker.makeposcornerstairs()
             if (loneneighbors[mat][left]['meta'] & 3) + 1 != 3:
@@ -245,12 +250,36 @@ def makeblock(loneneighbors, mat):
         faces[mat] += pointops
 
 
-    
+def makedoubleslab(loneneighbors, mat):
+    for block in loneneighbors[mat]:
+        listoffaces = loneneighbors[mat][block]['faces']
+        
+        meta = loneneighbors[mat][block]['meta']
+
+        if meta > 7:
+            loneneighbors[mat][block]['meta'] =- 7
+
+
+        if mat in colormaterials and 'model' in colormaterials[mat]:
+            pointlist = PointList()
+            pointlist.fromtuplelist(colormaterials[mat]['model'])
+            pointops = pointlist
+        else:
+            pointops = shapemaker.makeblockshape()
+        
+
+        shapemaker.removeneibors(pointops, listoffaces)
+        appendto3dlist(pointops, block)    
+        origins[mat] = pointops.getavgpoint().astuple()
+        faces[mat] += pointops   
 
 def makehalfblock(loneneighbors, mat):
     for block in loneneighbors[mat]:
         listoffaces = loneneighbors[mat][block]['faces']
         
+        meta = loneneighbors[mat][block]['meta']
+
+
         if mat in colormaterials and 'model' in colormaterials[mat]:
             pointlist = PointList()
             pointlist.fromtuplelist(colormaterials[mat]['model'])
@@ -258,7 +287,7 @@ def makehalfblock(loneneighbors, mat):
         else:
             pointops = shapemaker.makehalfblocks()
         
-        if loneneighbors[mat][block]['meta'] > 7:
+        if meta > 7:
             pointops.rotatepointsY(180)
 
         shapemaker.removeneibors(pointops, listoffaces)
@@ -462,10 +491,23 @@ def fillmatindexes(chunks, materials):
                 for x in chunks[chunk][block]:
                     position = x[0][0],x[0][1]*-1,x[0][2]
                     if x[1] > 0 and x[1] < 256 and x[1] not in norenderblocks:
+                        
+                        blockinfo = {position:{'meta':x[2],'faces':[]}}
                         if x[1] in multymatblocks:
-                            materials[(x[1], x[2]) ].update({position:{'meta':x[2],'faces':[]}})
+                            if x[1] in [182 ,126 ,44] and x[2] > 7:
+                                x = x[0], x[1], x[2] - 8
+                            if x[1] in [125,181, 43] and x[2] > 7:
+                                x = x[0], x[1], x[2] - 8
+
+                            if (x[1],x[2]) not in materials:
+                                materials.update({(x[1],x[2]):blockinfo})
+                            else:
+                                materials[(x[1],x[2])].update(blockinfo)
                         else:
-                            materials[(x[1],0)].update({position:{'meta':x[2],'faces':[]}})
+                            if (x[1],0) not in materials:
+                                materials.update({(x[1],0):blockinfo})
+                            else:
+                                materials[(x[1],0)].update(blockinfo) 
             chunks[chunk][block] = None
 
     chunks = None
@@ -528,12 +570,11 @@ def removeSupderCosy(neightbors):
         else:
             removeneibors = True
 
-
-
         loneneighbors[mat] = {}
         for block in neightbors[mat]:
 
             if len(neightbors[mat][block]['faces']) > 0 or not removeneibors:
+
                 loneneighbors[mat][block[0]+0.5, block[1]+0.5, block[2]+0.5]  = neightbors[mat][block]
 
         neightbors[mat] = None
@@ -687,18 +728,12 @@ print 'parsing ' + str(len(chunkposses)) + ' chunks'
 
 print 'make a index of possible materials'
 
-materials = makematindexes(chunks)
 
-
-print 'put the blocks of materials in their material index for ' + str(len(materials)) + ' materials'
-
+materials = {}
 materials = fillmatindexes(chunks, materials)
 
-# for mat in materials:
-#     print mat, len(materials[mat])
 
-# print 'removing all super neightbors, same type blocks on all sides for ' + str(len(neightbors)) + ' materials'         
-# allneightbors = {}
+
 neightbors = genfacesNeighbors(materials)
 
 loneneighbors = removeSupderCosy(neightbors)
@@ -716,6 +751,8 @@ for mat in loneneighbors:
 
     if mat[0] in [182 ,126 ,44]:
         makehalfblock(loneneighbors, mat)
+    elif mat[0] in [125,181, 43]:
+        makedoubleslab(loneneighbors, mat)
     elif mat[0] in [101,102, 160]:
         makeverticalblock(loneneighbors, mat)
     elif mat[0] in [65, 106]:
