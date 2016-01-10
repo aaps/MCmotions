@@ -74,7 +74,12 @@ in the format of: -2,4 or 4,8
 
 --onlyplayerents (only player entity data, also chunks)
 
+--materialsfile "../MCtricky/materials.json"
+
 Example ussage:
+
+first example will work, also see the mctricky github for more on that
+./lister.py --sourcefile ./examples/*.dump --CTL -10,-5 --CBR -5,2  --onlyplayerents y  --world overworld --materialsfile "../MCtricky/materials.json"
 
 ./lister.py --sourcefile asession.dump --CTL -12,-2 --CBR -6,0  --onlyplayerents y --scene superrun (if you made a scene named superrun with /action superrun)
 
@@ -159,9 +164,9 @@ all pivots of the materials in the center of their materials
 #ToDo:
 1 
 
-* (first)making a texture start
+* (first)making a texture start (done textures are couples to mat, more later)
 
-* (first and a half) see if an update of the readme is needed sonce the working of lister has changed.
+* (first and a half) see if an update of the readme is needed sonce the working of lister has changed. (done)
 
 * (second) an option for multyple meshes per block in mctricky all of this in a dict of perhaps files names, where the files contain meshes ?
 
