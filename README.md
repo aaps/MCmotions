@@ -149,41 +149,36 @@ the scene option is important for now, no matter what name, you can test it with
 
 #NEW:
 
-mctricky now has block shapes in it !
-
-fixing the unknown blocks, it was the seamless meta of doubleslabs
-
-cleaned up the lister code (and made a new mess of it)
-
 option not to remove neighbor blocks in case of cobwebs and fences for example
 
 added negative stair corners
 
-all pivots of the materials in the center of their materials
+* all pivots of the materials in the center of their materials
+* replace examples, since changes here and there.
+
+* making a texture start.
+
+* see if an update of the readme is needed, once the working of lister has changed.
 
 #ToDo:
 1 
 
-* (first)making a texture start (done textures are couples to mat, more later)
+* (first) an option for multyple meshes per block in mctricky all of this in a dict of perhaps files names, where the files contain meshes ?
 
-* (first and a half) see if an update of the readme is needed sonce the working of lister has changed. (done)
+* (second) more cleaning up of the code
 
-* (second) an option for multyple meshes per block in mctricky all of this in a dict of perhaps files names, where the files contain meshes ?
+* (third) more meshes like torches, crops, doors
 
-* (second and a half) replace examples, since changes here and there.
+* (forth) add option for more agressive neighbor face removal
 
-* (third)add option for more agressive neighbor face removal
-
-* (forth)more cleaning up of the code
-
-* (forth and a half) more meshes like torches, crops, doors
+* (fifth) see that the minecraftimport users will have some usefull text messages
+avalable like current version and a github release, etc
 
 * (sixth)a beginning of a blender exporter to a blockmodel[faces[points]] format called MCsimple.
 
 * all of this in a branch so my work will not scare new downloaders
 
-* (fifth) see that the minecraftimport users will have some usefull text messages
-avalable like current version and a github release, etc
+
 
 2
 
