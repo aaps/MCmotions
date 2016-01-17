@@ -79,8 +79,9 @@ class QuietBridge(Bridge):
                         self.dumpsize += len(towrite)
                         self.dumpfile.write(towrite)
                 self.downstream.send_packet("chat_message", self.write_chat(message, "downstream"))
-
-
+            else:
+		        buff.restore()
+		        self.upstream.send_packet("chat_message", buff.read())
         else:
             buff.restore()
             self.upstream.send_packet("chat_message", buff.read())

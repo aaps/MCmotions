@@ -190,7 +190,7 @@ def makestairs(loneneighbors, mat):
             pointops.rotatepointsZ( 90)
             
         if upsidedown:
-            pointops.rotatepointsY(180)
+            pointops.mirrorpointsZ()
 
         origins[mat] = pointops.getavgpoint().astuple()
         appendto3dlist(pointops, block)
