@@ -73,7 +73,7 @@ def makeimage(aroflines,matnum):
 
         dwg.add(dwg.rect(position, (multyplier, multyplier), fill=svgwrite.rgb(mat[0]*colormult, 0, 0, '%')))
 
-        if counta % 2 == 0:
+        if counta % 8 == 0:
             coloro = 'black'
             # print colormult
             if mat[0]*colormult < 50:
@@ -82,8 +82,7 @@ def makeimage(aroflines,matnum):
             textpos = position[0]+0.1 ,position[1] + 2
             text_style = "font-size:%ipx; font-family:%s" % (1, "Courier New") 
             dwg.add(dwg.text(str(mat[1]), insert=textpos, fill=coloro, style=text_style))
-        # if counta == 100:
-        #     break
+
         counta += 1
     dwg.save()
 
