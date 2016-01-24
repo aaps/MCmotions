@@ -26,7 +26,7 @@ noentitys = False
 nochunks = False
 onlyplayerents = False
 curscene = "noscene"
-world = "overworld"
+world = 1
 cuty = 0
 topleft = (-1000,-1000)
 bottomright = (1000,1000)
@@ -80,6 +80,7 @@ for opt, arg in opts:
 
     if opt == "--CTL":
         topleft = ast.literal_eval(arg)
+
 
     if opt == "--CBR":
         bottomright = ast.literal_eval(arg)
@@ -136,7 +137,20 @@ pointops = PointList()
 def appendto3dlist(alist, block):
     for face in alist:
         for point in face:
-            point.appendtup(block) 
+            point.appendtup(block)
+
+def fromfileordefault(mat, index, defaultfunction):
+    if mat[0] == 171:
+        print mat, index, mat in colormaterials and 'models' in colormaterials[mat], index in colormaterials[mat]['models']
+        print
+
+    if mat in colormaterials and 'models' in colormaterials[mat] and index in colormaterials[mat]['models']:
+        pointlist = PointList()
+        pointlist.fromtuplelist(colormaterials[mat]['models'][index])
+        pointops = pointlist
+    else:
+        pointops = defaultfunction()
+    return pointops
 
 def makestairs(loneneighbors, mat):
 
@@ -155,27 +169,32 @@ def makestairs(loneneighbors, mat):
         #     pointops = shapemaker.makenegcornerstairs()
 
         if left in loneneighbors[mat] and ((loneneighbors[mat][left]['meta'] & 3) + 1) != somemeta and somemeta == 2:
-            pointops = shapemaker.makeposcornerstairs()
+            # pointops = shapemaker.makeposcornerstairs()
+            pointops  = fromfileordefault(mat,1 ,shapemaker.makeposcornerstairs)
             if (loneneighbors[mat][left]['meta'] & 3) + 1 != 3:
                 pointops.mirrorpointsY()
             
         elif right in loneneighbors[mat] and ((loneneighbors[mat][right]['meta'] & 3) + 1) != somemeta and somemeta == 1:
-            pointops = shapemaker.makeposcornerstairs()
+            # pointops = shapemaker.makeposcornerstairs()
+            pointops  = fromfileordefault(mat,1 ,shapemaker.makeposcornerstairs)
             if (loneneighbors[mat][right]['meta'] & 3) + 1 == 3:
                 pointops.mirrorpointsY()
 
         elif front in loneneighbors[mat] and ((loneneighbors[mat][front]['meta'] & 3) + 1) != somemeta and somemeta == 3:
-            pointops = shapemaker.makeposcornerstairs()
+            # pointops = shapemaker.makeposcornerstairs()
+            pointops  = fromfileordefault(mat,1 ,shapemaker.makeposcornerstairs)
             if (loneneighbors[mat][front]['meta'] & 3) + 1 != 1:
                 pointops.mirrorpointsY()
             
         elif back in loneneighbors[mat] and ((loneneighbors[mat][back]['meta'] & 3) + 1) != somemeta and somemeta == 4:
-            pointops = shapemaker.makeposcornerstairs()
+            # pointops = shapemaker.makeposcornerstairs()
+            pointops  = fromfileordefault(mat,1 ,shapemaker.makeposcornerstairs)
             if (loneneighbors[mat][back]['meta'] & 3) + 1 == 1:
                 pointops.mirrorpointsY()
         
         else:
-            pointops = shapemaker.makenormalstairs()
+            # pointops = shapemaker.makenormalstairs()
+            pointops  = fromfileordefault(mat,0 ,shapemaker.makenormalstairs)
 
         direction = loneneighbors[mat][block]['meta'] & 3
         upsidedown = (loneneighbors[mat][block]['meta'] >> 2) & 1
@@ -202,12 +221,14 @@ def makefence(loneneighbors, mat):
     for block in loneneighbors[mat]:
         listoffaces = loneneighbors[mat][block]['faces']
         
-        if mat in colormaterials and 'model' in colormaterials[mat]:
-            pointlist = PointList()
-            pointlist.fromtuplelist(colormaterials[mat]['model'])
-            pointops = pointlist
-        else:
-            pointops = shapemaker.makefenceshape()
+        # if mat in colormaterials and 'models' in colormaterials[mat]:
+        #     pointlist = PointList()
+        #     pointlist.fromtuplelist(colormaterials[mat]['models'][0])
+        #     pointops = pointlist
+        # else:
+        #     pointops = shapemaker.makefenceshape()
+
+        pointops  = fromfileordefault(mat,0 ,shapemaker.makefenceshape)
 
         
         shapemaker.removeneibors(pointops, listoffaces)
@@ -229,15 +250,7 @@ def makeblock(loneneighbors, mat):
 
     for block in loneneighbors[mat]:
         listoffaces = loneneighbors[mat][block]['faces']
-    
-
-        if mat in colormaterials and 'model' in colormaterials[mat]:
-            pointlist = PointList()
-            
-            pointlist.fromtuplelist(colormaterials[mat]['model'])
-            pointops = pointlist
-        else:
-            pointops = shapemaker.makeblockshape()
+        pointops  = fromfileordefault(mat,0 ,shapemaker.makeblockshape)
     
         if removeneibors:
             shapemaker.removeneibors(pointops, listoffaces)
@@ -260,12 +273,13 @@ def makedoubleslab(loneneighbors, mat):
             loneneighbors[mat][block]['meta'] =- 7
 
 
-        if mat in colormaterials and 'model' in colormaterials[mat]:
-            pointlist = PointList()
-            pointlist.fromtuplelist(colormaterials[mat]['model'])
-            pointops = pointlist
-        else:
-            pointops = shapemaker.makeblockshape()
+        # if mat in colormaterials and 'models' in colormaterials[mat]:
+        #     pointlist = PointList()
+        #     pointlist.fromtuplelist(colormaterials[mat]['models'][0])
+        #     pointops = pointlist
+        # else:
+        #     pointops = shapemaker.makeblockshape()
+        pointops  = fromfileordefault(mat,0, shapemaker.makeblockshape)
         
 
         shapemaker.removeneibors(pointops, listoffaces)
@@ -279,13 +293,7 @@ def makehalfblock(loneneighbors, mat):
         
         meta = loneneighbors[mat][block]['meta']
 
-
-        if mat in colormaterials and 'model' in colormaterials[mat]:
-            pointlist = PointList()
-            pointlist.fromtuplelist(colormaterials[mat]['model'])
-            pointops = pointlist
-        else:
-            pointops = shapemaker.makehalfblocks()
+        pointops  = fromfileordefault(mat,0 , shapemaker.makehalfblocks)
         
         if meta > 7:
             pointops.rotatepointsY(180)
@@ -303,39 +311,44 @@ def makeverticalblock(loneneighbors, mat):
         front = block[0], block[1]-1, block[2]
         back = block[0], block[1]+1, block[2]
 
-        if mat in colormaterials and 'model' in colormaterials[mat]:
+        if mat in colormaterials and 'models' in colormaterials[mat]:
             pointlist = PointList()
-            pointlist.fromtuplelist(colormaterials[mat]['model'])
+            pointlist.fromtuplelist(colormaterials[mat]['models'][0])
             pointops = pointlist
         else:
             pointops = shapemaker.makeflatblocks()
 
         if front in loneneighbors[mat] or back in loneneighbors[mat]:
-            templist = shapemaker.makeverticalflatblock()
-            templist.rotatepointsZ(90)
+            # pointops = shapemaker.makeverticalflatblock()
+            pointops  = fromfileordefault(mat,0 , shapemaker.makeverticalflatblock)
+            pointops.rotatepointsZ(90)
         elif left in loneneighbors[mat] or right in loneneighbors[mat]:
-            templist = shapemaker.makeverticalflatblock()
+            # pointops = shapemaker.makeverticalflatblock()
+            pointops  = fromfileordefault(mat,0 , shapemaker.makeverticalflatblock)
         elif left in loneneighbors[mat] and right in loneneighbors[mat] and front in loneneighbors[mat] and back in loneneighbors[mat]:
-            templist = shapemaker.makeverticalplusblock()
+            # pointops = shapemaker.makeverticalplusblock()
+            pointops  = fromfileordefault(mat,0 ,shapemaker.makeverticalplusblock)
         else:
-            templist = shapemaker.makeverticalplusblock() 
+            pointops  = fromfileordefault(mat,0 , shapemaker.makeverticalplusblock)
+            # pointops = shapemaker.makeverticalplusblock() 
 
-        shapemaker.removeneibors(templist, listoffaces)
-        appendto3dlist(templist, block)   
+        shapemaker.removeneibors(pointops, listoffaces)
+        appendto3dlist(pointops, block)   
         origins[mat] = pointops.getavgpoint().astuple()
-        faces[mat] += templist
+        faces[mat] += pointops
 
 def makeladderlikeblock(loneneighbors, mat):
 
     for block in loneneighbors[mat]:
         listoffaces = loneneighbors[mat][block]['faces']
 
-        if mat in colormaterials and 'model' in colormaterials[mat]:
-            pointlist = PointList()
-            pointlist.fromtuplelist(colormaterials[mat]['model'])
-            pointops = pointlist
-        else:
-            pointops = shapemaker.makeladdershapes()
+        # if mat in colormaterials and 'models' in colormaterials[mat]:
+        #     pointlist = PointList()
+        #     pointlist.fromtuplelist(colormaterials[mat]['models'][0])
+        #     pointops = pointlist
+        # else:
+        #     pointops = shapemaker.makeladdershapes()
+        pointops  = fromfileordefault(mat,0 , shapemaker.makeladdershapes)
 
         direction = loneneighbors[mat][block]['meta'] & 3
 
@@ -392,9 +405,8 @@ def getchunks(chunkxz):
         matsamples = list(set(matsamples))
         worldnum = worldfromsample(matsamples)
 
-        
         if chunkxz not in chunkposses and chunkxz[0] >= topleft[0] and chunkxz[1] >= topleft[1] and chunkxz[0] <= bottomright[0] and chunkxz[1] <= bottomright[1] and world == worldnum:
-            # print chunkxz, topleft, bottomright
+            
             chunkposses.append(chunkxz)
             rightcounter = 0
 

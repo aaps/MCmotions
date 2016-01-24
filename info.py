@@ -87,6 +87,8 @@ def makeimage(aroflines,matnum):
     dwg.save()
 
 
+
+
 try:
     opts, args = getopt.getopt(sys.argv[1:],"",["chunkmaxmin=","sourcefile=","image=" ])
         
@@ -95,14 +97,14 @@ except getopt.GetoptError:
     print 'error: info.py -h --chunkmaxmin --sourcefile --image'
     sys.exit(2)
 for opt, arg in opts:
-    # print opt
     if opt == '-h':
         print 'info.py -h --chunkmaxmin --sourcefile --image'
         sys.exit()
     if opt == '--sourcefile':
+
         sourcefile = arg
         aroflines = getsourcefile()
-        print len(aroflines)
+        # print len(aroflines)
 
     # if opt == "--scenes":
     #     listofscenes = []
@@ -118,8 +120,10 @@ for opt, arg in opts:
         
         matnum = int(arg)
         
-        makeimage(aroflines, matnum)
 
-    # if opt == '--chunkmaxmin':
-    #     getchunkminmax(aroflines)
+# print matnum 
+# print aroflines
 
+
+
+makeimage(aroflines, matnum)
