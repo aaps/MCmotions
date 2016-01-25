@@ -140,15 +140,14 @@ def appendto3dlist(alist, block):
             point.appendtup(block)
 
 def fromfileordefault(mat, index, defaultfunction):
-    if mat[0] == 171:
-        print mat, index, mat in colormaterials and 'models' in colormaterials[mat], index in colormaterials[mat]['models']
-        print
 
-    if mat in colormaterials and 'models' in colormaterials[mat] and index in colormaterials[mat]['models']:
+    if mat in colormaterials and 'models' in colormaterials[mat] and index + 1 <= len(colormaterials[mat]['models']):
         pointlist = PointList()
         pointlist.fromtuplelist(colormaterials[mat]['models'][index])
         pointops = pointlist
     else:
+        print mat 
+        # print colormaterials[mat]['models'][0]
         pointops = defaultfunction()
     return pointops
 
