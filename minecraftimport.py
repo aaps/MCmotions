@@ -29,15 +29,15 @@ from bpy.props import StringProperty
 dbg = False
 
 bl_info = {
-    "name": "Minecraft mejiggest (*.mcmo)",
-    "description": "This addon allows you to import minecraft worls and mob motions",
+    "name": "Minecraft motions import (*.mcmo)",
+    "description": "This addon allows you to import minecraft worlds and mob motions",
     "author": "Aat Karelse",
-    "version": (0, 3, 0),
+    "version": (0, 4, 0),
     "blender": (2, 6, 3),
     #"api": ???,
     "location": "File > Import > minecraft stuff",
     "warning": "Alpha",
-    # "wiki_url": "http://wiki.blender.org/index.php/Extensions:2.5/Py/Scripts/Import-Export/WarCraft_MDL",
+    "wiki_url": "https://github.com/aaps/MCmotions",
     # "tracker_url": "http://projects.blender.org/tracker/index.php?func=detail&aid=29552",
     "category": "Import-Export"}
 
@@ -46,7 +46,6 @@ bl_info = {
 # This class initiates and starts the state machine and uses the gathered data
 # to construct the model in Blender.
 class DataImporter:
-         
          
 
     def createMeshFromData(self, material, origin, verts, faces):
@@ -343,11 +342,11 @@ def menu_func_export(self, context):
 
 def register():
     bpy.utils.register_class(MineCraftImport)
-    bpy.types.INFO_MT_file_import.append(menu_func_export)
+    bpy.types.INFO_MT_file_import.append(menu_func_import)
 
 def unregister():
     bpy.utils.unregister_class(MineCraftImport)
-    bpy.types.INFO_MT_file_import.remove(menu_func_export)
+    bpy.types.INFO_MT_file_import.remove(menu_func_import)
 
 if __name__ == "__main__":
     register()
