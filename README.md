@@ -160,26 +160,26 @@ added negative stair corners
 
 * see if an update of the readme is needed, once the working of lister has changed.
 
+* simplistic mcsimple done
+
+more meshes like torch, croms, more fences, cromps, only torch implemented
+
 #ToDo:
 1 
 
-* (first) an option for multyple meshes per block in mctricky all of this in a dict of perhaps files names, where the files contain meshes ?
+* (first) Implement negative stair corner.
 
-* (second) more cleaning up of the code
+* (second) More cleaning up of the code
 
-* (third) more meshes like torches, crops, doors
+* (forth) Add option for more agressive neighbor face removal.
 
-* (forth) add option for more agressive neighbor face removal
-
-* (fifth) see that the minecraftimport users will have some usefull text messages
-avalable like current version and a github release, etc
-
-* (sixth)a beginning of a blender exporter to a blockmodel[faces[points]] format called MCsimple.
-
-* all of this in a branch so my work will not scare new downloaders
-
+* (third) Get some of the already implemented textures also on a block !
 
 2
+
+
+See that the minecraftimport users will have some usefull text messages
+avalable like current version and a github release, etc
 
 make sure water is a bit lower at top so it is more clear it is water
 

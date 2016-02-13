@@ -68,7 +68,7 @@ for opt, arg in opts:
     if opt == "--materialsfile":
 
         materalsfile = open(arg, 'r')
-        materialsstring = materalsfile.read()
+        materialsstring = materalsfile.read().replace("}\n", "}")
         colormaterials = ast.literal_eval(materialsstring)
         textures = colormaterials["textures"]
         colormaterials = colormaterials["materials"]
@@ -146,8 +146,6 @@ def fromfileordefault(mat, index, defaultfunction):
         pointlist.fromtuplelist(colormaterials[mat]['models'][index])
         pointops = pointlist
     else:
-        print mat 
-        # print colormaterials[mat]['models'][0]
         pointops = defaultfunction()
     return pointops
 
@@ -256,8 +254,6 @@ def makeblock(loneneighbors, mat):
         
         appendto3dlist(pointops, block)    
         origins[mat] = pointops.getavgpoint().astuple()
-        
-        # print pointops
 
         faces[mat] += pointops
 
@@ -824,7 +820,6 @@ for mat in faces:
 for mat in vertices:
     tempverts = []
     for vert in vertices[mat]:
-        # print vert
         vert.substracttup(origins[mat])
         tup = vert.aslist()
         tempverts.append(tup)

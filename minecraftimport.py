@@ -318,7 +318,7 @@ class DataImporter:
 # This is the import operator.
 class MineCraftImport(bpy.types.Operator, ImportHelper):
     '''Import form minecraft netrecorder some format (.mcmo)'''
-    bl_idname = "something.minecraft"
+    bl_idname = "minecraft.importminecraftdump"
     bl_label = "MineCraft EntityPaths"
     # mc ep
     
@@ -337,7 +337,7 @@ class MineCraftImport(bpy.types.Operator, ImportHelper):
         di = DataImporter()
         return di.run(self.filepath, context)
 
-def menu_func_export(self, context):
+def menu_func_import(self, context):
     self.layout.operator(MineCraftImport.bl_idname, text="Mcmo import (.mcmo)")
 
 def register():
