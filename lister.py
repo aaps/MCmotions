@@ -152,45 +152,63 @@ def fromfileordefault(mat, index, defaultfunction):
 def makestairs(loneneighbors, mat):
 
     for block in loneneighbors[mat]:
-        left = block[0]-1, block[1], block[2]
-        right = block[0]+1, block[1], block[2]
-        front = block[0], block[1]-1, block[2]
-        back = block[0], block[1]+1, block[2]
-        listoffaces = loneneighbors[mat][block]['faces']
+        # left = block[0]-1, block[1], block[2]
+        # right = block[0]+1, block[1], block[2]
+        # front = block[0], block[1]-1, block[2]
+        # back = block[0], block[1]+1, block[2]
+        # listoffaces = loneneighbors[mat][block]['faces']
 
         somemeta = (loneneighbors[mat][block]['meta'] & 3) + 1
         pointops = PointList()
-        
-        # if left in loneneighbors[mat] and ((loneneighbors[mat][left]['meta'] & 3) + 1) == somemeta:
-        #     print 'OK'
-        #     pointops = shapemaker.makenegcornerstairs()
 
-        if left in loneneighbors[mat] and ((loneneighbors[mat][left]['meta'] & 3) + 1) != somemeta and somemeta == 2:
-            # pointops = shapemaker.makeposcornerstairs()
-            pointops  = fromfileordefault(mat,1 ,shapemaker.makeposcornerstairs)
-            if (loneneighbors[mat][left]['meta'] & 3) + 1 != 3:
-                pointops.mirrorpointsY()
-            
-        elif right in loneneighbors[mat] and ((loneneighbors[mat][right]['meta'] & 3) + 1) != somemeta and somemeta == 1:
-            # pointops = shapemaker.makeposcornerstairs()
-            pointops  = fromfileordefault(mat,1 ,shapemaker.makeposcornerstairs)
-            if (loneneighbors[mat][right]['meta'] & 3) + 1 == 3:
-                pointops.mirrorpointsY()
+        if somemeta == 1:
+            front = block[0]-1, block[1], block[2]
+            back = block[0]+1, block[1], block[2]
 
-        elif front in loneneighbors[mat] and ((loneneighbors[mat][front]['meta'] & 3) + 1) != somemeta and somemeta == 3:
-            # pointops = shapemaker.makeposcornerstairs()
+        elif somemeta == 2:
+            front = block[0]+1, block[1], block[2]
+            back = block[0]-1, block[1], block[2]
+
+        elif somemeta == 3:
+            front = block[0], block[1]-1, block[2]
+            back = block[0], block[1]+1, block[2]
+
+        elif somemeta == 4:
+            front = block[0], block[1]+1, block[2]
+            back = block[0], block[1]-1, block[2]
+
+        if front in loneneighbors[mat] and  abs(somemeta - ((loneneighbors[mat][front]['meta'] & 3) + 1)):
             pointops  = fromfileordefault(mat,1 ,shapemaker.makeposcornerstairs)
-            if (loneneighbors[mat][front]['meta'] & 3) + 1 != 1:
-                pointops.mirrorpointsY()
+            # if (loneneighbors[mat][front]['meta'] & 3) + 1 == 3:
+            #     pointops.mirrorpointsY()
+
+        elif back in loneneighbors[mat] and abs(somemeta - ((loneneighbors[mat][back]['meta'] & 3) + 1)):
+            pointops  = fromfileordefault(mat,1 ,shapemaker.makeposcornerstairs)
+            # if (loneneighbors[mat][back]['meta'] & 3) + 1 != 3:
+            #     pointops.mirrorpointsY() 
+
+        # if left in loneneighbors[mat] and ((loneneighbors[mat][left]['meta'] & 3) + 1) != somemeta and somemeta == 2:
+        #     pointops  = fromfileordefault(mat,1 ,shapemaker.makeposcornerstairs)
+        #     if (loneneighbors[mat][left]['meta'] & 3) + 1 != 3:
+        #         pointops.mirrorpointsY()
             
-        elif back in loneneighbors[mat] and ((loneneighbors[mat][back]['meta'] & 3) + 1) != somemeta and somemeta == 4:
-            # pointops = shapemaker.makeposcornerstairs()
-            pointops  = fromfileordefault(mat,1 ,shapemaker.makeposcornerstairs)
-            if (loneneighbors[mat][back]['meta'] & 3) + 1 == 1:
-                pointops.mirrorpointsY()
+        # elif right in loneneighbors[mat] and ((loneneighbors[mat][right]['meta'] & 3) + 1) != somemeta and somemeta == 1:
+        #     pointops  = fromfileordefault(mat,1 ,shapemaker.makeposcornerstairs)
+        #     if (loneneighbors[mat][right]['meta'] & 3) + 1 == 3:
+        #         pointops.mirrorpointsY()
+
+        # elif front in loneneighbors[mat] and ((loneneighbors[mat][front]['meta'] & 3) + 1) != somemeta and somemeta == 3:
+        #     pointops  = fromfileordefault(mat,1 ,shapemaker.makeposcornerstairs)
+        #     if (loneneighbors[mat][front]['meta'] & 3) + 1 != 1:
+        #         pointops.mirrorpointsY()
+            
+        # elif back in loneneighbors[mat] and ((loneneighbors[mat][back]['meta'] & 3) + 1) != somemeta and somemeta == 4:
+        #     pointops  = fromfileordefault(mat,1 ,shapemaker.makeposcornerstairs)
+        #     if (loneneighbors[mat][back]['meta'] & 3) + 1 == 1:
+        #         pointops.mirrorpointsY()
         
         else:
-            # pointops = shapemaker.makenormalstairs()
+       
             pointops  = fromfileordefault(mat,0 ,shapemaker.makenormalstairs)
 
         direction = loneneighbors[mat][block]['meta'] & 3
