@@ -36,7 +36,7 @@ shapemaker = Shapes()
 colormaterials = defmaterials
 
 try:
-    opts, args = getopt.getopt(sys.argv[1:],"",["avgmiddle=","materialsfile=","sourcefile=","destfile=","scene=", "excludeent=","excludeblocks=","CTL=","CBR=","cutz=","noentitys=","nochunks=","onlyplayerents=", "world=" ])
+    opts, args = getopt.getopt(sys.argv[1:],"",["avgmiddle=","materialsfile=","sourcefile=","destfile=","scene=", "excludeent=","excludeblocks=","CTL=","CBR=","cuty=","noentitys=","nochunks=","onlyplayerents=", "world=" ])
         
 except getopt.GetoptError:
     print 'error: lister.py --onlyplayerents --materialsfile --avgmiddle --sourcefile filename --destfile filename --scene scene name --excludeent commaseperatedlist of entity ids --excludeblocks commaseperatedlist of blockids --world nether/overworld/theend will only use this world'
@@ -199,7 +199,7 @@ def makestairs(loneneighbors, mat):
         elif left in loneneighbors[mat] and (loneneighbors[mat][left]['meta'] & 3) in [0,1] and somemeta in [2,3]:
             shape = isperpendicular(somemeta, (loneneighbors[mat][left]['meta'] & 3))
             if shape in [0,3]:
-                print 'left',somemeta,loneneighbors[mat][left]['meta'] & 3,  shape, mat
+                # print 'left',somemeta,loneneighbors[mat][left]['meta'] & 3,  shape, mat
                 pointops  = fromfileordefault(mat,1 ,shapemaker.makenegcornerstairs)
             else:
                 pointops  = fromfileordefault(mat,0 ,shapemaker.makenormalstairs)
@@ -208,7 +208,7 @@ def makestairs(loneneighbors, mat):
             shape = isperpendicular(somemeta, (loneneighbors[mat][right]['meta'] & 3))
             
             if shape in [0,3]:
-                print 'right',somemeta, loneneighbors[mat][right]['meta'] & 3,shape, mat
+                # print 'right',somemeta, loneneighbors[mat][right]['meta'] & 3,shape, mat
                 pointops  = shapemaker.makenegcornerstairs()
             else:
                 pointops  = shapemaker.makenormalstairs()
@@ -263,7 +263,7 @@ def makeblock(loneneighbors, mat):
  
     if mat in colormaterials and 'niceneighbor' in colormaterials[mat] and colormaterials[mat]['niceneighbor']:
         removeneibors = False
-        print str(mat) + ' removed in makeblock'
+        # print str(mat) + ' removed in makeblock'
     else:
         removeneibors = True
         
@@ -429,8 +429,8 @@ def getchunks(chunkxz):
             rightcounter = 0
 
             for index1 in xrange(0, 16):
-                
-                if (int(row[3]) & (1 << index1)) and index1 >= cuty and row[3] != '0':
+                # print row[3]
+                if (int(row[3]) & (1 << index1)) and row[3] != '0':
                     
                     for y in xrange(0,16):
 
@@ -448,8 +448,8 @@ def getchunks(chunkxz):
                                     bmeta = 666
                                 
                                 block = ( (x + (chunkxz[0]*16),z + (chunkxz[1]*16),y+(index1*16)), btype, bmeta)
-                                
-                                chunks[chunkxz]['blocks'].append(block)
+                                if index1 > cuty:
+                                    chunks[chunkxz]['blocks'].append(block)
 
                     rightcounter += 1
 
@@ -596,7 +596,7 @@ def removeSupderCosy(neightbors):
         
         if mat in colormaterials and 'niceneighbor' in colormaterials[mat] and colormaterials[mat]['niceneighbor']:
             removeneibors = False
-            print str(mat) + ' removed in superduper'
+            # print str(mat) + ' removed in superduper'
         else:
             removeneibors = True
 
