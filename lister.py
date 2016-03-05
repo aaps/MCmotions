@@ -185,34 +185,66 @@ def makestairs(loneneighbors, mat):
             shape = isperpendicular( somemeta, (loneneighbors[mat][front]['meta'] & 3))
             shapedone = True
             if shape in [0,3]:
-                pointops  = shapemaker.makeposcornerstairs()
+                # pointops  = shapemaker.makeposcornerstairs()
+                pointops = fromfileordefault(mat,1 ,shapemaker.makeposcornerstairs)
             else:
-                pointops  = shapemaker.makenegcornerstairs()
+                # pointops  = shapemaker.makenegcornerstairs()
+                pointops = fromfileordefault(mat,2 ,shapemaker.makenegcornerstairs)
+
+            if (loneneighbors[mat][front]['meta'] & 3) == 3:
+                pointops.mirrorpointsY()
+
 
         if not shapedone and back in loneneighbors[mat] and (loneneighbors[mat][back]['meta'] & 3) in [2,3] and somemeta in [0,1]:
             shape = isperpendicular( somemeta, (loneneighbors[mat][back]['meta'] & 3))
             shapedone = True
             if shape in [0,3]:
-                pointops  = shapemaker.makenegcornerstairs()
+                # pointops  = shapemaker.makenegcornerstairs()
+                pointops = fromfileordefault(mat,2 ,shapemaker.makenegcornerstairs)
+
             else:
-                pointops  = shapemaker.makeposcornerstairs()
+                # pointops  = shapemaker.makeposcornerstairs()
+                pointops = fromfileordefault(mat,1 ,shapemaker.makeposcornerstairs)
+
+                if (loneneighbors[mat][back]['meta'] & 3) == 2:
+                    pointops.mirrorpointsY()
+
+
+
 
         if not shapedone and left in loneneighbors[mat] and (loneneighbors[mat][left]['meta'] & 3) in [0,1] and somemeta in [2,3]:
             shape = isperpendicular(somemeta, (loneneighbors[mat][left]['meta'] & 3))
             shapedone = True
             if shape in [0,3]:
-                pointops  = shapemaker.makenegcornerstairs()
+                # pointops  = shapemaker.makenegcornerstairs()
+                pointops = fromfileordefault(mat,2 ,shapemaker.makenegcornerstairs)
+                if (loneneighbors[mat][left]['meta'] & 3) == 0:
+                    pointops.mirrorpointsY()
             else:
-                pointops  = shapemaker.makeposcornerstairs()
+                # pointops  = shapemaker.makeposcornerstairs()
+                pointops = fromfileordefault(mat,1 ,shapemaker.makeposcornerstairs)
+
+                if (loneneighbors[mat][left]['meta'] & 3) == 1:
+                    pointops.mirrorpointsY()
+
+
+
 
         if not shapedone and right in loneneighbors[mat] and (loneneighbors[mat][right]['meta'] & 3) in [0,1] and somemeta in [2,3]:
             shape = isperpendicular(somemeta, (loneneighbors[mat][right]['meta'] & 3))
             shapedone = True
             if shape in [0,3]:
-                pointops  = shapemaker.makeposcornerstairs() 
+                # pointops  = shapemaker.makeposcornerstairs()
+                pointops = fromfileordefault(mat,1 ,shapemaker.makeposcornerstairs)
+                if (loneneighbors[mat][right]['meta'] & 3) == 0:
+                    pointops.mirrorpointsY()
             else:
-                pointops  = shapemaker.makenegcornerstairs()
+                # pointops = shapemaker.makenegcornerstairs()
+                pointops = fromfileordefault(mat,2 ,shapemaker.makenegcornerstairs)
 
+                if (loneneighbors[mat][right]['meta'] & 3) == 1:
+                    pointops.rotatepointsZ(-90)
+           
 
         
         if not shapedone:
@@ -228,7 +260,7 @@ def makestairs(loneneighbors, mat):
         elif direction == 2:
             pointops.rotatepointsZ(270)
         else:
-            pointops.rotatepointsZ( 90)
+            pointops.rotatepointsZ(90)
             
         if upsidedown:
             pointops.mirrorpointsZ()
