@@ -342,6 +342,23 @@ def makedoubleslab(loneneighbors, mat):
         origins[mat] = pointops.getavgpoint().astuple()
         faces[mat] += pointops   
 
+def makesnow(loneneighbors, mat):
+    for block in loneneighbors[mat]:
+        listoffaces = loneneighbors[mat][block]['faces']
+        pointops  = fromfileordefault(mat,0 ,shapemaker.makeblockshape)
+        meta = loneneighbors[mat][block]['meta']
+        
+        if mat == (78,0):
+            scale = (meta + 1.0) / 8.0
+            pointops.scalepointsZ(scale)
+            pointops.translatepointsZ((scale-1)/2)
+            
+
+        appendto3dlist(pointops, block)    
+        origins[mat] = pointops.getavgpoint().astuple()
+
+        faces[mat] += pointops
+
 def maketorch(loneneighbors, mat):
     for block in loneneighbors[mat]:
         listoffaces = loneneighbors[mat][block]['faces']
@@ -349,19 +366,13 @@ def maketorch(loneneighbors, mat):
         meta = loneneighbors[mat][block]['meta']
         if meta != 5:
             pointops.rotatepointsY(30)
-
-
-
+            pointops.translatepointsX(-0.3)
         if meta == 2:
             pointops.rotatepointsZ(180)
-
-
         elif meta == 3:
             pointops.rotatepointsZ(270)
-
         elif meta == 4:
             pointops.rotatepointsY(90)
-
 
         appendto3dlist(pointops, block)    
         origins[mat] = pointops.getavgpoint().astuple()
@@ -856,6 +867,8 @@ for mat in loneneighbors:
         makestairs(loneneighbors, mat)
     elif mat[0] in [50, 75, 76]:
         maketorch(loneneighbors, mat)
+    elif mat[0] in [78, 80]:
+        makesnow(loneneighbors, mat)
 
     else:
         makeblock(loneneighbors, mat)

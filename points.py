@@ -64,6 +64,30 @@ class Point3D(object):
         x = round(self.x * cosa - self.y * sina,1)
         y = round(self.x * sina + self.y * cosa,1)
         return Point3D(x, y, self.z)
+
+    def scaleX(self, amount):
+        x = self.x * amount
+        return Point3D(x, self.y, self.z)
+
+    def scaleY(self, amount):
+        y = self.y * amount
+        return Point3D(self.x, y, self.z)
+
+    def scaleZ(self, amount):
+        z = self.z * amount
+        return Point3D(self.x, self.y, z)
+
+    def translateX(self, amount):
+        x = self.x + amount
+        return Point3D(x, self.y, self.z)
+
+    def translateY(self, amount):
+        y = self.y + amount
+        return Point3D(self.x, y, self.z)
+
+    def translateZ(self, amount):
+        z = self.z + amount
+        return Point3D(self.x, self.y, z)
  
     def project(self, win_width, win_height, fov, viewer_distance):
         """ Transforms this 3D point to 2D using a perspective projection. """
@@ -141,32 +165,62 @@ class PointList(list):
 
         list.__init__(self, tempfinal)
 
-    def translatepointsX():
+    def translatepointsX(self, amount):
         tempfinal = []
         for face in list.__iter__(self):
             templist = []
             for point in face:
-                templist.append(point.translateX(angle))
+                templist.append(point.translateX(amount))
             tempfinal.append(templist)
 
         list.__init__(self, tempfinal)
 
-    def translaterpointsY():
+    def translaterpointsY(self, amount):
         tempfinal = []
         for face in list.__iter__(self):
             templist = []
             for point in face:
-                templist.append(point.translateY(angle))
+                templist.append(point.translateY(amount))
             tempfinal.append(templist)
 
         list.__init__(self, tempfinal)
 
-    def translatepointsZ():
+    def translatepointsZ(self, amount):
         tempfinal = []
         for face in list.__iter__(self):
             templist = []
             for point in face:
-                templist.append(point.translateZ(angle))
+                templist.append(point.translateZ(amount))
+            tempfinal.append(templist)
+
+        list.__init__(self, tempfinal)
+
+    def scalepointsX(self, amount):
+        tempfinal = []
+        for face in list.__iter__(self):
+            templist = []
+            for point in face:
+                templist.append(point.scaleX(amount))
+            tempfinal.append(templist)
+
+        list.__init__(self, tempfinal)
+
+    def scalepointsY(self, amount):
+        tempfinal = []
+        for face in list.__iter__(self):
+            templist = []
+            for point in face:
+                templist.append(point.scaleY(amount))
+            tempfinal.append(templist)
+
+        list.__init__(self, tempfinal)
+
+    def scalepointsZ(self, amount):
+        tempfinal = []
+        for face in list.__iter__(self):
+            templist = []
+            for point in face:
+                templist.append(point.scaleZ(amount))
             tempfinal.append(templist)
 
         list.__init__(self, tempfinal)
