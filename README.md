@@ -167,7 +167,7 @@ more meshes like torch, croms, more fences, cromps, only torch implemented
 #ToDo:
 1 
 
-* (first) Implement negative stair corner.
+* (first) Implement negative stair corner. (done)
 
 * (second) More cleaning up of the code
 
