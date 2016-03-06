@@ -141,6 +141,36 @@ class PointList(list):
 
         list.__init__(self, tempfinal)
 
+    def translatepointsX():
+        tempfinal = []
+        for face in list.__iter__(self):
+            templist = []
+            for point in face:
+                templist.append(point.translateX(angle))
+            tempfinal.append(templist)
+
+        list.__init__(self, tempfinal)
+
+    def translaterpointsY():
+        tempfinal = []
+        for face in list.__iter__(self):
+            templist = []
+            for point in face:
+                templist.append(point.translateY(angle))
+            tempfinal.append(templist)
+
+        list.__init__(self, tempfinal)
+
+    def translatepointsZ():
+        tempfinal = []
+        for face in list.__iter__(self):
+            templist = []
+            for point in face:
+                templist.append(point.translateZ(angle))
+            tempfinal.append(templist)
+
+        list.__init__(self, tempfinal)
+
 
     def totuplelist(self):
         tempfinal = []
