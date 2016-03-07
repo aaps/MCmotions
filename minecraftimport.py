@@ -58,7 +58,7 @@ class DataImporter:
         if material in self.materials:
             themat = self.materials
         else:
-            themat = {material:{'name': 'Unknown - ' + str(material), 'color': (0,0,0),'alpha':0,'emittance':0,'textures':[]}}
+            themat = {material:{'name': 'Unknown - ' + str(material), 'color': (0, 0, 0), 'alpha':0, 'emittance':0 ,'textures':[]}}
 
         # print(themat[material])
         if 'textures' in themat[material] and len(themat[material]['textures']) > 0:
@@ -187,59 +187,59 @@ class DataImporter:
                 
                 head = bpy.context.object
                 head.rotation_mode = 'XYZ'
-                head.scale = (0.25,0.25,0.25)
+                head.scale = (0.25, 0.25, 0.25)
 
                 bpy.ops.mesh.primitive_cube_add(location=firstloc)
 
                 ob = bpy.context.object
                 ob.rotation_mode = 'XYZ'
-                ob.scale = (0.25,0.75,0.25)
+                ob.scale = (0.25, 0.75, 0.25)
                 
                 mat = bpy.data.materials.new("PKHG")
 
                 mobtype = aentity['type']
                 if mobtype == '50':
                     ob.name = "creeper"
-                    mat.diffuse_color = (0.0,1.0,0.0)
+                    mat.diffuse_color = (0.0, 1.0, 0.0)
                 elif mobtype == '51':
                     ob.name = "skeleton"
-                    mat.diffuse_color = (1.0,1.0,1.0)
+                    mat.diffuse_color = (1.0, 1.0, 1.0)
                 elif mobtype == '52':
                     ob.name = "spider"
-                    mat.diffuse_color = (0.2,0.1,0.1)
+                    mat.diffuse_color = (0.2, 0.1, 0.1)
                 elif mobtype == '54':
                     ob.name = "zombol"
-                    mat.diffuse_color = (0.0,0.3,0.0)
+                    mat.diffuse_color = (0.0, 0.3, 0.0)
                 elif mobtype == '55':
                     ob.name = "slime"
-                    mat.diffuse_color = (0.5,1,0.5)
+                    mat.diffuse_color = (0.5, 1, 0.5)
                 elif mobtype == '58':
                     ob.name = "enderman"
-                    mat.diffuse_color = (0.5,0.0,0.5)
+                    mat.diffuse_color = (0.5, 0.0, 0.5)
                 elif mobtype == '90':
                     ob.name = "pig"
-                    mat.diffuse_color = (0.5,0.4,0.4)
+                    mat.diffuse_color = (0.5, 0.4, 0.4)
                 elif mobtype == '65':
                     ob.name = "bat"
-                    mat.diffuse_color = (1,0.5,0.2)
+                    mat.diffuse_color = (1, 0.5, 0.2)
                 elif mobtype == '91':
                     ob.name = "sheep"
-                    mat.diffuse_color = (1,1,1)
+                    mat.diffuse_color = (1, 1, 1)
                 elif mobtype == '92':
                     ob.name = "cow"
-                    mat.diffuse_color = (1,0.2,0.1)
+                    mat.diffuse_color = (1, 0.2, 0.1)
                 elif mobtype == '94':
                     ob.name = "squid"
-                    mat.diffuse_color = (0.2,0.2,1)
+                    mat.diffuse_color = (0.2, 0.2, 1)
                 
                 elif mobtype == '101':
                     ob.name = "rabbit"
-                    mat.diffuse_color = (0.5,0.1,0.05)
+                    mat.diffuse_color = (0.5, 0.1, 0.05)
                 elif len(mobtype) > 10 or mobtype == 'player':
                     if mobtype == 'player':
                         ob.name = "player: RECORDER"
                     
-                        mat.diffuse_color = (1,0,0)
+                        mat.diffuse_color = (1, 0, 0)
                     else:
                         mobtype = mobtype.replace('-','')
                         request = urllib.request.urlopen('https://sessionserver.mojang.com/session/minecraft/profile/' + mobtype)
@@ -251,10 +251,10 @@ class DataImporter:
                             ob.name = "player: " + data['name']
                         else:
                             ob.name = "player: unknown"
-                        mat.diffuse_color = (1,0.6,0.4)
+                        mat.diffuse_color = (1, 0.6, 0.4)
 
                 else:
-                    mat.diffuse_color = (0.0,0.0,0.0)
+                    mat.diffuse_color = (0.0, 0.0, 0.0)
                     ob.name = str(mobtype)
 
                 ob.active_material = mat
@@ -272,14 +272,14 @@ class DataImporter:
                 maincam.clip_start = 1
                 maincam.clip_end = 5000
                 cam_ob = bpy.data.objects.new("Camera", maincam)
-                cam_ob.rotation_euler = (0, math.radians(180),  0)
+                cam_ob.rotation_euler = (0, math.radians(180), 0)
 
                 selfycam = bpy.data.cameras.new("Camera")
                 selfycam.clip_start = 1
                 selfycam.clip_end = 5000
                 selfy_cam_ob = bpy.data.objects.new("Camera", selfycam)
-                selfy_cam_ob.rotation_euler = (0, 0,  0)
-                selfy_cam_ob.location = (0,0,25)
+                selfy_cam_ob.rotation_euler = (0, 0, 0)
+                selfy_cam_ob.location = (0, 0, 25)
                 
                 selfy_cam_ob.layers[:] = put_on_layers({2})
                 cam_ob.layers[:] = put_on_layers({2})
@@ -297,7 +297,7 @@ class DataImporter:
                     ob.location = (posses['pos'][0], posses['pos'][2], posses['pos'][1]+0.75)
                     yaw = posses['yawpichhead'][1]
 
-                    head.rotation_euler = (math.radians(posses['yawpichhead'][1]),0,0)
+                    head.rotation_euler = (math.radians(posses['yawpichhead'][1]), 0, 0)
                     ob.rotation_euler = (math.radians(90), 0, math.radians(posses['yawpichhead'][0]) )
                     ob.hide = not bool(posses['alive'])
                     ob.hide_render = not bool(posses['alive'])

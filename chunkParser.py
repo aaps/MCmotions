@@ -1,16 +1,41 @@
 
 import base64
 import struct
+import ast
 
 # for now this is quite sloppy and need refactoring, my refactory system is to cut up stuff 
 # first, this is the raw cutup later refactoring etc, own responsibility for ussage.
 
 class chunkParser:
 
+    def __init__(self, topleft = (-1000,-1000), bottomright = (1000,1000), cuty = 0, world = 1, norenderblocks = ["none"], multymatblocks = [35, 43, 44, 95, 97, 98, 125, 126, 139, 155, 159, 160, 171]):
+        self.topleft = topleft
+        self.bottomright = bottomright
+        self.cuty = cuty
+        self.world = world
+        self.norenderblocks = norenderblocks
+        self.multymatblocks = multymatblocks
 
-    def getchunks(self, chunkxz, row, chunks, topleft, bottomright, world, cuty):
+    def setTopLeft(self, topleft = (-1000,-1000)):
+        self.topleft = topleft
+
+    def setBottomRight(self, bottomright = (1000,1000)):
+        self.bottomright = bottomright
+
+    def setCuty(self, cuty = 0):
+        self.cuty = cuty
+
+    def setWorld(self, world = 1):
+        self.world = world
+
+    def setNoRenderBlocks(self, norenderblocks = ["none"]):
+        self.norenderblocks = norenderblocks
+
+
+
+    def getchunks(self, row, chunks):
         chunkposses = []
-
+        chunkxz = ast.literal_eval(row[1])
         if row[5] != 'None':
             chunkdata = base64.standard_b64decode(row[5])
             matsamples = []
@@ -23,7 +48,7 @@ class chunkParser:
             matsamples = list(set(matsamples))
             worldnum = self.worldfromsample(matsamples)
 
-            if chunkxz not in chunkposses and chunkxz[0] >= topleft[0] and chunkxz[1] >= topleft[1] and chunkxz[0] <= bottomright[0] and chunkxz[1] <= bottomright[1] and world == worldnum:
+            if chunkxz not in chunkposses and chunkxz[0] >= self.topleft[0] and chunkxz[1] >= self.topleft[1] and chunkxz[0] <= self.bottomright[0] and chunkxz[1] <= self.bottomright[1] and self.world == worldnum:
                 
                 chunkposses.append(chunkxz)
                 rightcounter = 0
@@ -48,23 +73,23 @@ class chunkParser:
                                         bmeta = 666
                                     
                                     block = ( (x + (chunkxz[0]*16),z + (chunkxz[1]*16),y+(index1*16)), btype, bmeta)
-                                    if index1 > cuty:
+                                    if index1 > self.cuty:
                                         chunks[chunkxz]['blocks'].append(block)
 
                         rightcounter += 1
 
 
-    def fillmatindexes(self, chunks, materials, norenderblocks, multymatblocks):
+    def fillmatindexes(self, chunks, materials):
         for chunk in chunks:
             for block in chunks[chunk]:
                 if len(chunks[chunk][block]) > 0:
                     
                     for x in chunks[chunk][block]:
                         position = x[0][0],x[0][1]*-1,x[0][2]
-                        if x[1] > 0 and x[1] < 256 and x[1] not in norenderblocks:
+                        if x[1] > 0 and x[1] < 256 and x[1] not in self.norenderblocks:
                             
                             blockinfo = {position:{'meta':x[2],'faces':[]}}
-                            if x[1] in multymatblocks:
+                            if x[1] in self.multymatblocks:
                                 if x[1] in [182 ,126 ,44] and x[2] > 7:
                                     x = x[0], x[1], x[2] - 8
                                 if x[1] in [125,181, 43] and x[2] > 7:
