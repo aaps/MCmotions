@@ -22,6 +22,7 @@ norenderblocks = ["none"]
 noentitys = False
 nochunks = False
 onlyplayerents = False
+agressiveremoval = False
 curscene = "noscene"
 world = 1
 # cuty = 0
@@ -33,14 +34,14 @@ colormaterials = defmaterials
 
 
 try:
-    opts, args = getopt.getopt(sys.argv[1:],"",["avgmiddle=","materialsfile=","sourcefile=","destfile=","scene=", "excludeent=","excludeblocks=","CTL=","CBR=","cuty=","noentitys=","nochunks=","onlyplayerents=", "world=" ])
+    opts, args = getopt.getopt(sys.argv[1:],"",["avgmiddle=","materialsfile=","sourcefile=","destfile=","scene=", "excludeent=","excludeblocks=","agressiveremoval=","CTL=","CBR=","cuty=","noentitys=","nochunks=","onlyplayerents=", "world=" ])
         
 except getopt.GetoptError:
-    print 'error: lister.py --onlyplayerents --materialsfile --avgmiddle --sourcefile filename --destfile filename --scene scene name --excludeent commaseperatedlist of entity ids --excludeblocks commaseperatedlist of blockids --world nether/overworld/theend will only use this world'
+    print 'error: lister.py --onlyplayerents --materialsfile --avgmiddle --sourcefile filename --destfile filename --scene scene name --excludeent commaseperatedlist of entity ids --excludeblocks commaseperatedlist of blockids --agressiveremoval --world nether/overworld/theend will only use this world'
     sys.exit(2)
 for opt, arg in opts:
     if opt == '-h':
-        print 'lister.py --onlyplayerents --materialsfile --avgmiddle --sourcefile filename --destfile filename --scene scene name --excludeent commaseperatedlist of entity ids --excludeblocks commaseperatedlist of blockids --world nether/overworld/theend will only use this world'
+        print 'lister.py --onlyplayerents --materialsfile --avgmiddle --sourcefile filename --destfile filename --scene scene name --excludeent commaseperatedlist of entity ids --excludeblocks commaseperatedlist of blockids --agressiveremoval --world nether/overworld/theend will only use this world'
         sys.exit()
 
     if opt == "--onlyplayerents":
@@ -70,7 +71,9 @@ for opt, arg in opts:
         colormaterials = ast.literal_eval(materialsstring)
         textures = colormaterials["textures"]
         colormaterials = colormaterials["materials"]
-        
+    
+    if opt == "--agressiveremoval":
+        agressiveremoval = True
 
     if opt == "--excludeblocks":
         norenderblocks = arg.split(",")
@@ -165,6 +168,11 @@ def isperpendicular(meta1, meta2):
 
 def makestairs(loneneighbors, mat):
 
+    if mat in colormaterials and 'interneighbor' in colormaterials[mat] and colormaterials[mat]['interneighbor']:
+        removeneibors = False
+    else:
+        removeneibors = True
+
     neighborstairs = {}
     for x in [53, 67, 108, 109, 114, 128, 134, 135, 136, 156, 165, 164, 180]:
         if (x,0) in loneneighbors:
@@ -172,7 +180,7 @@ def makestairs(loneneighbors, mat):
 
     
     for block in loneneighbors[mat]:
-
+        listoffaces = loneneighbors[mat][block]['faces']
 
         somemeta = (loneneighbors[mat][block]['meta'] & 3)
         pointops = PointList()
@@ -261,7 +269,10 @@ def makestairs(loneneighbors, mat):
             pointops.rotate_points_z(90)
             
         if upsidedown:
-            pointops.mirrorpointsZ()
+            pointops.mirror_points_z()
+
+        if removeneibors:
+            shapemaker.remove_neibors(pointops, listoffaces)
 
         origins[mat] = pointops.get_avg_point().as_tuple()
         appendto3dlist(pointops, block)
@@ -291,11 +302,9 @@ def makefence(loneneighbors, mat):
 
 
 def makeblock(loneneighbors, mat):
-    
  
-    if mat in colormaterials and 'niceneighbor' in colormaterials[mat] and colormaterials[mat]['niceneighbor']:
+    if mat in colormaterials and 'interneighbor' in colormaterials[mat] and colormaterials[mat]['interneighbor']:
         removeneibors = False
-        # print str(mat) + ' removed in makeblock'
     else:
         removeneibors = True
         
@@ -380,7 +389,7 @@ def makehalfblock(loneneighbors, mat):
         
         meta = loneneighbors[mat][block]['meta']
 
-        pointops  = fromfileordefault(mat,0 , shapemaker.makehalfblocks)
+        pointops  = fromfileordefault(mat,0 , shapemaker.make_half_blocks)
         
         if meta > 7:
             pointops.rotate_points_y(180)
@@ -406,18 +415,14 @@ def makeverticalblock(loneneighbors, mat):
             pointops = shapemaker.makeflatblocks()
 
         if front in loneneighbors[mat] or back in loneneighbors[mat]:
-            # pointops = shapemaker.makeverticalflatblock()
-            pointops  = fromfileordefault(mat,0 , shapemaker.makeverticalflatblock)
+            pointops  = fromfileordefault(mat,0 , shapemaker.make_vertical_plus_block)
             pointops.rotate_points_z(90)
         elif left in loneneighbors[mat] or right in loneneighbors[mat]:
-            # pointops = shapemaker.makeverticalflatblock()
-            pointops  = fromfileordefault(mat,0 , shapemaker.makeverticalflatblock)
+            pointops  = fromfileordefault(mat,0 , shapemaker.make_vertical_plus_block)
         elif left in loneneighbors[mat] and right in loneneighbors[mat] and front in loneneighbors[mat] and back in loneneighbors[mat]:
-            # pointops = shapemaker.makeverticalplusblock()
-            pointops  = fromfileordefault(mat,0 ,shapemaker.makeverticalplusblock)
+            pointops  = fromfileordefault(mat,0 ,shapemaker.make_vertical_plus_block)
         else:
-            pointops  = fromfileordefault(mat,0 , shapemaker.makeverticalplusblock)
-            # pointops = shapemaker.makeverticalplusblock() 
+            pointops  = fromfileordefault(mat,0 , shapemaker.make_vertical_plus_block)
 
         shapemaker.remove_neibors(pointops, listoffaces)
         appendto3dlist(pointops, block)   
@@ -651,7 +656,7 @@ materials = chunkparser.fillmatindexes(chunks, materials)
 
 
 
-neightbors = chunkparser.genfacesNeighbors(materials)
+neightbors = chunkparser.genfacesNeighbors(materials, agressiveremoval, colormaterials)
 
 loneneighbors = chunkparser.removeSupderCosy(neightbors, colormaterials)
 

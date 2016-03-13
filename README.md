@@ -169,13 +169,17 @@ more meshes like torch, croms, more fences, cromps, only torch implemented
 
 * (first) Implement negative stair corner. (done)
 
-* (second) More cleaning up of the code
+* (second) More cleaning up of the code. (done)
 
 * (forth) Add option for more agressive neighbor face removal.
 
 * (third) Get some of the already implemented textures also on a block !
 
 2
+
+in minecraft import is the functionality that will translate uuid to player name etc.
+this should be done in the lister and will have to be done in sutch a way that it wont 
+send to many requests to the mojang server !
 
 
 See that the minecraftimport users will have some usefull text messages

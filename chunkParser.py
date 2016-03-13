@@ -109,49 +109,63 @@ class chunkParser:
         chunks = None
         return materials
 
-    def genfacesNeighbors(self, materials):
+    def genfacesNeighbors(self, materials, agressiveremoval=False, colormats = {}):
         neightbors = {}
+        allmaterials = {}
+
         print 'find material neightbors for ' + str(len(materials)) + ' materials'         
+        
+        # todo below is somewhat sloppy refactor material
+        for mat in materials:
+            for x in materials[mat]:
+                materials[mat][x]['interneighbor'] = colormats[mat]['interneighbor']
+            allmaterials.update( materials[mat])
+
+
         for mat in materials:
             neightbors[mat] = {}
 
         for mat in materials:
 
             for block in materials[mat]:
+                
+                if agressiveremoval:
+                    blockstocheck = allmaterials
+                else:
+                    blockstocheck = materials[mat]
 
                 neightbors[mat][block] = {'meta': materials[mat][block]['meta'],'faces':[]}
                 
-                if (block[0]-1, block[1], block[2]) not in materials[mat]: #and 
+                if (block[0]-1, block[1], block[2]) not in blockstocheck: 
+                    neightbors[mat][block]['faces'].append(1)
+                elif blockstocheck[(block[0]-1, block[1], block[2])]['interneighbor']:
+                    neightbors[mat][block]['faces'].append(1)
+
+                if (block[0]+1, block[1], block[2]) not in blockstocheck:
+                    neightbors[mat][block]['faces'].append(2)
+                elif blockstocheck[(block[0]+1, block[1], block[2])]['interneighbor']:
+                    neightbors[mat][block]['faces'].append(2)
+
+                if (block[0], block[1]-1, block[2]) not in blockstocheck:
+                    neightbors[mat][block]['faces'].append(3)
+                elif blockstocheck[(block[0], block[1]-1, block[2])]['interneighbor']:
+                    neightbors[mat][block]['faces'].append(3)
+
+                if (block[0], block[1]+1, block[2]) not in blockstocheck:
+                    neightbors[mat][block]['faces'].append(4)
+                elif blockstocheck[(block[0], block[1]+1, block[2])]['interneighbor']:
+                    neightbors[mat][block]['faces'].append(4)
+
+                if (block[0], block[1], block[2]-1) not in blockstocheck:
+                    neightbors[mat][block]['faces'].append(5)
+                elif blockstocheck[(block[0], block[1], block[2]-1)]['interneighbor']:
+                    neightbors[mat][block]['faces'].append(5)
+
+                if (block[0], block[1], block[2]+1) not in blockstocheck: 
+                    neightbors[mat][block]['faces'].append(6)
+                elif blockstocheck[(block[0], block[1], block[2]+1)]['interneighbor']:
+                    neightbors[mat][block]['faces'].append(6)
                     
-                    neightbors[mat][block]['faces'].append(1)
-                elif  materials[mat][(block[0]-1, block[1], block[2])]['meta'] != neightbors[mat][block]['meta']:
-                    neightbors[mat][block]['faces'].append(1)
-
-                if (block[0]+1, block[1], block[2]) not in materials[mat]:
-                    neightbors[mat][block]['faces'].append(2)
-                elif  materials[mat][(block[0]+1, block[1], block[2])]['meta'] != neightbors[mat][block]['meta']:
-                    neightbors[mat][block]['faces'].append(2)
-
-                if (block[0], block[1]-1, block[2]) not in materials[mat]:
-                    neightbors[mat][block]['faces'].append(3)
-                elif  materials[mat][(block[0], block[1]-1, block[2])]['meta'] != neightbors[mat][block]['meta']:
-                    neightbors[mat][block]['faces'].append(3)
-
-                if (block[0], block[1]+1, block[2]) not in materials[mat]:
-                    neightbors[mat][block]['faces'].append(4)
-                elif  materials[mat][(block[0], block[1]+1, block[2])]['meta'] != neightbors[mat][block]['meta']:
-                    neightbors[mat][block]['faces'].append(4)
-
-                if (block[0], block[1], block[2]-1) not in materials[mat]:
-                    neightbors[mat][block]['faces'].append(5)
-                elif  materials[mat][(block[0], block[1], block[2]-1)]['meta'] != neightbors[mat][block]['meta']:
-                    neightbors[mat][block]['faces'].append(5)
-
-                if (block[0], block[1], block[2]+1) not in materials[mat]: 
-                    neightbors[mat][block]['faces'].append(6)
-                elif  materials[mat][(block[0], block[1], block[2]+1)]['meta'] != neightbors[mat][block]['meta']:
-                    neightbors[mat][block]['faces'].append(6)
-
             materials[mat] = None
         return neightbors
 
@@ -159,9 +173,8 @@ class chunkParser:
         loneneighbors = {}
         for mat in neightbors:
             
-            if mat in colormaterials and 'niceneighbor' in colormaterials[mat] and colormaterials[mat]['niceneighbor']:
+            if mat in colormaterials and 'interneighbor' in colormaterials[mat] and colormaterials[mat]['interneighbor']:
                 removeneibors = False
-                # print str(mat) + ' removed in superduper'
             else:
                 removeneibors = True
 
