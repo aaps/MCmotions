@@ -119,6 +119,7 @@ class chunkParser:
         for mat in materials:
             for x in materials[mat]:
                 materials[mat][x]['interneighbor'] = colormats[mat]['interneighbor']
+                materials[mat][x]['extraneighbor'] = colormats[mat]['extraneighbor']
             allmaterials.update( materials[mat])
 
 
@@ -138,32 +139,32 @@ class chunkParser:
                 
                 if (block[0]-1, block[1], block[2]) not in blockstocheck: 
                     neightbors[mat][block]['faces'].append(1)
-                elif blockstocheck[(block[0]-1, block[1], block[2])]['interneighbor']:
+                elif blockstocheck[(block[0]-1, block[1], block[2])]['extraneighbor']:
                     neightbors[mat][block]['faces'].append(1)
 
                 if (block[0]+1, block[1], block[2]) not in blockstocheck:
                     neightbors[mat][block]['faces'].append(2)
-                elif blockstocheck[(block[0]+1, block[1], block[2])]['interneighbor']:
+                elif blockstocheck[(block[0]+1, block[1], block[2])]['extraneighbor']:
                     neightbors[mat][block]['faces'].append(2)
 
                 if (block[0], block[1]-1, block[2]) not in blockstocheck:
                     neightbors[mat][block]['faces'].append(3)
-                elif blockstocheck[(block[0], block[1]-1, block[2])]['interneighbor']:
+                elif blockstocheck[(block[0], block[1]-1, block[2])]['extraneighbor']:
                     neightbors[mat][block]['faces'].append(3)
 
                 if (block[0], block[1]+1, block[2]) not in blockstocheck:
                     neightbors[mat][block]['faces'].append(4)
-                elif blockstocheck[(block[0], block[1]+1, block[2])]['interneighbor']:
+                elif blockstocheck[(block[0], block[1]+1, block[2])]['extraneighbor']:
                     neightbors[mat][block]['faces'].append(4)
 
                 if (block[0], block[1], block[2]-1) not in blockstocheck:
                     neightbors[mat][block]['faces'].append(5)
-                elif blockstocheck[(block[0], block[1], block[2]-1)]['interneighbor']:
+                elif blockstocheck[(block[0], block[1], block[2]-1)]['extraneighbor']:
                     neightbors[mat][block]['faces'].append(5)
 
                 if (block[0], block[1], block[2]+1) not in blockstocheck: 
                     neightbors[mat][block]['faces'].append(6)
-                elif blockstocheck[(block[0], block[1], block[2]+1)]['interneighbor']:
+                elif blockstocheck[(block[0], block[1], block[2]+1)]['extraneighbor']:
                     neightbors[mat][block]['faces'].append(6)
                     
             materials[mat] = None

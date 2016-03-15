@@ -149,20 +149,11 @@ the scene option is important for now, no matter what name, you can test it with
 
 #NEW:
 
-option not to remove neighbor blocks in case of cobwebs and fences for example
+* the propper stairs, everywhere
 
-added negative stair corners
+* good start at agressive face removal, will make it possible to render lager maps, small penalty in how it looks for now
 
-* all pivots of the materials in the center of their materials
-* replace examples, since changes here and there.
 
-* making a texture start.
-
-* see if an update of the readme is needed, once the working of lister has changed.
-
-* simplistic mcsimple done
-
-more meshes like torch, croms, more fences, cromps, only torch implemented
 
 #ToDo:
 1 
@@ -171,9 +162,11 @@ more meshes like torch, croms, more fences, cromps, only torch implemented
 
 * (second) More cleaning up of the code. (done)
 
-* (forth) Add option for more agressive neighbor face removal.
+* (third) Add option for more agressive neighbor face removal. (almost done)
 
-* (third) Get some of the already implemented textures also on a block !
+* (third and a half) Even more refactoring ! things are getting somewhat messy.
+
+* (forth) Get some of the already implemented textures also on a block !
 
 2
 

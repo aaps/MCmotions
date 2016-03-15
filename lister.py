@@ -317,12 +317,14 @@ def makeblock(loneneighbors, mat):
             shapemaker.remove_neibors(pointops, listoffaces)
         
         appendto3dlist(pointops, block)    
+        
+        # this below here is not the propper way to do it !
         origins[mat] = pointops.get_avg_point().as_tuple()
 
         faces[mat] += pointops
 
     if not pointops:
-        origins[mat] = (0,0,0)  
+        origins[mat] = (0,0,0) 
 
 
 def makedoubleslab(loneneighbors, mat):
