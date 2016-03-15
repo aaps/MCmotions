@@ -308,7 +308,7 @@ def makeblock(loneneighbors, mat):
     else:
         removeneibors = True
         
-
+    pointops = False
     for block in loneneighbors[mat]:
         listoffaces = loneneighbors[mat][block]['faces']
         pointops  = fromfileordefault(mat,0 ,shapemaker.make_block_shape)
@@ -320,6 +320,9 @@ def makeblock(loneneighbors, mat):
         origins[mat] = pointops.get_avg_point().as_tuple()
 
         faces[mat] += pointops
+
+    if not pointops:
+        origins[mat] = (0,0,0)  
 
 
 def makedoubleslab(loneneighbors, mat):
@@ -644,7 +647,7 @@ allhistory = filterstatics(allhistory)
 
 print getMaxMinTime(allhistory)
 
-print 'parsing ' + str(len(chunkposses)) + ' chunks'
+# print 'parsing ' + str(len(chunkposses)) + ' chunks'
 
 # put it in material array instead of chunk arrays
 
