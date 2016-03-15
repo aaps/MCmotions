@@ -160,19 +160,26 @@ class DataImporter:
 
         for mat in vertices:
 
-            if mat not in vertices:
-                print('vertices doesnt have: ' + str(mat))
-                print(vertices.keys())
-                exit()
-            if mat not in faces:
-                print('faces doesnt have: ' + str(mat))
-                print(faces.keys())
-                exit()
+            # if mat not in vertices:
+            #     print('vertices doesnt have: ' + str(mat))
+            #     print(vertices.keys())
+            #     exit()
+            # if mat not in faces:
+            #     print('faces doesnt have: ' + str(mat))
+            #     print(faces.keys())
+            #     exit()
+            # if mat not in origins:
+            #     print('origins doesnt have: ' + str(mat))
+            #     print(faces.keys())
+            #     exit()
 
 
-            self.createMeshFromData(mat, origins[mat], vertices[mat], faces[mat] )
-            faces[mat] = None
-            vertices[mat] = None
+            if mat in vertices and mat in faces and mat in origins:
+                self.createMeshFromData(mat, origins[mat], vertices[mat], faces[mat] )
+                faces[mat] = None
+                vertices[mat] = None
+            else:
+                print(str(mat) + 'not in faces, vertices or origins !')
 
 
         for value in entitys:
