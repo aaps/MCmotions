@@ -131,12 +131,10 @@ class DataImporter:
                 print('file removal trouble no biggy')
 
             
-        
-        for texture in self.textures:
-
-          
-            fileh = open(self.tempdir + os.sep + texture + ".png", "wb")
-            fileh.write(base64.b64decode(self.textures[texture]))
+        if self.textures:
+            for texture in self.textures:
+                fileh = open(self.tempdir + os.sep + texture + ".png", "wb")
+                fileh.write(base64.b64decode(self.textures[texture]))
 
 
         temp = {}
@@ -160,18 +158,6 @@ class DataImporter:
 
         for mat in vertices:
 
-            # if mat not in vertices:
-            #     print('vertices doesnt have: ' + str(mat))
-            #     print(vertices.keys())
-            #     exit()
-            # if mat not in faces:
-            #     print('faces doesnt have: ' + str(mat))
-            #     print(faces.keys())
-            #     exit()
-            # if mat not in origins:
-            #     print('origins doesnt have: ' + str(mat))
-            #     print(faces.keys())
-            #     exit()
 
 
             if mat in vertices and mat in faces and mat in origins:
@@ -314,10 +300,11 @@ class DataImporter:
                     ob.keyframe_insert(data_path="location")
                     ob.keyframe_insert(data_path="rotation_euler")
 
-                for fc in ob.animation_data.action.fcurves:
-                    fc.extrapolation = 'LINEAR'
-                    for kp in fc.keyframe_points:
-                        kp.interpolation = 'LINEAR'
+                if ob.animation_data:
+                    for fc in ob.animation_data.action.fcurves:
+                        fc.extrapolation = 'LINEAR'
+                        for kp in fc.keyframe_points:
+                            kp.interpolation = 'LINEAR'
 
         print("Script finished after {} seconds".format(time.time() - start_time))
         return {'FINISHED'}

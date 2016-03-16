@@ -178,7 +178,7 @@ class Shapes:
             temperlist.append([Point3D(0.5, 0.1, 0.5), Point3D(0.1, 0.1, 0.5), Point3D(0.1, -0.1, 0.5), Point3D(0.5, -0.1, 0.5)])
             temperlist.append([Point3D(0.5, -0.1, -0.5), Point3D(0.5, -0.1, 0.5), Point3D(0.1, -0.1, 0.5), Point3D(0.1, -0.1, -0.5)])
             temperlist.append([Point3D(0.1, 0.1, -0.5), Point3D(0.1, 0.1, 0.5), Point3D(0.5, 0.1, 0.5), Point3D(0.5, 0.1, -0.5)])
-            temperlist.rotatepointsZ(90*fordir)
+            temperlist.rotate_points_z(90*fordir)
             pointops.extend(temperlist)
 
         pointops.append([Point3D(-0.1, 0.1, -0.5), Point3D(0.1, 0.1, -0.5), Point3D(0.1, -0.1, -0.5), Point3D(-0.1, -0.1, -0.5)])

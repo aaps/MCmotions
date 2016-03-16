@@ -25,10 +25,11 @@ onlyplayerents = False
 agressiveremoval = False
 curscene = "noscene"
 world = 1
-# cuty = 0
-# topleft = (-1000,-1000)
-# bottomright = (1000,1000)
+cuty = 0
+topleft = (-1000,-1000)
+bottomright = (1000,1000)
 # multymatblocks = [35, 43, 44, 95, 97, 98, 125, 126, 139, 155, 159, 160, 171]
+textures = None
 shapemaker = Shapes()
 colormaterials = defmaterials
 
@@ -417,7 +418,7 @@ def makeverticalblock(loneneighbors, mat):
             pointlist.from_tuple_list(colormaterials[mat]['models'][0])
             pointops = pointlist
         else:
-            pointops = shapemaker.makeflatblocks()
+            pointops = shapemaker.make_flat_blocks()
 
         if front in loneneighbors[mat] or back in loneneighbors[mat]:
             pointops  = fromfileordefault(mat,0 , shapemaker.make_vertical_plus_block)
@@ -445,7 +446,7 @@ def makeladderlikeblock(loneneighbors, mat):
         #     pointops = pointlist
         # else:
         #     pointops = shapemaker.makeladdershapes()
-        pointops  = fromfileordefault(mat,0 , shapemaker.makeladdershapes)
+        pointops  = fromfileordefault(mat,0 , shapemaker.make_ladder_shapes)
 
         direction = loneneighbors[mat][block]['meta'] & 3
 
@@ -458,7 +459,7 @@ def makeladderlikeblock(loneneighbors, mat):
         else:
             pointops.rotate_points_z(180)
 
-        shapemaker.removetopdownneighbors(pointops, listoffaces)
+        shapemaker.remove_top_down_neighbors(pointops, listoffaces)
 
         appendto3dlist(pointops, block)
         

@@ -170,6 +170,8 @@ the scene option is important for now, no matter what name, you can test it with
 
 2
 
+explain the mctricky role in the steps to run this !
+
 in minecraft import is the functionality that will translate uuid to player name etc.
 this should be done in the lister and will have to be done in sutch a way that it wont 
 send to many requests to the mojang server !
