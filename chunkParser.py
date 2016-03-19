@@ -120,6 +120,7 @@ class chunkParser:
             for x in materials[mat]:
                 materials[mat][x]['interneighbor'] = colormats[mat]['interneighbor']
                 materials[mat][x]['extraneighbor'] = colormats[mat]['extraneighbor']
+                materials[mat][x]['watertight'] = colormats[mat]['watertight']
             allmaterials.update( materials[mat])
 
 
@@ -130,7 +131,9 @@ class chunkParser:
 
             for block in materials[mat]:
                 
-                if agressiveremoval:
+                # print  
+
+                if agressiveremoval and not materials[mat][block]['watertight']:
                     blockstocheck = allmaterials
                 else:
                     blockstocheck = materials[mat]

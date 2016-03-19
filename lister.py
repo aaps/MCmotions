@@ -275,10 +275,10 @@ def makestairs(loneneighbors, mat):
         if removeneibors:
             shapemaker.remove_neibors(pointops, listoffaces)
 
-        origins[mat] = pointops.get_avg_point().as_tuple()
+        origins[mat].append(pointops.get_avg_point().as_tuple())
         appendto3dlist(pointops, block)
         faces[mat] += pointops
-
+    origins[mat] = getavgorigins(origins[mat])
 
 def makefence(loneneighbors, mat):
     
@@ -297,9 +297,9 @@ def makefence(loneneighbors, mat):
         
         shapemaker.remove_neibors(pointops, listoffaces)
         appendto3dlist(pointops, block)
-        origins[mat] = pointops.get_avg_point().as_tuple()
+        origins[mat].append(pointops.get_avg_point().as_tuple())
         faces[mat] += pointops
-
+    origins[mat] = getavgorigins(origins[mat])
 
 
 def makeblock(loneneighbors, mat):
@@ -320,12 +320,19 @@ def makeblock(loneneighbors, mat):
         appendto3dlist(pointops, block)    
         
         # this below here is not the propper way to do it !
-        origins[mat] = pointops.get_avg_point().as_tuple()
+        origins[mat].append( pointops.get_avg_point().as_tuple())
 
         faces[mat] += pointops
 
-    if not pointops:
-        origins[mat] = (0,0,0) 
+    origins[mat] = getavgorigins(origins[mat])
+
+def getavgorigins(origins):
+    if len(origins) > 0:
+        return [sum(y) / len(y) for y in zip(*origins)]
+
+    return (0,0,0)
+    
+
 
 
 def makedoubleslab(loneneighbors, mat):
@@ -349,8 +356,9 @@ def makedoubleslab(loneneighbors, mat):
 
         shapemaker.remove_neibors(pointops, listoffaces)
         appendto3dlist(pointops, block)    
-        origins[mat] = pointops.get_avg_point().as_tuple()
-        faces[mat] += pointops   
+        origins[mat].append(pointops.get_avg_point().as_tuple())
+        faces[mat] += pointops  
+    origins[mat] = getavgorigins(origins[mat])
 
 def makesnow(loneneighbors, mat):
     for block in loneneighbors[mat]:
@@ -365,9 +373,10 @@ def makesnow(loneneighbors, mat):
             
 
         appendto3dlist(pointops, block)    
-        origins[mat] = pointops.get_avg_point().as_tuple()
+        origins[mat].append(pointops.get_avg_point().as_tuple())
 
         faces[mat] += pointops
+    origins[mat] = getavgorigins(origins[mat])
 
 def maketorch(loneneighbors, mat):
     for block in loneneighbors[mat]:
@@ -385,9 +394,10 @@ def maketorch(loneneighbors, mat):
             pointops.rotate_points_y(90)
 
         appendto3dlist(pointops, block)    
-        origins[mat] = pointops.get_avg_point().as_tuple()
+        origins[mat].append(pointops.get_avg_point().as_tuple())
 
         faces[mat] += pointops
+    origins[mat] = getavgorigins(origins[mat])
 
 def makehalfblock(loneneighbors, mat):
     for block in loneneighbors[mat]:
@@ -402,8 +412,9 @@ def makehalfblock(loneneighbors, mat):
 
         shapemaker.remove_neibors(pointops, listoffaces)
         appendto3dlist(pointops, block)    
-        origins[mat] = pointops.get_avg_point().as_tuple()
+        origins[mat].append(pointops.get_avg_point().as_tuple())
         faces[mat] += pointops
+    origins[mat] = getavgorigins(origins[mat])
 
 def makeverticalblock(loneneighbors, mat):
     for block in loneneighbors[mat]:
@@ -432,8 +443,9 @@ def makeverticalblock(loneneighbors, mat):
 
         shapemaker.remove_neibors(pointops, listoffaces)
         appendto3dlist(pointops, block)   
-        origins[mat] = pointops.get_avg_point().as_tuple()
+        origins[mat].append(pointops.get_avg_point().as_tuple())
         faces[mat] += pointops
+    origins[mat] = getavgorigins(origins[mat])
 
 def makeladderlikeblock(loneneighbors, mat):
 
@@ -463,8 +475,9 @@ def makeladderlikeblock(loneneighbors, mat):
 
         appendto3dlist(pointops, block)
         
-        origins[mat] = pointops.get_avg_point().as_tuple()
+        origins[mat].append(pointops.get_avg_point().as_tuple())
         faces[mat] += pointops
+    origins[mat] = getavgorigins(origins[mat])
 
 
 
@@ -675,7 +688,7 @@ for mat in loneneighbors:
     
     faces[mat] = []
     vertices[mat] = []
-    # origins[mat] = []
+    origins[mat] = []
 
     if mat[0] in [182 ,126 ,44]:
         makehalfblock(loneneighbors, mat)
@@ -702,10 +715,6 @@ for mat in loneneighbors:
         for point in points:
             temp.append(point)
 
-    # somepoint = temp.getrawavgpoint().as_tuple()
-    
-    # origins[mat] = somepoint
-    # loneneighbors[mat] = []
 loneneighbors = None
 
 
@@ -721,9 +730,6 @@ for mat in vertices:
     vertices[mat] = list(set(vertices[mat]))
     vertices[mat] = sorted(vertices[mat])
     
-
-
-
 
 newfaces = {}
 
