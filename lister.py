@@ -381,22 +381,36 @@ def makesnow(loneneighbors, mat):
 def maketorch(loneneighbors, mat):
     for block in loneneighbors[mat]:
         listoffaces = loneneighbors[mat][block]['faces']
-        pointops  = fromfileordefault(mat,0 ,shapemaker.make_block_shape)
+        pointops = None
         meta = loneneighbors[mat][block]['meta']
+        pointops  = fromfileordefault(mat,0 ,shapemaker.make_block_shape)
+
         if meta != 5:
-            pointops.rotate_points_y(30)
             pointops.translate_points_x(-0.3)
+
+        if meta == 1:
+            
+            pointops.rotate_points_y(30)
+            # pointops.translate_points_x(-0.3)
         if meta == 2:
+            # pointops  = fromfileordefault(mat,0 ,shapemaker.make_block_shape)
+            pointops.rotate_points_y(30)
             pointops.rotate_points_z(180)
         elif meta == 3:
+            # pointops  = fromfileordefault(mat,0 ,shapemaker.make_block_shape)
+            pointops.rotate_points_y(30)
+            # pointops.rotate_points_z(180)
             pointops.rotate_points_z(270)
         elif meta == 4:
-            pointops.rotate_points_y(90)
+            # pointops  = fromfileordefault(mat,0 ,shapemaker.make_block_shape)
+            pointops.rotate_points_y(30)
+            pointops.rotate_points_z(90)
 
-        appendto3dlist(pointops, block)    
-        origins[mat].append(pointops.get_avg_point().as_tuple())
+        if pointops:
+            appendto3dlist(pointops, block)    
+            origins[mat].append(pointops.get_avg_point().as_tuple())
 
-        faces[mat] += pointops
+            faces[mat] += pointops
     origins[mat] = getavgorigins(origins[mat])
 
 def makehalfblock(loneneighbors, mat):

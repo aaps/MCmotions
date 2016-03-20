@@ -149,11 +149,6 @@ the scene option is important for now, no matter what name, you can test it with
 
 #NEW:
 
-* the propper stairs, everywhere
-
-* good start at agressive face removal, will make it possible to render lager maps, small penalty in how it looks for now
-
-
 
 #ToDo:
 1 
@@ -162,7 +157,7 @@ the scene option is important for now, no matter what name, you can test it with
 
 * (second) More cleaning up of the code. (done)
 
-* (third) Add option for more agressive neighbor face removal. (almost done)
+* (third) Add option for more agressive neighbor face removal. (done, more to do but that is for next time)
 
 * (third and a half) Even more refactoring ! things are getting somewhat messy.
 
