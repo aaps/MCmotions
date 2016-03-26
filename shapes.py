@@ -3,7 +3,8 @@
 from points import *
 
 
-class Shapes:
+
+class DefaultShapes:
 
     # all of the edge functions below this are screaming refactor,
     # but for now it is better than the old solution
@@ -70,7 +71,7 @@ class Shapes:
                 if self.points_on_edge_x(points, -0.5):
                     del pointslist[index]
 
-    def make_normal_stairs(self):
+    def make_default_normal_stairs(self):
         pointops = PointList()
         pointops.append([Point3D(0.5, -0.5, -0.5), Point3D(-0.5, -0.5, -0.5), Point3D(-0.5, 0.5, -0.5), Point3D(0.5, 0.5, -0.5)])
         pointops.append([Point3D(0, -0.5, 0.5), Point3D(0.5, -0.5, 0.5), Point3D(0.5, 0.5, 0.5), Point3D(0, 0.5, 0.5)])
@@ -82,7 +83,7 @@ class Shapes:
         pointops.append([Point3D(0.5, 0.5, 0.5), Point3D(0.5, 0.5, -0.5), Point3D(-0.5, 0.5, -0.5), Point3D(-0.5, 0.5, 0), Point3D(0, 0.5, 0), Point3D(0, 0.5, 0.5)])
         return pointops
 
-    def make_x_block(self):
+    def make_default_x_block(self):
         pointops = PointList()
         pointops.append([Point3D(0.5, 0.5, -0.5), Point3D(0.5, 0.5,
                                                           0.5), Point3D(-0.5, -0.5, 0.5), Point3D(-0.5, -0.5, -0.5)])
@@ -90,7 +91,7 @@ class Shapes:
                                                            0.5), Point3D(0.5, -0.5, 0.5), Point3D(0.5, -0.5, -0.5)])
         return pointops
 
-    def make_neg_corner_stairs(self):
+    def make_default_neg_corner_stairs(self):
         pointops = PointList()
         pointops.append([Point3D(0.5, -0.5, -0.5), Point3D(-0.5, -0.5, -0.5),
                          Point3D(-0.5, 0.5, -0.5), Point3D(0.5, 0.5, -0.5)])
@@ -106,7 +107,7 @@ class Shapes:
 
         return pointops
 
-    def make_pos_corner_stairs(self):
+    def make_default_pos_corner_stairs(self):
         pointops = PointList()
         pointops.append([Point3D(0.5, -0.5, -0.5), Point3D(-0.5, -0.5, -0.5), Point3D(-0.5, 0.5, -0.5), Point3D(0.5, 0.5, -0.5)])
         pointops.append([Point3D(0, 0.5, 0), Point3D(-0.5, 0.5, 0), Point3D(-0.5, -0.5, 0), Point3D(0.5, -0.5, 0), Point3D(0.5, 0, 0), Point3D(0, 0, 0)])
@@ -119,7 +120,7 @@ class Shapes:
         pointops.append([Point3D(0, 0, 0), Point3D(0.5, 0, 0), Point3D(0.5, 0, 0.5), Point3D(0, 0, 0.5)])
         return pointops
 
-    def make_half_blocks(self):
+    def make_default_half_blocks(self):
         pointops = PointList()
         pointops.append([Point3D(0.5, 0.5, 0), Point3D(-0.5, 0.5, 0), Point3D(-0.5, -0.5, 0), Point3D(0.5, -0.5, 0)])
         pointops.append([Point3D(0.5, -0.5, -0.5), Point3D(-0.5, -0.5, -0.5), Point3D(-0.5, 0.5, -0.5), Point3D(0.5, 0.5, -0.5)])
@@ -129,7 +130,7 @@ class Shapes:
         pointops.append([Point3D(0.5, -0.5, -0.5), Point3D(0.5, 0.5, -0.5), Point3D(0.5, 0.5, 0), Point3D(0.5, -0.5, 0)])
         return pointops
 
-    def make_flat_blocks(self):
+    def make_default_flat_blocks(self):
         pointops = PointList()
         pointops.append([Point3D(0.5, 0.5, -0.5), Point3D(-0.5, 0.5, -0.5), Point3D(-0.5, -0.5, -0.5), Point3D(0.5, -0.5, -0.5)])
         pointops.append([Point3D(0.5, 0.5, -0.4), Point3D(-0.5, 0.5, -0.4), Point3D(-0.5, -0.5, -0.4), Point3D(0.5, -0.5, -0.4)])
@@ -139,7 +140,7 @@ class Shapes:
         pointops.append([Point3D(0.5, -0.5, -0.5), Point3D(0.5, 0.5, -0.5), Point3D(0.5, 0.5, -0.4), Point3D(0.5, -0.5, -0.4)])
         return pointops
 
-    def make_neg_corner_stairs(self):
+    def make_default_neg_corner_stairs(self):
         pointops = PointList()
         pointops.append([Point3D(0.5, 0.5, -0.5), Point3D(-0.5, 0.5, -0.5), Point3D(-0.5, -0.5, -0.5), Point3D(0.5, -0.5, -0.5)])
         pointops.append([Point3D(0, 0.5, 0), Point3D(-0.5, 0.5, 0), Point3D(-0.5, -0.5, 0), Point3D(0, -0.5, 0)])
@@ -148,7 +149,7 @@ class Shapes:
         pointops.append([Point3D(-0.5, 0, 0.5), Point3D(-0.5, 0, 0), Point3D(-0.5, -0.5, 0), Point3D(-0.5, -0.5, -0.5), Point3D(-0.5, 0.5, -0.5), Point3D(-0.5, 0.5, 0.5)])
         return pointops
 
-    def makeverticalflatblock(self):
+    def make_default_vertical_flat_block(self):
         pointops = PointList()
         pointops.append([Point3D(0.5, -0.1, -0.5), Point3D(-0.5, -0.1, -0.5), Point3D(-0.5, 0.1, -0.5), Point3D(0.5, 0.1, -0.5)])
         pointops.append([Point3D(0.5, 0.1, 0.5), Point3D(-0.5, 0.1, 0.5), Point3D(-0.5, -0.1, 0.5), Point3D(0.5, -0.1, 0.5)])
@@ -158,7 +159,7 @@ class Shapes:
         pointops.append([Point3D(0.5, 0.1, 0.5), Point3D(0.5, -0.1, 0.5), Point3D(0.5, -0.1, -0.5), Point3D(0.5, 0.1, -0.5)])
         return pointops
 
-    def make_fence_shape(self):
+    def make_default_fence_shape(self):
         pointops = PointList()
         pointops.append([Point3D(0.1, 0.1, -0.5), Point3D(-0.1, 0.1, -0.5), Point3D(-0.1, -0.1, -0.5), Point3D(0.1, -0.1, -0.5)])
         pointops.append([Point3D(0.1, 0.1, +0.5), Point3D(-0.1, 0.1, 0.5), Point3D(-0.1, -0.1, 0.5), Point3D(0.1, -0.1, 0.5)])
@@ -168,7 +169,7 @@ class Shapes:
         pointops.append([Point3D(0.1, -0.1, -0.5), Point3D(0.1, 0.1, -0.5), Point3D(0.1, 0.1, 0.5), Point3D(0.1, -0.1, 0.5)])
         return pointops
 
-    def make_vertical_plus_block(self):
+    def make_default_vertical_plus_block(self):
         pointops = PointList()
 
         for fordir in xrange(0, 4):
@@ -185,7 +186,7 @@ class Shapes:
         pointops.append([Point3D(-0.1, -0.1, 0.5), Point3D(0.1, -0.1, 0.5), Point3D(0.1, 0.1, 0.5), Point3D(-0.1, 0.1, 0.5)])
         return pointops
 
-    def make_ladder_shapes(self):
+    def make_default_ladder_shapes(self):
         pointops = PointList()
         pointops.append([Point3D(0.5, -0.5, -0.5), Point3D(-0.5, -0.5, -0.5), Point3D(-0.5, -0.4, -0.5), Point3D(0.5, -0.4, -0.5)])
         pointops.append([Point3D(0.5, -0.4, 0.5), Point3D(-0.5, -0.4, 0.5), Point3D(-0.5, -0.5, 0.5), Point3D(0.5, -0.5, 0.5)])
@@ -196,7 +197,7 @@ class Shapes:
                          Point3D(0.5, -0.4, 0.5), Point3D(0.5, -0.5, 0.5)])
         return pointops
 
-    def make_flat_block_shape(self):
+    def make_default_flat_block_shape(self):
         pointops = PointList()
         pointops.append([Point3D(0.4, 0.4, -0.5), Point3D(-0.4, 0.4, -0.5), Point3D(-0.4, -0.4, -0.5), Point3D(0.4, -0.4, -0.5)])
         pointops.append([Point3D(0.4, 0.4, -0.4), Point3D(-0.4, 0.4, -0.4), Point3D(-0.4, -0.4, -0.4), Point3D(0.4, -0.4, -0.4)])
@@ -206,7 +207,7 @@ class Shapes:
         pointops.append([Point3D(0.4, -0.4, -0.5), Point3D(0.4, 0.4, -0.5), Point3D(0.4, 0.4, -0.4), Point3D(0.4, -0.4, -0.4)])
         return pointops
 
-    def make_block_shape(self):
+    def make_default_block_shape(self):
         pointops = PointList()
         pointops.append([Point3D(-0.5, 0.5, -0.5), Point3D(0.5, 0.5, -0.5), Point3D(0.5, -0.5, -0.5), Point3D(-0.5, -0.5, -0.5)])
         pointops.append([Point3D(-0.5, -0.5, 0.5), Point3D(0.5, -0.5, 0.5), Point3D(0.5, 0.5, 0.5), Point3D(-0.5, 0.5, 0.5)])
@@ -215,3 +216,340 @@ class Shapes:
         pointops.append([Point3D(-0.5, 0.5, -0.5), Point3D(-0.5, -0.5, -0.5), Point3D(-0.5, -0.5, 0.5), Point3D(-0.5, 0.5, 0.5)])
         pointops.append([Point3D(0.5, 0.5, 0.5), Point3D(0.5, -0.5, 0.5), Point3D(0.5, -0.5, -0.5), Point3D(0.5, 0.5, -0.5)])
         return pointops
+
+class Shapes:
+
+    defshapes = None
+
+    def __init__(self):
+        
+        self.defshapes = DefaultShapes()
+
+    # will put every model on the right position based on block position
+    # or will form the block based on the model in alist, depends how you look at it
+    def appendto3dlist(self, alist, block):
+        for face in alist:
+            for point in face:
+                point.append_tup(block)
+
+    def fromfileordefault(self, colormaterials, mat, index, defaultfunction):
+
+        if mat in colormaterials and 'models' in colormaterials[mat] and index + 1 <= len(colormaterials[mat]['models']):
+            pointlist = PointList()
+            pointlist.from_tuple_list(colormaterials[mat]['models'][index])
+            pointops = pointlist
+        else:
+            pointops = defaultfunction()
+        return pointops
+
+    def makestairs(self,faces, origins, colormaterials, loneneighbors, mat):
+
+        if mat in colormaterials and 'interneighbor' in colormaterials[mat] and colormaterials[mat]['interneighbor']:
+            removeneibors = False
+        else:
+            removeneibors = True
+
+        neighborstairs = {}
+        for x in [53, 67, 108, 109, 114, 128, 134, 135, 136, 156, 165, 164, 180]:
+            if (x,0) in loneneighbors:
+                neighborstairs.update(loneneighbors[(x,0)])
+
+        
+        for block in loneneighbors[mat]:
+            listoffaces = loneneighbors[mat][block]['faces']
+
+            somemeta = (loneneighbors[mat][block]['meta'] & 3)
+            pointops = PointList()
+
+            shapedone = False
+            front = block[0]-1, block[1], block[2]
+            back = block[0]+1, block[1], block[2]
+            left = block[0], block[1]-1, block[2]
+            right = block[0], block[1]+1, block[2]
+
+
+            if not shapedone and front in neighborstairs and (neighborstairs[front]['meta'] & 3) in [2,3] and somemeta in [0,1]:
+                shape = isperpendicular( somemeta, (neighborstairs[front]['meta'] & 3))
+                shapedone = True
+                if shape in [0,3]:
+                    pointops = self.fromfileordefault(mat,colormaterials,1 ,self.defshapes.make_default_pos_corner_stairs)
+                else:
+                    pointops = self.fromfileordefault(mat,colormaterials,2 ,self.defshapes.make_default_neg_corner_stairs)
+                    if (neighborstairs[front]['meta'] & 3) == 2:
+                        pointops.rotate_points_z(-90)
+
+                if (neighborstairs[front]['meta'] & 3) == 3:
+                    pointops.mirror_points_y()
+
+
+
+            if not shapedone and back in neighborstairs and (neighborstairs[back]['meta'] & 3) in [2,3] and somemeta in [0,1]:
+                shape = isperpendicular( somemeta, (neighborstairs[back]['meta'] & 3))
+                shapedone = True
+                if shape in [0,3]:
+                    pointops = self.fromfileordefault(mat,colormaterials,2 ,self.defshapes.make_default_neg_corner_stairs)
+                    pointops.rotate_points_z(-90)
+                else:
+                    pointops = self.fromfileordefault(mat,colormaterials,1 ,self.defshapes.make_default_pos_corner_stairs)
+
+                    if (neighborstairs[back]['meta'] & 3) == 2:
+                        pointops.mirror_points_y()
+
+                
+
+
+            if not shapedone and left in neighborstairs and (neighborstairs[left]['meta'] & 3) in [0,1] and somemeta in [2,3]:
+                shape = isperpendicular(somemeta, (neighborstairs[left]['meta'] & 3))
+                shapedone = True
+                if shape in [0,3]:
+                    pointops = self.fromfileordefault(mat,colormaterials,2 ,self.defshapes.make_default_neg_corner_stairs)
+                    if (neighborstairs[left]['meta'] & 3) == 0:
+                        pointops.mirror_points_y()
+                else:
+                    pointops = self.fromfileordefault(mat,colormaterials,1 ,self.defshapes.make_default_pos_corner_stairs)
+
+                    if (neighborstairs[left]['meta'] & 3) == 1:
+                        pointops.mirror_points_y()
+
+
+
+
+            if not shapedone and right in neighborstairs and (neighborstairs[right]['meta'] & 3) in [0,1] and somemeta in [2,3]:
+                shape = isperpendicular(somemeta, (neighborstairs[right]['meta'] & 3))
+                shapedone = True
+                if shape in [0,3]:
+                    pointops = self.fromfileordefault(mat,colormaterials,1 ,self.defshapes.make_default_pos_corner_stairs)
+                    if (neighborstairs[right]['meta'] & 3) == 0:
+                        pointops.mirror_points_y()
+                else:
+                    pointops = self.fromfileordefault(mat,colormaterials,2 ,self.defshapes.make_default_neg_corner_stairs)
+
+                    if (neighborstairs[right]['meta'] & 3) == 1:
+                        pointops.rotate_points_z(-90)
+                
+
+            
+            if not shapedone:
+                pointops  = self.defshapes.make_default_normal_stairs()
+
+            direction = loneneighbors[mat][block]['meta'] & 3
+            upsidedown = (loneneighbors[mat][block]['meta'] >> 2) & 1
+
+            if direction  ==  0:
+                pointops.rotate_points_z(0)
+            elif direction == 1:
+                pointops.rotate_points_z(180)
+            elif direction == 2:
+                pointops.rotate_points_z(270)
+            else:
+                pointops.rotate_points_z(90)
+                
+            if upsidedown:
+                pointops.mirror_points_z()
+
+            if removeneibors:
+                self.defshapes.remove_neibors(pointops, listoffaces)
+
+            origins[mat].append(pointops.get_avg_point().as_tuple())
+            self.appendto3dlist(pointops, block)
+            faces[mat] += pointops
+        origins[mat] = getavgorigins(origins[mat])
+        return faces[mat], faces[mat], origins[mat]
+
+    def makefence(self,faces, origins, colormaterials, loneneighbors, mat):
+        
+        for block in loneneighbors[mat]:
+            listoffaces = loneneighbors[mat][block]['faces']
+
+            pointops  = self.fromfileordefault(mat,colormaterials,0 ,self.defshapes.make_default_fence_shape)
+
+            
+            self.defshapes.remove_neibors(pointops, listoffaces)
+            self.appendto3dlist(pointops, block)
+            origins[mat].append(pointops.get_avg_point().as_tuple())
+            faces[mat] += pointops
+        origins[mat] = getavgorigins(origins[mat])
+        return faces[mat], faces[mat], origins[mat]
+
+
+    def makeblock(self,faces, origins, colormaterials, loneneighbors, mat):
+     
+        if mat in colormaterials and 'interneighbor' in colormaterials[mat] and colormaterials[mat]['interneighbor']:
+            removeneibors = False
+        else:
+            removeneibors = True
+            
+        pointops = False
+        for block in loneneighbors[mat]:
+            
+            listoffaces = loneneighbors[mat][block]['faces']
+            pointops  = self.fromfileordefault(mat,colormaterials,0 ,self.defshapes.make_default_block_shape)
+        
+            if removeneibors:
+                self.defshapes.remove_neibors(pointops, listoffaces)
+            
+            self.appendto3dlist(pointops, block)    
+            
+            # this below here is not the propper way to do it !
+            origins[mat].append( pointops.get_avg_point().as_tuple())
+
+            faces[mat] += pointops
+
+        origins[mat] = self.getavgorigins(origins[mat])
+        return faces[mat], faces[mat], origins[mat]
+
+    def getavgorigins(self, origins):
+        if len(origins) > 0:
+            return [sum(y) / len(y) for y in zip(*origins)]
+
+        return (0,0,0)
+        
+
+
+
+    def makedoubleslab(self,faces, origins, colormaterials, loneneighbors, mat):
+        for block in loneneighbors[mat]:
+            listoffaces = loneneighbors[mat][block]['faces']
+            
+            meta = loneneighbors[mat][block]['meta']
+
+            if meta > 7:
+                loneneighbors[mat][block]['meta'] =- 7
+
+            pointops  = self.fromfileordefault(mat,colormaterials,0, self.defshapes.make_default_block_shape)
+            
+
+            self.defshapes.remove_neibors(pointops, listoffaces)
+            self.appendto3dlist(pointops, block)    
+            origins[mat].append(pointops.get_avg_point().as_tuple())
+            faces[mat] += pointops  
+        origins[mat] = getavgorigins(origins[mat])
+        return faces[mat], faces[mat], origins[mat]
+
+    def makesnow(self,faces, origins, colormaterials, loneneighbors, mat):
+        for block in loneneighbors[mat]:
+            listoffaces = loneneighbors[mat][block]['faces']
+            pointops  = self.fromfileordefault(mat,colormaterials,0 ,self.defshapes.make_default_block_shape)
+            meta = loneneighbors[mat][block]['meta']
+            
+            if mat == (78,0):
+                scale = (meta + 1.0) / 8.0
+                pointops.scale_points_z(scale)
+                pointops.translate_points_z((scale-1)/2)
+                
+
+            self.appendto3dlist(pointops, block)    
+            origins[mat].append(pointops.get_avg_point().as_tuple())
+
+            faces[mat] += pointops
+        origins[mat] = getavgorigins(origins[mat])
+        return faces[mat], faces[mat], origins[mat]
+
+    def maketorch(self,faces, origins, colormaterials, loneneighbors, mat):
+        for block in loneneighbors[mat]:
+            listoffaces = loneneighbors[mat][block]['faces']
+            pointops = None
+            meta = loneneighbors[mat][block]['meta']
+            pointops  = self.fromfileordefault(mat,colormaterials,0 ,self.defshapes.make_default_block_shape)
+
+            if meta != 5:
+                pointops.translate_points_x(-0.3)
+
+            if meta == 1:
+                
+                pointops.rotate_points_y(30)
+            if meta == 2:
+                pointops.rotate_points_y(30)
+                pointops.rotate_points_z(180)
+            elif meta == 3:
+                pointops.rotate_points_y(30)
+                pointops.rotate_points_z(270)
+            elif meta == 4:
+                pointops.rotate_points_y(30)
+                pointops.rotate_points_z(90)
+
+            if pointops:
+                self.appendto3dlist(pointops, block)    
+                origins[mat].append(pointops.get_avg_point().as_tuple())
+
+                faces[mat] += pointops
+        origins[mat] = getavgorigins(origins[mat])
+        return faces[mat], faces[mat], origins[mat]
+
+    def makehalfblock(self,faces, origins, colormaterials, loneneighbors, mat):
+        for block in loneneighbors[mat]:
+            listoffaces = loneneighbors[mat][block]['faces']
+            
+            meta = loneneighbors[mat][block]['meta']
+
+            pointops  = self.fromfileordefault(mat,colormaterials,0 , self.defshapes.make_default_half_blocks)
+            
+            if meta > 7:
+                pointops.rotate_points_y(180)
+
+            self.defshapes.remove_neibors(pointops, listoffaces)
+            self.appendto3dlist(pointops, block)    
+            origins[mat].append(pointops.get_avg_point().as_tuple())
+            faces[mat] += pointops
+        origins[mat] = getavgorigins(origins[mat])
+        return faces[mat], faces[mat], origins[mat]
+
+    def makeverticalblock(self,faces, origins, colormaterials, loneneighbors, mat):
+        for block in loneneighbors[mat]:
+            listoffaces = loneneighbors[mat][block]['faces']
+            left = block[0]-1, block[1], block[2]
+            right = block[0]+1, block[1], block[2]
+            front = block[0], block[1]-1, block[2]
+            back = block[0], block[1]+1, block[2]
+
+            if mat in colormaterials and 'models' in colormaterials[mat]:
+                pointlist = PointList()
+                pointlist.from_tuple_list(colormaterials[mat]['models'][0])
+                pointops = pointlist
+            else:
+                pointops = self.defshapes.make_default_flat_blocks()
+
+            if front in loneneighbors[mat] or back in loneneighbors[mat]:
+                pointops  = self.fromfileordefault(mat,colormaterials,0 , self.defshapes.make_default_vertical_plus_block)
+                pointops.rotate_points_z(90)
+            elif left in loneneighbors[mat] or right in loneneighbors[mat]:
+                pointops  = self.fromfileordefault(mat,colormaterials,0 , self.defshapes.make_default_vertical_plus_block)
+            elif left in loneneighbors[mat] and right in loneneighbors[mat] and front in loneneighbors[mat] and back in loneneighbors[mat]:
+                pointops  = self.fromfileordefault(mat,colormaterials,0 ,self.defshapes.make_default_vertical_plus_block)
+            else:
+                pointops  = self.fromfileordefault(mat,colormaterials,0 , self.defshapes.make_default_vertical_plus_block)
+
+            self.defshapes.remove_neibors(pointops, listoffaces)
+            self.appendto3dlist(pointops, block)   
+            origins[mat].append(pointops.get_avg_point().as_tuple())
+            faces[mat] += pointops
+        origins[mat] = getavgorigins(origins[mat])
+        return faces[mat], faces[mat], origins[mat]
+
+    def makeladderlikeblock(self,faces, origins, colormaterials, loneneighbors, mat):
+
+        for block in loneneighbors[mat]:
+            listoffaces = loneneighbors[mat][block]['faces']
+
+            pointops  = self.fromfileordefault(mat,colormaterials,0 , self.defshapes.make_default_ladder_shapes)
+
+
+            direction = loneneighbors[mat][block]['meta'] & 3
+
+            if direction == 0:
+                pointops.rotate_points_z(90)
+            elif direction == 1:
+                pointops.rotate_points_z(-90)
+            elif direction == 2:
+                pointops.rotate_points_z(0)
+            else:
+                pointops.rotate_points_z(180)
+
+            self.defshapes.remove_top_down_neighbors(pointops, listoffaces)
+
+            self.appendto3dlist(pointops, block)
+            
+            origins[mat].append(pointops.get_avg_point().as_tuple())
+            faces[mat] += pointops
+        origins[mat] = getavgorigins(origins[mat])
+        return faces[mat], faces[mat], origins[mat]
