@@ -242,7 +242,21 @@ class Shapes:
             pointops = defaultfunction()
         return pointops
 
-    def makestairs(self,faces, origins, colormaterials, loneneighbors, mat):
+    def rotatevalue(self, meta, rotate):
+        if meta == 3 and rotate > 0:
+            meta = -1
+        if meta == 0 and rotate < 0:
+            meta = 4
+        return meta + rotate
+
+    def isperpendicular(self, meta1, meta2):
+        rotated = self.rotatevalue(meta2, -1)
+        proppernum = meta1 ^ rotated
+        return proppernum
+
+    def makestairs(self, colormaterials, loneneighbors, mat):
+        temporigin = []
+        tempfaces = []
 
         if mat in colormaterials and 'interneighbor' in colormaterials[mat] and colormaterials[mat]['interneighbor']:
             removeneibors = False
@@ -269,7 +283,7 @@ class Shapes:
 
 
             if not shapedone and front in neighborstairs and (neighborstairs[front]['meta'] & 3) in [2,3] and somemeta in [0,1]:
-                shape = isperpendicular( somemeta, (neighborstairs[front]['meta'] & 3))
+                shape = self.isperpendicular( somemeta, (neighborstairs[front]['meta'] & 3))
                 shapedone = True
                 if shape in [0,3]:
                     pointops = self.fromfileordefault(mat,colormaterials,1 ,self.defshapes.make_default_pos_corner_stairs)
@@ -284,7 +298,7 @@ class Shapes:
 
 
             if not shapedone and back in neighborstairs and (neighborstairs[back]['meta'] & 3) in [2,3] and somemeta in [0,1]:
-                shape = isperpendicular( somemeta, (neighborstairs[back]['meta'] & 3))
+                shape = self.isperpendicular( somemeta, (neighborstairs[back]['meta'] & 3))
                 shapedone = True
                 if shape in [0,3]:
                     pointops = self.fromfileordefault(mat,colormaterials,2 ,self.defshapes.make_default_neg_corner_stairs)
@@ -299,7 +313,7 @@ class Shapes:
 
 
             if not shapedone and left in neighborstairs and (neighborstairs[left]['meta'] & 3) in [0,1] and somemeta in [2,3]:
-                shape = isperpendicular(somemeta, (neighborstairs[left]['meta'] & 3))
+                shape = self.isperpendicular(somemeta, (neighborstairs[left]['meta'] & 3))
                 shapedone = True
                 if shape in [0,3]:
                     pointops = self.fromfileordefault(mat,colormaterials,2 ,self.defshapes.make_default_neg_corner_stairs)
@@ -315,7 +329,7 @@ class Shapes:
 
 
             if not shapedone and right in neighborstairs and (neighborstairs[right]['meta'] & 3) in [0,1] and somemeta in [2,3]:
-                shape = isperpendicular(somemeta, (neighborstairs[right]['meta'] & 3))
+                shape = self.isperpendicular(somemeta, (neighborstairs[right]['meta'] & 3))
                 shapedone = True
                 if shape in [0,3]:
                     pointops = self.fromfileordefault(mat,colormaterials,1 ,self.defshapes.make_default_pos_corner_stairs)
@@ -350,14 +364,16 @@ class Shapes:
             if removeneibors:
                 self.defshapes.remove_neibors(pointops, listoffaces)
 
-            origins[mat].append(pointops.get_avg_point().as_tuple())
+            temporigin.append(pointops.get_avg_point().as_tuple())
             self.appendto3dlist(pointops, block)
-            faces[mat] += pointops
-        origins[mat] = getavgorigins(origins[mat])
-        return faces[mat], faces[mat], origins[mat]
+            tempfaces += pointops
+        temporigin = self.getavgorigins(temporigin)
+        return tempfaces, temporigin
 
-    def makefence(self,faces, origins, colormaterials, loneneighbors, mat):
-        
+    def makefence(self, colormaterials, loneneighbors, mat):
+        temporigin = []
+        tempfaces = []
+
         for block in loneneighbors[mat]:
             listoffaces = loneneighbors[mat][block]['faces']
 
@@ -366,14 +382,16 @@ class Shapes:
             
             self.defshapes.remove_neibors(pointops, listoffaces)
             self.appendto3dlist(pointops, block)
-            origins[mat].append(pointops.get_avg_point().as_tuple())
-            faces[mat] += pointops
-        origins[mat] = getavgorigins(origins[mat])
-        return faces[mat], faces[mat], origins[mat]
+            temporigin.append(pointops.get_avg_point().as_tuple())
+            tempfaces += pointops
+        temporigin = self.getavgorigins(temporigin)
+        return tempfaces, temporigin
 
 
-    def makeblock(self,faces, origins, colormaterials, loneneighbors, mat):
-     
+    def makeblock(self, colormaterials, loneneighbors, mat):
+        temporigin = []
+        tempfaces = []
+
         if mat in colormaterials and 'interneighbor' in colormaterials[mat] and colormaterials[mat]['interneighbor']:
             removeneibors = False
         else:
@@ -391,12 +409,12 @@ class Shapes:
             self.appendto3dlist(pointops, block)    
             
             # this below here is not the propper way to do it !
-            origins[mat].append( pointops.get_avg_point().as_tuple())
+            temporigin.append( pointops.get_avg_point().as_tuple())
 
-            faces[mat] += pointops
+            tempfaces += pointops
 
-        origins[mat] = self.getavgorigins(origins[mat])
-        return faces[mat], faces[mat], origins[mat]
+        temporigin = self.getavgorigins(temporigin)
+        return tempfaces, temporigin
 
     def getavgorigins(self, origins):
         if len(origins) > 0:
@@ -407,7 +425,10 @@ class Shapes:
 
 
 
-    def makedoubleslab(self,faces, origins, colormaterials, loneneighbors, mat):
+    def makedoubleslab(self, colormaterials, loneneighbors, mat):
+        temporigin = []
+        tempfaces = []
+
         for block in loneneighbors[mat]:
             listoffaces = loneneighbors[mat][block]['faces']
             
@@ -421,12 +442,15 @@ class Shapes:
 
             self.defshapes.remove_neibors(pointops, listoffaces)
             self.appendto3dlist(pointops, block)    
-            origins[mat].append(pointops.get_avg_point().as_tuple())
-            faces[mat] += pointops  
-        origins[mat] = getavgorigins(origins[mat])
-        return faces[mat], faces[mat], origins[mat]
+            temporigin.append(pointops.get_avg_point().as_tuple())
+            tempfaces += pointops  
+        temporigin = self.getavgorigins(temporigin)
+        return tempfaces, temporigin
 
-    def makesnow(self,faces, origins, colormaterials, loneneighbors, mat):
+    def makesnow(self, colormaterials, loneneighbors, mat):
+        temporigin = []
+        tempfaces = []
+
         for block in loneneighbors[mat]:
             listoffaces = loneneighbors[mat][block]['faces']
             pointops  = self.fromfileordefault(mat,colormaterials,0 ,self.defshapes.make_default_block_shape)
@@ -439,13 +463,16 @@ class Shapes:
                 
 
             self.appendto3dlist(pointops, block)    
-            origins[mat].append(pointops.get_avg_point().as_tuple())
+            temporigin.append(pointops.get_avg_point().as_tuple())
 
-            faces[mat] += pointops
-        origins[mat] = getavgorigins(origins[mat])
-        return faces[mat], faces[mat], origins[mat]
+            tempfaces += pointops
+        temporigin = self.getavgorigins(temporigin)
+        return tempfaces, temporigin
 
-    def maketorch(self,faces, origins, colormaterials, loneneighbors, mat):
+    def maketorch(self, colormaterials, loneneighbors, mat):
+        temporigin = []
+        tempfaces = []
+
         for block in loneneighbors[mat]:
             listoffaces = loneneighbors[mat][block]['faces']
             pointops = None
@@ -470,13 +497,16 @@ class Shapes:
 
             if pointops:
                 self.appendto3dlist(pointops, block)    
-                origins[mat].append(pointops.get_avg_point().as_tuple())
+                temporigin.append(pointops.get_avg_point().as_tuple())
 
-                faces[mat] += pointops
-        origins[mat] = getavgorigins(origins[mat])
-        return faces[mat], faces[mat], origins[mat]
+                tempfaces += pointops
+        temporigin = self.getavgorigins(temporigin)
+        return tempfaces, temporigin
 
-    def makehalfblock(self,faces, origins, colormaterials, loneneighbors, mat):
+    def makehalfblock(self, colormaterials, loneneighbors, mat):
+        temporigin = []
+        tempfaces = []
+
         for block in loneneighbors[mat]:
             listoffaces = loneneighbors[mat][block]['faces']
             
@@ -489,12 +519,15 @@ class Shapes:
 
             self.defshapes.remove_neibors(pointops, listoffaces)
             self.appendto3dlist(pointops, block)    
-            origins[mat].append(pointops.get_avg_point().as_tuple())
-            faces[mat] += pointops
-        origins[mat] = getavgorigins(origins[mat])
-        return faces[mat], faces[mat], origins[mat]
+            temporigin.append(pointops.get_avg_point().as_tuple())
+            tempfaces += pointops
+        temporigin = self.getavgorigins(temporigin)
+        return tempfaces, temporigin
 
-    def makeverticalblock(self,faces, origins, colormaterials, loneneighbors, mat):
+    def makeverticalblock(self, colormaterials, loneneighbors, mat):
+        temporigin = []
+        tempfaces = []
+
         for block in loneneighbors[mat]:
             listoffaces = loneneighbors[mat][block]['faces']
             left = block[0]-1, block[1], block[2]
@@ -521,12 +554,14 @@ class Shapes:
 
             self.defshapes.remove_neibors(pointops, listoffaces)
             self.appendto3dlist(pointops, block)   
-            origins[mat].append(pointops.get_avg_point().as_tuple())
-            faces[mat] += pointops
-        origins[mat] = getavgorigins(origins[mat])
-        return faces[mat], faces[mat], origins[mat]
+            temporigin.append(pointops.get_avg_point().as_tuple())
+            tempfaces += pointops
+        temporigin = self.getavgorigins(temporigin)
+        return tempfaces, temporigin
 
-    def makeladderlikeblock(self,faces, origins, colormaterials, loneneighbors, mat):
+    def makeladderlikeblock(self, colormaterials, loneneighbors, mat):
+        temporigin = []
+        tempfaces = []
 
         for block in loneneighbors[mat]:
             listoffaces = loneneighbors[mat][block]['faces']
@@ -549,7 +584,7 @@ class Shapes:
 
             self.appendto3dlist(pointops, block)
             
-            origins[mat].append(pointops.get_avg_point().as_tuple())
-            faces[mat] += pointops
-        origins[mat] = getavgorigins(origins[mat])
-        return faces[mat], faces[mat], origins[mat]
+            temporigin.append(pointops.get_avg_point().as_tuple())
+            tempfaces += pointops
+        temporigin = self.getavgorigins(temporigin)
+        return tempfaces, temporigin
