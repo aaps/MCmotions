@@ -5,11 +5,18 @@ import ast
 import base64
 import struct
 import sys, getopt
-import pickle
+
 from points import *
 from shapes import *
 from materials import *
 from chunkParser import *
+from cStringIO import StringIO
+import zlib
+
+try:
+    import cPickle as pickle
+except:
+    import pickle
 
 
 sourcefile = "default.dump"
@@ -30,7 +37,7 @@ topleft = (-1000,-1000)
 bottomright = (1000,1000)
 # multymatblocks = [35, 43, 44, 95, 97, 98, 125, 126, 139, 155, 159, 160, 171]
 textures = None
-shapes = Shapes()
+
 
 colormaterials = defmaterials
 
@@ -108,6 +115,7 @@ for opt, arg in opts:
 
 
 
+shapes = Shapes(colormaterials)
 allhistory = {0:{'type':'player','positions':[]}}
 allblocks = {}
 
@@ -344,23 +352,23 @@ for mat in loneneighbors:
     origins[mat] = []
 
     if mat[0] in [182 ,126 ,44]:
-        faces[mat], origins[mat] = shapes.makehalfblock(colormaterials, loneneighbors, mat)
+        faces[mat], origins[mat] = shapes.makehalfblock(loneneighbors, mat)
     elif mat[0] in [125,181, 43]:
-        faces[mat], origins[mat] = shapes.makedoubleslab(colormaterials, loneneighbors, mat)
+        faces[mat], origins[mat] = shapes.makedoubleslab(loneneighbors, mat)
     elif mat[0] in [101,102, 160]:
-        faces[mat], origins[mat] = shapes.makeverticalblock(colormaterials, loneneighbors, mat)
+        faces[mat], origins[mat] = shapes.makeverticalblock(loneneighbors, mat)
     elif mat[0] in [65, 106]:
-        faces[mat], origins[mat] = shapes.makeladderlikeblock(colormaterials, loneneighbors, mat)
+        faces[mat], origins[mat] = shapes.makeladderlikeblock(loneneighbors, mat)
     elif mat[0] in [85, 113,188, 189, 190, 191]:
-        faces[mat], origins[mat] = shapes.makefence(colormaterials, loneneighbors, mat)
+        faces[mat], origins[mat] = shapes.makefence( loneneighbors, mat)
     elif mat[0] in [53, 67, 108, 109, 114, 128, 134, 135, 136, 156, 165, 164, 180]:
-        faces[mat], origins[mat] = shapes.makestairs(colormaterials, loneneighbors, mat)
+        faces[mat], origins[mat] = shapes.makestairs(loneneighbors, mat)
     elif mat[0] in [50, 75, 76]:
-        faces[mat], origins[mat] = shapes.maketorch(colormaterials, loneneighbors, mat)
+        faces[mat], origins[mat] = shapes.maketorch(loneneighbors, mat)
     elif mat[0] in [78, 80]:
-        faces[mat], origins[mat] = shapes.makesnow(colormaterials, loneneighbors, mat)
+        faces[mat], origins[mat] = shapes.makesnow(loneneighbors, mat)
     else:
-        faces[mat], origins[mat] = shapes.makeblock(colormaterials, loneneighbors, mat)
+        faces[mat], origins[mat] = shapes.makeblock(loneneighbors, mat)
 
 
     temp = PointList()
@@ -432,5 +440,8 @@ faces = None
 print 'entitys with spawnmessage:' + str(len(allhistory)) + ',so used !'
 print 'entitys without spawnmessage:' + str(len(lostcounter)) + ',so ignored !'
 
-with open(destfile, 'wb') as handle:
-    pickle.dump(allstuff, handle)
+compressed = zlib.compress(pickle.dumps(allstuff),  9)
+
+somefile = open(destfile, 'wb')
+
+somefile.write(compressed)

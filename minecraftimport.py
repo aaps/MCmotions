@@ -16,9 +16,14 @@ import urllib.request
 import math 
 import operator
 import ast
-import pickle
+try:
+    import _pickle as pickle
+except:
+    import pickle
 import os
 import base64
+import zlib
+
 # from materials import *
 
 
@@ -98,8 +103,9 @@ class DataImporter:
     def run(self, filepath, context):
         start_time = time.time()
         
-        with open(filepath, 'rb') as handle:
-            total = pickle.load(handle)
+        handle = open(filepath, 'rb')
+
+        total =  pickle.loads(zlib.decompress(handle.read()))
         
         indexi = 0
         
