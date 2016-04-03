@@ -9,7 +9,7 @@ import sys, getopt
 from points import *
 from shapes import *
 from materials import *
-from chunkParser import *
+from ChunkParser import *
 from cStringIO import StringIO
 import zlib
 
@@ -209,7 +209,7 @@ if avgmiddle:
     print 'offset:' + str(offset)
 
 
-chunkparser = chunkParser(topleft, bottomright, cuty, world, norenderblocks)
+chunkparser = ChunkParser(topleft, bottomright, cuty, world, norenderblocks)
 
 for line in aroflines:
     row = line.split('|') 
@@ -315,7 +315,7 @@ for line in aroflines:
     elif row[0] == 'chunkdata':
         length = row[3]
         if not nochunks:
-            chunkparser.getchunks( row, chunks)
+            chunkparser.get_chunks( row, chunks)
 
     
 print 'Filtering entitys that are not supposed to be in scene move at all'
@@ -332,13 +332,13 @@ print 'make a index of possible materials'
 
 
 materials = {}
-materials = chunkparser.fillmatindexes(chunks, materials)
+materials = chunkparser.fill_mat_indexes(chunks, materials)
 
 
 
-neightbors = chunkparser.genfacesNeighbors(materials, agressiveremoval, colormaterials)
+neightbors = chunkparser.gen_faces_neighbors(materials, agressiveremoval, colormaterials)
 
-loneneighbors = chunkparser.removeSupderCosy(neightbors, colormaterials)
+loneneighbors = chunkparser.remove_super_cosy(neightbors, colormaterials)
 
 print 'generating face positions ' + str(len(loneneighbors)) + ' materials'
 faces = {}
@@ -346,7 +346,6 @@ vertices = {}
 origins = {}
 
 for mat in loneneighbors:
-    
     faces[mat] = []
     vertices[mat] = []
     origins[mat] = []
