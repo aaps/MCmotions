@@ -135,7 +135,7 @@ total = origin.read()
 
 aroflines = total.split('\n')
 
-chunks = {}
+# chunks = {}
 chunkposses = []
 
 
@@ -208,8 +208,7 @@ if avgmiddle:
     offset = (total[0]/lentotal, total[1]/lentotal, total[2]/lentotal)
     print 'offset:' + str(offset)
 
-
-chunkparser = ChunkParser(topleft, bottomright, cuty, world, norenderblocks)
+chunkparser = ChunkParser(topleft, bottomright, cuty, world, norenderblocks, colormats=colormaterials)
 
 for line in aroflines:
     row = line.split('|') 
@@ -315,7 +314,7 @@ for line in aroflines:
     elif row[0] == 'chunkdata':
         length = row[3]
         if not nochunks:
-            chunkparser.get_chunks( row, chunks)
+            chunkparser.get_chunks(row)
 
     
 print 'Filtering entitys that are not supposed to be in scene move at all'
@@ -331,14 +330,14 @@ print getMaxMinTime(allhistory)
 print 'make a index of possible materials'
 
 
-materials = {}
-materials = chunkparser.fill_mat_indexes(chunks, materials)
+# materials = {}
+chunkparser.fill_mat_indexes()
 
 
 
-neightbors = chunkparser.gen_faces_neighbors(materials, agressiveremoval, colormaterials)
+chunkparser.gen_faces_neighbors(agressiveremoval)
 
-loneneighbors = chunkparser.remove_super_cosy(neightbors, colormaterials)
+loneneighbors = chunkparser.remove_super_cosy()
 
 print 'generating face positions ' + str(len(loneneighbors)) + ' materials'
 faces = {}

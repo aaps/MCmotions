@@ -6,13 +6,18 @@ import ast
 
 class ChunkParser(object):
 
-    def __init__(self, topleft=(-1000, -1000), bottomright=(1000, 1000), cuty=0, world=1, norenderblocks=["none"], multymatblocks=[35, 43, 44, 95, 97, 98, 125, 126, 139, 155, 159, 160, 171]):
+    def __init__(self, topleft=(-1000, -1000), bottomright=(1000, 1000), cuty=0, world=1, norenderblocks=["none"], multymatblocks=[35, 43, 44, 95, 97, 98, 125, 126, 139, 155, 159, 160, 171], colormats={}):
+        self.colormats = colormats
         self.topleft = topleft
         self.bottomright = bottomright
         self.cuty = cuty
         self.world = world
         self.norenderblocks = norenderblocks
         self.multymatblocks = multymatblocks
+        self.chunks = {}
+        self.materials= {}
+        self.neightbors = {}
+        self.worldnum = 0
 
     def set_top_left(self, topleft=(-1000, -1000)):
         self.topleft = topleft
@@ -31,22 +36,22 @@ class ChunkParser(object):
 
 
 
-    def get_chunks(self, row, chunks):
+    def get_chunks(self, row):
         chunkposses = []
         chunkxz = ast.literal_eval(row[1])
         if row[5] != 'None':
             chunkdata = base64.standard_b64decode(row[5])
             matsamples = []
-            if chunkxz not in chunks:
-                chunks.update({chunkxz:{'blocks':[]}})
+            if chunkxz not in self.chunks:
+                self.chunks.update({chunkxz:{'blocks':[]}})
             for chunkinex in xrange(1, 17):
                 if len(chunkdata[(256*chunkinex):(256*chunkinex)+2]) == 2:
                     temp = struct.unpack('H', chunkdata[(256*chunkinex):(256*chunkinex)+2])[0]
                     matsamples.append(temp >> 4)
             matsamples = list(set(matsamples))
-            worldnum = self.world_from_sample(matsamples)
+            self.worldnum = self.world_from_sample(matsamples)
 
-            if chunkxz not in chunkposses and chunkxz[0] >= self.topleft[0] and chunkxz[1] >= self.topleft[1] and chunkxz[0] <= self.bottomright[0] and chunkxz[1] <= self.bottomright[1] and self.world == worldnum:
+            if chunkxz not in chunkposses and chunkxz[0] >= self.topleft[0] and chunkxz[1] >= self.topleft[1] and chunkxz[0] <= self.bottomright[0] and chunkxz[1] <= self.bottomright[1] and self.world == self.worldnum:
                 chunkposses.append(chunkxz)
                 rightcounter = 0
 
@@ -67,15 +72,15 @@ class ChunkParser(object):
                                         bmeta = 666
                                     block = ((xpos + (chunkxz[0]*16), zpos + (chunkxz[1]*16), ypos+(index1*16)), btype, bmeta)
                                     if index1 > self.cuty:
-                                        chunks[chunkxz]['blocks'].append(block)
+                                        self.chunks[chunkxz]['blocks'].append(block)
                         rightcounter += 1
 
 
-    def fill_mat_indexes(self, chunks, materials):
-        for chunk in chunks:
-            for block in chunks[chunk]:
-                if len(chunks[chunk][block]) > 0:
-                    for idindex in chunks[chunk][block]:
+    def fill_mat_indexes(self):
+        for chunk in self.chunks:
+            for block in self.chunks[chunk]:
+                if len(self.chunks[chunk][block]) > 0:
+                    for idindex in self.chunks[chunk][block]:
                         position = idindex[0][0], idindex[0][1]*-1, idindex[0][2]
                         if idindex[1] > 0 and idindex[1] < 256 and idindex[1] not in self.norenderblocks:
                             blockinfo = {position:{'meta':idindex[2], 'faces':[]}}
@@ -84,78 +89,77 @@ class ChunkParser(object):
                                     idindex = idindex[0], idindex[1], idindex[2] - 8
                                 if idindex[1] in [125, 181, 43] and idindex[2] > 7:
                                     idindex = idindex[0], idindex[1], idindex[2] - 8
-                                if (idindex[1], idindex[2]) not in materials:
-                                    materials.update({(idindex[1], idindex[2]):blockinfo})
+                                if (idindex[1], idindex[2]) not in self.materials:
+                                    self.materials.update({(idindex[1], idindex[2]):blockinfo})
                                 else:
-                                    materials[(idindex[1], idindex[2])].update(blockinfo)
+                                    self.materials[(idindex[1], idindex[2])].update(blockinfo)
                             else:
-                                if (idindex[1], 0) not in materials:
-                                    materials.update({(idindex[1], 0):blockinfo})
+                                if (idindex[1], 0) not in self.materials:
+                                    self.materials.update({(idindex[1], 0):blockinfo})
                                 else:
-                                    materials[(idindex[1], 0)].update(blockinfo)
-                chunks[chunk][block] = None
-        chunks = None
-        return materials
+                                    self.materials[(idindex[1], 0)].update(blockinfo)
+                self.chunks[chunk][block] = None
+        self.chunks = None
 
-    def gen_faces_neighbors(self, materials, agressiveremoval=False, colormats={}):
-        neightbors = {}
+
+    def gen_faces_neighbors(self, agressiveremoval=False):
         allmaterials = {}
-        print 'find material neightbors for ' + str(len(materials)) + ' materials'
+        print 'find material neightbors for ' + str(len(self.materials)) + ' materials'
         # todo below is somewhat sloppy refactor material
-        for mat in materials:
-            for blockindex in materials[mat]:
-                materials[mat][blockindex]['interneighbor'] = colormats[mat]['interneighbor']
-                materials[mat][blockindex]['extraneighbor'] = colormats[mat]['extraneighbor']
+        for mat in self.materials:
+            for blockindex in self.materials[mat]:
+                self.materials[mat][blockindex]['interneighbor'] = self.colormats[mat]['interneighbor']
+                self.materials[mat][blockindex]['extraneighbor'] = self.colormats[mat]['extraneighbor']
                 # materials[mat][x]['watertight'] = colormats[mat]['watertight']
-            allmaterials.update(materials[mat])
-        for mat in materials:
-            neightbors[mat] = {}
-        for mat in materials:
-            for block in materials[mat]:
+            allmaterials.update(self.materials[mat])
+        for mat in self.materials:
+            self.neightbors[mat] = {}
+        for mat in self.materials:
+            for block in self.materials[mat]:
                 if agressiveremoval:
                     blockstocheck = allmaterials
                 else:
-                    blockstocheck = materials[mat]
-                neightbors[mat][block] = {'meta': materials[mat][block]['meta'], 'faces':[]}
+                    blockstocheck = self.materials[mat]
+                self.neightbors[mat][block] = {'meta': self.materials[mat][block]['meta'], 'faces':[]}
                 if (block[0]-1, block[1], block[2]) not in blockstocheck:
-                    neightbors[mat][block]['faces'].append(1)
+                    self.neightbors[mat][block]['faces'].append(1)
                 elif blockstocheck[(block[0]-1, block[1], block[2])]['extraneighbor']:
-                    neightbors[mat][block]['faces'].append(1)
+                    self.neightbors[mat][block]['faces'].append(1)
                 if (block[0]+1, block[1], block[2]) not in blockstocheck:
-                    neightbors[mat][block]['faces'].append(2)
+                    self.neightbors[mat][block]['faces'].append(2)
                 elif blockstocheck[(block[0]+1, block[1], block[2])]['extraneighbor']:
-                    neightbors[mat][block]['faces'].append(2)
+                    self.neightbors[mat][block]['faces'].append(2)
                 if (block[0], block[1]-1, block[2]) not in blockstocheck:
-                    neightbors[mat][block]['faces'].append(3)
+                    self.neightbors[mat][block]['faces'].append(3)
                 elif blockstocheck[(block[0], block[1]-1, block[2])]['extraneighbor']:
-                    neightbors[mat][block]['faces'].append(3)
+                    self.neightbors[mat][block]['faces'].append(3)
                 if (block[0], block[1]+1, block[2]) not in blockstocheck:
-                    neightbors[mat][block]['faces'].append(4)
+                    self.neightbors[mat][block]['faces'].append(4)
                 elif blockstocheck[(block[0], block[1]+1, block[2])]['extraneighbor']:
-                    neightbors[mat][block]['faces'].append(4)
+                    self.neightbors[mat][block]['faces'].append(4)
                 if (block[0], block[1], block[2]-1) not in blockstocheck:
-                    neightbors[mat][block]['faces'].append(5)
+                    self.neightbors[mat][block]['faces'].append(5)
                 elif blockstocheck[(block[0], block[1], block[2]-1)]['extraneighbor']:
-                    neightbors[mat][block]['faces'].append(5)
+                    self.neightbors[mat][block]['faces'].append(5)
                 if (block[0], block[1], block[2]+1) not in blockstocheck:
-                    neightbors[mat][block]['faces'].append(6)
+                    self.neightbors[mat][block]['faces'].append(6)
                 elif blockstocheck[(block[0], block[1], block[2]+1)]['extraneighbor']:
-                    neightbors[mat][block]['faces'].append(6)
-            materials[mat] = None
-        return neightbors
+                    self.neightbors[mat][block]['faces'].append(6)
+            self.materials[mat] = None
 
-    def remove_super_cosy(self, neightbors, colormaterials):
+
+    def remove_super_cosy(self):
         loneneighbors = {}
-        for mat in neightbors:
-            if mat in colormaterials and 'interneighbor' in colormaterials[mat] and colormaterials[mat]['interneighbor']:
+        for mat in self.neightbors:
+            if mat in self.colormats and 'interneighbor' in self.colormats[mat] and self.colormats[mat]['interneighbor']:
                 removeneibors = False
             else:
                 removeneibors = True
             loneneighbors[mat] = {}
-            for block in neightbors[mat]:
-                if len(neightbors[mat][block]['faces']) > 0 or not removeneibors:
-                    loneneighbors[mat][block[0]+0.5, block[1]+0.5, block[2]+0.5] = neightbors[mat][block]
-            neightbors[mat] = None
+            for block in self.neightbors[mat]:
+                if len(self.neightbors[mat][block]['faces']) > 0 or not removeneibors:
+                    loneneighbors[mat][block[0]+0.5, block[1]+0.5, block[2]+0.5] = self.neightbors[mat][block]
+            self.neightbors[mat] = None
         return loneneighbors
 
     def world_from_sample(self, sample):
