@@ -5,13 +5,15 @@ import ast
 import base64
 import struct
 import sys, getopt
-
+import urllib.request
+import json
 from points import *
 from shapes import *
 from materials import *
 from ChunkParser import *
 from cStringIO import StringIO
 import zlib
+from time import sleep
 
 try:
     import cPickle as pickle
@@ -182,6 +184,15 @@ def getMaxMinTime(allhistory):
             position['time'] = position['time'] - mintime
     return maxtime, mintime
 
+def converplayername(uuid):
+
+        mobtype = uuid.replace('-','')
+        request = urllib.request.urlopen('https://sessionserver.mojang.com/session/minecraft/profile/' + mobtype)
+        data = request.read().decode("utf8")
+        data = json.loads(data)
+        return "player: " + data['name']
+
+
 
 
 def fido(first, second): 
@@ -212,8 +223,8 @@ chunkparser = ChunkParser(topleft, bottomright, cuty, world, norenderblocks, col
 
 for line in aroflines:
     row = line.split('|') 
-    if not noentitys and 'spawn' in row[0] and row[4] not in norenderents and not noentitys:
-        
+    if not noentitys and 'spawn' in row[0] and row[4] not in norenderents and not noentitys:s
+
         if not onlyplayerents:
             
             goodpos = ast.literal_eval(row[5])
@@ -235,8 +246,8 @@ for line in aroflines:
                 rawyawpichhead = (rawyawpichhead[0]+ 5) % 360, (rawyawpichhead[1]+ 5) % 360
             goodpos = (float(goodpos[0])/32, float(goodpos[1])/32, float(goodpos[2])/-32)
             
-            mob = {int(row[3]):{'type':row[4],'positions':[{'time':int(row[1]),'pos':tuple(map(operator.sub, goodpos, offset)), 'yawpichhead': rawyawpichhead,'status':0,'alive':1,'scene':'noscene'}]}}
-
+            mob = {int(row[3]):{'type':row[4],'name':converplayername(row[4]),'positions':[{'time':int(row[1]),'pos':tuple(map(operator.sub, goodpos, offset)), 'yawpichhead': rawyawpichhead,'status':0,'alive':1,'scene':'noscene'}]}}
+            sleep(2)
             allhistory.update(mob)
 
     elif row[0] == 'playerpos' and not noentitys:
