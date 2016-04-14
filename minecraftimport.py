@@ -12,7 +12,7 @@ import string
 import pdb
 import time
 import json
-import urllib.request
+# import urllib.request
 import math 
 import operator
 import ast
@@ -234,23 +234,17 @@ class DataImporter:
                 elif mobtype == '101':
                     ob.name = "rabbit"
                     mat.diffuse_color = (0.5, 0.1, 0.05)
-                # elif len(mobtype) > 10 or mobtype == 'player':
-                #     if mobtype == 'player':
-                #         ob.name = "player: RECORDER"
+                elif len(mobtype) > 10 or mobtype == 'player':
+                    if mobtype == 'player':
+                        ob.name = "player: RECORDER"
                     
-                #         mat.diffuse_color = (1, 0, 0)
-                #     else:
-                #         mobtype = mobtype.replace('-','')
-                #         request = urllib.request.urlopen('https://sessionserver.mojang.com/session/minecraft/profile/' + mobtype)
-                #         data = request.read().decode("utf8")
-                        
-                        
-                #         if len(data) > 10:
-                #             data = json.loads(data)
-                #             ob.name = "player: " + data['name']
-                #         else:
-                #             ob.name = "player: unknown"
-                #         mat.diffuse_color = (1, 0.6, 0.4)
+                        mat.diffuse_color = (1, 0, 0)
+                    else:
+                        if 'type' in aentity:
+                            ob.name = "player: " + aentity['type']
+                        else:
+                            ob.name = "player: unknown"
+                        mat.diffuse_color = (1, 0.6, 0.4)
 
                 else:
                     mat.diffuse_color = (0.0, 0.0, 0.0)
