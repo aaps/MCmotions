@@ -294,31 +294,30 @@ class QuietBridge(Bridge):
             buff.restore()
         self.downstream.send_packet("keep_alive", buff.read() )
 
-
     # block and chunk stuff
 
     # notyet doing this since i cant decode chunk data yet and it is a lot of data to record
 
-    def packet_downstream_chunk_data(self, buff):
-        buff.save()
+    # def packet_downstream_chunk_data(self, buff):
+    #     buff.save()
 
-        if self.recording:
-            chunkxy = buff.unpack('ii')
-            groundup = buff.unpack('?')
-            pribitmask = buff.unpack('H')
+    #     if self.recording:
+    #         chunkxy = buff.unpack('ii')
+    #         groundup = buff.unpack('?')
+    #         pribitmask = buff.unpack_varint()
 
-            if pribitmask > 0:
-                datalength = buff.unpack_varint()
-                contents = base64.b64encode(buff.unpack(str(datalength) + 's'))
-                towrite = 'chunkdata|' + str(chunkxy) + '|' + str(groundup) + '|' + str(pribitmask) + '|' + str(datalength) + '|' + contents +'\n'
-                self.dumpsize += len(towrite)
-                self.dumpfile.write(towrite)
+    #         if pribitmask > 0:
+    #             datalength = buff.unpack_varint()
+    #             contents = base64.b64encode(buff.unpack(str(datalength) + 's'))
+    #             towrite = 'chunkdata|' + str(chunkxy) + '|' + str(groundup) + '|' + str(pribitmask) + '|' + str(datalength) + '|' + contents +'\n'
+    #             self.dumpsize += len(towrite)
+    #             self.dumpfile.write(towrite)
             
-            buff.restore()
-        self.downstream.send_packet("chunk_data", buff.read())
+    #         buff.restore()
+    #     self.downstream.send_packet("chunk_data", buff.read())
 
 
-    def packet_downstream_map_chunk_bulk(self, buff):
+    def packet_downstream_chunk_data(self, buff):
         buff.save()
         if self.recording:
             
@@ -328,9 +327,9 @@ class QuietBridge(Bridge):
             skylightsend = buff.unpack('?')
             nrchunks = buff.unpack_varint()
 
-            for index in xrange(0,nrchunks):
+            for index in xrange(0, nrchunks):
                 chunkxy = buff.unpack('ii')
-                pribitmask = buff.unpack('H')
+                pribitmask = buff.unpack_varint()
                 metaar.append( (chunkxy,pribitmask) )
 
             for index in xrange(0,nrchunks):
@@ -442,14 +441,14 @@ class QuietBridge(Bridge):
             buff.restore()
         self.downstream.send_packet("particle", buff.read())
 
-    # def packet_downstream_plugin_message(self, buff):
-    #     buff.save()
-    #     if self.recording:
-    #         towrite = 'plugin|' + buff.unpack_string() + '\n'
-    #         self.dumpsize += len(towrite)
-    #         self.dumpfile.write(towrite)
-    #         buff.restore()
-    #     self.downstream.send_packet("plugin_message", buff.read())
+    def packet_downstream_plugin_message(self, buff):
+        buff.save()
+        if self.recording:
+            towrite = 'plugin|' + buff.unpack_string() + '\n'
+            self.dumpsize += len(towrite)
+            self.dumpfile.write(towrite)
+            buff.restore()
+        self.downstream.send_packet("plugin_message", buff.read())
 
     def packet_upstream_player_position(self, buff):
         buff.save()

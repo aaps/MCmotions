@@ -37,6 +37,7 @@ def makeimage(aroflines,matnum):
     scenelist =  list(set(scenelist))
     
     for line in aroflines:
+        btype = -1
         row = line.split('|')
         counter = 0
         if 'chunkdata' == row[0]:
@@ -51,19 +52,22 @@ def makeimage(aroflines,matnum):
                                         try:
                                             temp = struct.unpack('H',chunkdata[goodindex*2:goodindex*2+2])[0]
                                             btype = temp >> 4
+                                            error = False
                                         except Exception as e:
-                                            pass
+                                            error = True
                                         if btype == matnum:
                                             counter += 1
-            matcount.append( (counter, row[1]))
+            matcount.append( (counter, row[1], error))
 
     matcount = sorted(matcount,key=lambda x: x[0], reverse = False)
     matcount = list(set(matcount))
 
     multyplier = 6
     colormult = 3
+    incorrect = 0
     if matcount[0][0] != 0:
         colormult = 256/float(matcount[0][0])
+
 
     
     counta = 0
@@ -71,13 +75,15 @@ def makeimage(aroflines,matnum):
         positions = ast.literal_eval(mat[1])
         position = positions[0]*multyplier , positions[1]*multyplier
 
-        dwg.add(dwg.rect(position, (multyplier, multyplier), fill=svgwrite.rgb(mat[0]*colormult, 0, 0, '%')))
+        dwg.add(dwg.rect(position, (multyplier, multyplier), fill=svgwrite.rgb(mat[0]*colormult, 0, incorrect, '%')))
 
         if counta % 8 == 0:
             coloro = 'black'
-            # print colormult
+            
             if mat[0]*colormult < 50:
                 coloro = 'white'
+            if mat[2]:
+                incorrect = 255
 
             textpos = position[0]+0.1 ,position[1] + 2
             text_style = "font-size:%ipx; font-family:%s" % (1, "Courier New") 

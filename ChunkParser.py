@@ -106,46 +106,52 @@ class ChunkParser(object):
         allmaterials = {}
         print 'find material neightbors for ' + str(len(self.materials)) + ' materials'
         # todo below is somewhat sloppy refactor material
+        
+
+
         for mat in self.materials:
-            for blockindex in self.materials[mat]:
-                self.materials[mat][blockindex]['interneighbor'] = self.colormats[mat]['interneighbor']
-                self.materials[mat][blockindex]['extraneighbor'] = self.colormats[mat]['extraneighbor']
-                # materials[mat][x]['watertight'] = colormats[mat]['watertight']
-            allmaterials.update(self.materials[mat])
+            if mat in self.materials and mat in self.colormats:
+                for blockindex in self.materials[mat]:
+                    self.materials[mat][blockindex]['interneighbor'] = self.colormats[mat]['interneighbor']
+                    self.materials[mat][blockindex]['extraneighbor'] = self.colormats[mat]['extraneighbor']
+                allmaterials.update(self.materials[mat])
+
         for mat in self.materials:
-            self.neightbors[mat] = {}
+            if mat in self.materials and mat in self.colormats:
+                self.neightbors[mat] = {}
         for mat in self.materials:
-            for block in self.materials[mat]:
-                if agressiveremoval:
-                    blockstocheck = allmaterials
-                else:
-                    blockstocheck = self.materials[mat]
-                self.neightbors[mat][block] = {'meta': self.materials[mat][block]['meta'], 'faces':[]}
-                if (block[0]-1, block[1], block[2]) not in blockstocheck:
-                    self.neightbors[mat][block]['faces'].append(1)
-                elif blockstocheck[(block[0]-1, block[1], block[2])]['extraneighbor']:
-                    self.neightbors[mat][block]['faces'].append(1)
-                if (block[0]+1, block[1], block[2]) not in blockstocheck:
-                    self.neightbors[mat][block]['faces'].append(2)
-                elif blockstocheck[(block[0]+1, block[1], block[2])]['extraneighbor']:
-                    self.neightbors[mat][block]['faces'].append(2)
-                if (block[0], block[1]-1, block[2]) not in blockstocheck:
-                    self.neightbors[mat][block]['faces'].append(3)
-                elif blockstocheck[(block[0], block[1]-1, block[2])]['extraneighbor']:
-                    self.neightbors[mat][block]['faces'].append(3)
-                if (block[0], block[1]+1, block[2]) not in blockstocheck:
-                    self.neightbors[mat][block]['faces'].append(4)
-                elif blockstocheck[(block[0], block[1]+1, block[2])]['extraneighbor']:
-                    self.neightbors[mat][block]['faces'].append(4)
-                if (block[0], block[1], block[2]-1) not in blockstocheck:
-                    self.neightbors[mat][block]['faces'].append(5)
-                elif blockstocheck[(block[0], block[1], block[2]-1)]['extraneighbor']:
-                    self.neightbors[mat][block]['faces'].append(5)
-                if (block[0], block[1], block[2]+1) not in blockstocheck:
-                    self.neightbors[mat][block]['faces'].append(6)
-                elif blockstocheck[(block[0], block[1], block[2]+1)]['extraneighbor']:
-                    self.neightbors[mat][block]['faces'].append(6)
-            self.materials[mat] = None
+            if mat in self.materials and mat in self.colormats:
+                for block in self.materials[mat]:
+                    if agressiveremoval:
+                        blockstocheck = allmaterials
+                    else:
+                        blockstocheck = self.materials[mat]
+                    self.neightbors[mat][block] = {'meta': self.materials[mat][block]['meta'], 'faces':[]}
+                    if (block[0]-1, block[1], block[2]) not in blockstocheck:
+                        self.neightbors[mat][block]['faces'].append(1)
+                    elif blockstocheck[(block[0]-1, block[1], block[2])]['extraneighbor']:
+                        self.neightbors[mat][block]['faces'].append(1)
+                    if (block[0]+1, block[1], block[2]) not in blockstocheck:
+                        self.neightbors[mat][block]['faces'].append(2)
+                    elif blockstocheck[(block[0]+1, block[1], block[2])]['extraneighbor']:
+                        self.neightbors[mat][block]['faces'].append(2)
+                    if (block[0], block[1]-1, block[2]) not in blockstocheck:
+                        self.neightbors[mat][block]['faces'].append(3)
+                    elif blockstocheck[(block[0], block[1]-1, block[2])]['extraneighbor']:
+                        self.neightbors[mat][block]['faces'].append(3)
+                    if (block[0], block[1]+1, block[2]) not in blockstocheck:
+                        self.neightbors[mat][block]['faces'].append(4)
+                    elif blockstocheck[(block[0], block[1]+1, block[2])]['extraneighbor']:
+                        self.neightbors[mat][block]['faces'].append(4)
+                    if (block[0], block[1], block[2]-1) not in blockstocheck:
+                        self.neightbors[mat][block]['faces'].append(5)
+                    elif blockstocheck[(block[0], block[1], block[2]-1)]['extraneighbor']:
+                        self.neightbors[mat][block]['faces'].append(5)
+                    if (block[0], block[1], block[2]+1) not in blockstocheck:
+                        self.neightbors[mat][block]['faces'].append(6)
+                    elif blockstocheck[(block[0], block[1], block[2]+1)]['extraneighbor']:
+                        self.neightbors[mat][block]['faces'].append(6)
+                self.materials[mat] = None
 
 
     def remove_super_cosy(self):
