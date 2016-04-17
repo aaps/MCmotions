@@ -3,6 +3,7 @@
 import base64
 import struct
 import ast
+from quarry.utils.buffer import Buffer
 
 class ChunkParser(object):
 
@@ -18,6 +19,7 @@ class ChunkParser(object):
         self.materials= {}
         self.neightbors = {}
         self.worldnum = 0
+        self.chunkbuffer = Buffer()
 
     def set_top_left(self, topleft=(-1000, -1000)):
         self.topleft = topleft
@@ -35,45 +37,108 @@ class ChunkParser(object):
         self.norenderblocks = norenderblocks
 
 
+    def unpack_chunk(self, abuffer):
+        bitsperblock = abuffer.unpack('B')
+        usespalette = False
+        blocks = []
+        if bitsperblock == 0:
+            bitsperblock = 13
+            usespalette = True
+
+        palletelength = abuffer.unpack_varint()
+        pallete = []
+        blockdata = []
+        maxvalue = (1 << bitsperblock) - 1
+
+        for palindex in range(palletelength):
+            pallete.append(abuffer.unpack_varint())
+        dataarrlength = abuffer.unpack_varint()
+        for dataind in range(dataarrlength):
+            blockdata.append(abuffer.unpack('Q'))
+
+        for i in range(4096):
+            startlong = (i * bitsperblock) // 64
+            startoffset = (i * bitsperblock) % 64
+            endlong = ((i + 1) * bitsperblock - 1) // 64
+            if startlong == endlong:
+                block = (blockdata[startlong] >> startoffset) & maxvalue
+            else:
+                endoffset = 64 - startoffset
+                block = (blockdata[startlong] >> startoffset
+                         | blockdata[endlong] << endoffset
+                         ) & maxvalue
+                print block >> 4, block & 0x0F
+
+            if usespalette:  # convert to global palette
+                blocks.append(palette[block])
+            else:
+                blocks.append(block)
+
+        # return blocks
+
+
+        # print "length: "+ str(len(abuffer)) + " BPB: " + str(bitsperblock) + " PL: " + str(palletelength) + " PA: " + str(pallete) + " DAL: " + str(dataarrlength) + " DATA: " + str(data)
+
+
+    def generate_world_sample(self, row):
+        # chunkposses = []
+        chunkxz = ast.literal_eval(row[1])
+
+        self.chunkbuffer.add( base64.standard_b64decode(row[5]))
+        
+        self.unpack_chunk(self.chunkbuffer)
+
+        # matsamples = []
+        # if chunkxz not in self.chunks:
+        #     self.chunks.update({chunkxz:{'blocks':[]}})
+        # for chunkinex in xrange(1, 17):
+        #     print len(self.chunkbuffer), chunkinex
+        #     temp = self.chunkbuffer.unpack(str( 256) + 'H')[128]
+            # print temp
+        # matsamples = list(set(matsamples))
+        
+        # self.worldnum = self.world_from_sample(matsamples)
+        self.chunkbuffer.discard()
 
     def get_chunks(self, row):
         chunkposses = []
         chunkxz = ast.literal_eval(row[1])
-        if row[5] != 'None':
-            chunkdata = base64.standard_b64decode(row[5])
-            matsamples = []
-            if chunkxz not in self.chunks:
-                self.chunks.update({chunkxz:{'blocks':[]}})
-            for chunkinex in xrange(1, 17):
-                if len(chunkdata[(256*chunkinex):(256*chunkinex)+2]) == 2:
-                    temp = struct.unpack('H', chunkdata[(256*chunkinex):(256*chunkinex)+2])[0]
-                    matsamples.append(temp >> 4)
-            matsamples = list(set(matsamples))
-            self.worldnum = self.world_from_sample(matsamples)
 
-            if chunkxz not in chunkposses and chunkxz[0] >= self.topleft[0] and chunkxz[1] >= self.topleft[1] and chunkxz[0] <= self.bottomright[0] and chunkxz[1] <= self.bottomright[1] and self.world == self.worldnum:
-                chunkposses.append(chunkxz)
-                rightcounter = 0
+        chunkdata = base64.standard_b64decode(row[5])
+        
+        matsamples = []
+        if chunkxz not in self.chunks:
+            self.chunks.update({chunkxz:{'blocks':[]}})
+        for chunkinex in xrange(1, 17):
+            if len(chunkdata[(256*chunkinex):(256*chunkinex)+2]) == 2:
+                temp = struct.unpack('H', chunkdata[(256*chunkinex):(256*chunkinex)+2])[0]
+                matsamples.append(temp >> 4)
+        matsamples = list(set(matsamples))
+        self.worldnum = self.world_from_sample(matsamples)
 
-                for index1 in xrange(0, 16):
-                    # print row[3]
-                    if (int(row[3]) & (1 << index1)) and row[3] != '0':
-                        for ypos in xrange(0, 16):
-                            for zpos in xrange(0, 16):
-                                for xpos in xrange(0, 16):
-                                    goodindex = (xpos+(zpos*16)+(ypos*256)+(rightcounter*4096))*2
-                                    try:
-                                        temp = struct.unpack('H', chunkdata[goodindex:goodindex+2])[0]
-                                        btype = temp >> 4
-                                        bmeta = temp & 15
-                                    except Exception as exempt:
-                                        print exempt
-                                        btype = 666
-                                        bmeta = 666
-                                    block = ((xpos + (chunkxz[0]*16), zpos + (chunkxz[1]*16), ypos+(index1*16)), btype, bmeta)
-                                    if index1 > self.cuty:
-                                        self.chunks[chunkxz]['blocks'].append(block)
-                        rightcounter += 1
+        if chunkxz not in chunkposses and chunkxz[0] >= self.topleft[0] and chunkxz[1] >= self.topleft[1] and chunkxz[0] <= self.bottomright[0] and chunkxz[1] <= self.bottomright[1] and self.world == self.worldnum:
+            chunkposses.append(chunkxz)
+            rightcounter = 0
+
+            for index1 in xrange(0, 16):
+                # print row[3]
+                if (int(row[3]) & (1 << index1)) and row[3] != '0':
+                    for ypos in xrange(0, 16):
+                        for zpos in xrange(0, 16):
+                            for xpos in xrange(0, 16):
+                                goodindex = (xpos+(zpos*16)+(ypos*256)+(rightcounter*4096))*2
+                                try:
+                                    temp = struct.unpack('H', chunkdata[goodindex:goodindex+2])[0]
+                                    btype = temp >> 4
+                                    bmeta = temp & 15
+                                except Exception as exempt:
+                                    print exempt
+                                    btype = 666
+                                    bmeta = 666
+                                block = ((xpos + (chunkxz[0]*16), zpos + (chunkxz[1]*16), ypos+(index1*16)), btype, bmeta)
+                                if index1 > self.cuty:
+                                    self.chunks[chunkxz]['blocks'].append(block)
+                    rightcounter += 1
 
 
     def fill_mat_indexes(self):

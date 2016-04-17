@@ -298,86 +298,45 @@ class QuietBridge(Bridge):
 
     # notyet doing this since i cant decode chunk data yet and it is a lot of data to record
 
-    # def packet_downstream_chunk_data(self, buff):
-    #     buff.save()
-
-    #     if self.recording:
-    #         chunkxy = buff.unpack('ii')
-    #         groundup = buff.unpack('?')
-    #         pribitmask = buff.unpack_varint()
-
-    #         if pribitmask > 0:
-    #             datalength = buff.unpack_varint()
-    #             contents = base64.b64encode(buff.unpack(str(datalength) + 's'))
-    #             towrite = 'chunkdata|' + str(chunkxy) + '|' + str(groundup) + '|' + str(pribitmask) + '|' + str(datalength) + '|' + contents +'\n'
-    #             self.dumpsize += len(towrite)
-    #             self.dumpfile.write(towrite)
-            
-    #         buff.restore()
-    #     self.downstream.send_packet("chunk_data", buff.read())
-
-
     def packet_downstream_chunk_data(self, buff):
         buff.save()
+
         if self.recording:
+            chunkxy = buff.unpack('ii')
+            groundup = buff.unpack('?')
+            pribitmask = buff.unpack_varint()
+
+            if pribitmask > 0:
+                datalength = buff.unpack_varint()
+                contents = base64.b64encode(buff.unpack(str(datalength) + 's'))
+                towrite = 'chunkdata|' + str(chunkxy) + '|' + str(groundup) + '|' + str(pribitmask) + '|' + str(datalength) + '|' + contents +'\n'
+                self.dumpsize += len(towrite)
+                self.dumpfile.write(towrite)
             
-            lengths = 0
-            chunkar = []
-            metaar = []
-            skylightsend = buff.unpack('?')
-            nrchunks = buff.unpack_varint()
-
-            for index in xrange(0, nrchunks):
-                chunkxy = buff.unpack('ii')
-                pribitmask = buff.unpack_varint()
-                metaar.append( (chunkxy,pribitmask) )
-
-            for index in xrange(0,nrchunks):
-                bigstring = ''
-                counter = 0
-                
-                for height in xrange(0,16):
-
-                    if int(metaar[index][1]) & (1 << height):
-                        counter += 4096
-                        bigstring += buff.unpack(str(4096*2) + 's')
-
-                chunkar.append(base64.b64encode(bigstring))
-                
-                metaar[index] = metaar[index][0], metaar[index][1], counter
-
-                lightstuff = buff.unpack(str(counter) + 's')
-                biomemeta = buff.unpack(str(256) + 's')
-
-
-
-            for index in xrange(0,nrchunks):
-                towrite = 'chunkdata|' + str(metaar[index][0]) +  '|True|' + str(metaar[index][1]) + '|' + str(metaar[index][2]) + '|' + chunkar[index] + '\n'
-                self.dumpsize += len(towrite)
-                self.dumpfile.write(towrite)
-
-        buff.restore()
-        self.downstream.send_packet("map_chunk_bulk", buff.read())
-
-
-    def packet_downstream_multi_block_change(self, buff):
-        buff.save()
-        if self.recording:
-            chunkxz = buff.unpack('ii')
-            reccount = buff.unpack_varint()
-            for index in xrange(0,reccount):
-                xz = buff.unpack('B')
-                
-                x = ((xz >> 4) & 0xF) + (chunkxz[0] * 16)
-                z = (xz & 0xF) + (chunkxz[1] * 16)
-                y = buff.unpack('B')
-                newid = buff.unpack_varint() >> 4
-                towrite = 'blockchange|' + str( self.worldtime - self.begintime) + '|' + self.scenename + '|' + str((x,z,y)) + '|' + str(newid)+ '\n'
-                self.dumpsize += len(towrite)
-                self.dumpfile.write(towrite)
             buff.restore()
+        self.downstream.send_packet("chunk_data", buff.read())
+
+
+
+
+    # def packet_downstream_multi_block_change(self, buff):
+    #     buff.save()
+    #     if self.recording:
+    #         chunkxz = buff.unpack('ii')
+    #         reccount = buff.unpack_varint()
+    #         for index in xrange(0,reccount):
+    #             xz = buff.unpack('B')
+                
+    #             x = ((xz >> 4) & 0xF) + (chunkxz[0] * 16)
+    #             z = (xz & 0xF) + (chunkxz[1] * 16)
+    #             y = buff.unpack('B')
+    #             newid = buff.unpack_varint() >> 4
+    #             towrite = 'blockchange|' + str( self.worldtime - self.begintime) + '|' + self.scenename + '|' + str((x,z,y)) + '|' + str(newid)+ '\n'
+    #             self.dumpsize += len(towrite)
+    #             self.dumpfile.write(towrite)
+    #         buff.restore()
             
-        self.downstream.send_packet("multi_block_change", buff.read())
+    #     self.downstream.send_packet("multi_block_change", buff.read())
         
 
     def packet_downstream_block_change(self, buff):
