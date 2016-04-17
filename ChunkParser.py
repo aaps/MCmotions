@@ -39,22 +39,23 @@ class ChunkParser(object):
 
     def unpack_chunk(self, abuffer):
         bitsperblock = abuffer.unpack('B')
-        usespalette = False
+        usespalette = True
         blocks = []
         if bitsperblock == 0:
             bitsperblock = 13
-            usespalette = True
+            usespalette = False
 
         palletelength = abuffer.unpack_varint()
-        pallete = []
+        palette = []
         blockdata = []
         maxvalue = (1 << bitsperblock) - 1
 
         for palindex in range(palletelength):
-            pallete.append(abuffer.unpack_varint())
+            palette.append(abuffer.unpack_varint())
         dataarrlength = abuffer.unpack_varint()
         for dataind in range(dataarrlength):
             blockdata.append(abuffer.unpack('Q'))
+
 
         for i in range(4096):
             startlong = (i * bitsperblock) // 64
@@ -67,14 +68,12 @@ class ChunkParser(object):
                 block = (blockdata[startlong] >> startoffset
                          | blockdata[endlong] << endoffset
                          ) & maxvalue
-                print block >> 4, block & 0x0F
 
             if usespalette:  # convert to global palette
                 blocks.append(palette[block])
             else:
                 blocks.append(block)
-
-        # return blocks
+        return blocks
 
 
         # print "length: "+ str(len(abuffer)) + " BPB: " + str(bitsperblock) + " PL: " + str(palletelength) + " PA: " + str(pallete) + " DAL: " + str(dataarrlength) + " DATA: " + str(data)
@@ -86,7 +85,11 @@ class ChunkParser(object):
 
         self.chunkbuffer.add( base64.standard_b64decode(row[5]))
         
-        self.unpack_chunk(self.chunkbuffer)
+        for block in self.unpack_chunk(self.chunkbuffer):
+            btype = block >> 4
+            bmeta = block & 15
+            print btype, bmeta
+
 
         # matsamples = []
         # if chunkxz not in self.chunks:
