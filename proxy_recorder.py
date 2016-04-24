@@ -306,12 +306,11 @@ class QuietBridge(Bridge):
             groundup = buff.unpack('?')
             pribitmask = buff.unpack_varint()
 
-            if pribitmask > 0:
-                datalength = buff.unpack_varint()
-                contents = base64.b64encode(buff.unpack(str(datalength) + 's'))
-                towrite = 'chunkdata|' + str(chunkxy) + '|' + str(groundup) + '|' + str(pribitmask) + '|' + str(datalength) + '|' + contents +'\n'
-                self.dumpsize += len(towrite)
-                self.dumpfile.write(towrite)
+            datalength = buff.unpack_varint()
+            contents = base64.b64encode(buff.unpack(str(datalength) + 's'))
+            towrite = 'chunkdata|' + str(chunkxy) + '|' + str(groundup) + '|' + str(pribitmask) + '|' + str(datalength) + '|' + contents +'\n'
+            self.dumpsize += len(towrite)
+            self.dumpfile.write(towrite)
             
             buff.restore()
         self.downstream.send_packet("chunk_data", buff.read())

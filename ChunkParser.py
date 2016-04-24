@@ -38,7 +38,7 @@ class ChunkParser(object):
 
 
     def unpack_chunk(self, abuffer):
-        bitsperblock = abuffer.unpack('B')
+        bitsperblock = abuffer.buff.read(1)[0]
         usespalette = True
         blocks = []
         if bitsperblock == 0:
@@ -76,72 +76,54 @@ class ChunkParser(object):
         return blocks
 
 
-        # print "length: "+ str(len(abuffer)) + " BPB: " + str(bitsperblock) + " PL: " + str(palletelength) + " PA: " + str(pallete) + " DAL: " + str(dataarrlength) + " DATA: " + str(data)
-
-
-    def generate_world_sample(self, row):
-        # chunkposses = []
-        chunkxz = ast.literal_eval(row[1])
-
-        self.chunkbuffer.add( base64.standard_b64decode(row[5]))
-        
-        for block in self.unpack_chunk(self.chunkbuffer):
-            btype = block >> 4
-            bmeta = block & 15
-            print btype, bmeta
-
-
-        # matsamples = []
-        # if chunkxz not in self.chunks:
-        #     self.chunks.update({chunkxz:{'blocks':[]}})
-        # for chunkinex in xrange(1, 17):
-        #     print len(self.chunkbuffer), chunkinex
-        #     temp = self.chunkbuffer.unpack(str( 256) + 'H')[128]
-            # print temp
-        # matsamples = list(set(matsamples))
-        
-        # self.worldnum = self.world_from_sample(matsamples)
-        self.chunkbuffer.discard()
-
     def get_chunks(self, row):
         chunkposses = []
         chunkxz = ast.literal_eval(row[1])
-
         chunkdata = base64.standard_b64decode(row[5])
+        self.chunkbuffer.add(chunkdata)
         
+        self.chunkbuffer.save()
+
         matsamples = []
         if chunkxz not in self.chunks:
             self.chunks.update({chunkxz:{'blocks':[]}})
-        for chunkinex in xrange(1, 17):
-            if len(chunkdata[(256*chunkinex):(256*chunkinex)+2]) == 2:
-                temp = struct.unpack('H', chunkdata[(256*chunkinex):(256*chunkinex)+2])[0]
-                matsamples.append(temp >> 4)
-        matsamples = list(set(matsamples))
-        self.worldnum = self.world_from_sample(matsamples)
 
-        if chunkxz not in chunkposses and chunkxz[0] >= self.topleft[0] and chunkxz[1] >= self.topleft[1] and chunkxz[0] <= self.bottomright[0] and chunkxz[1] <= self.bottomright[1] and self.world == self.worldnum:
+
+        if chunkxz not in chunkposses and chunkxz[0] >= self.topleft[0] and chunkxz[1] >= self.topleft[1] and chunkxz[0] <= self.bottomright[0] and chunkxz[1] <= self.bottomright[1]:
             chunkposses.append(chunkxz)
-            rightcounter = 0
 
-            for index1 in xrange(0, 16):
-                # print row[3]
-                if (int(row[3]) & (1 << index1)) and row[3] != '0':
-                    for ypos in xrange(0, 16):
-                        for zpos in xrange(0, 16):
-                            for xpos in xrange(0, 16):
-                                goodindex = (xpos+(zpos*16)+(ypos*256)+(rightcounter*4096))*2
-                                try:
-                                    temp = struct.unpack('H', chunkdata[goodindex:goodindex+2])[0]
-                                    btype = temp >> 4
-                                    bmeta = temp & 15
-                                except Exception as exempt:
-                                    print exempt
-                                    btype = 666
-                                    bmeta = 666
-                                block = ((xpos + (chunkxz[0]*16), zpos + (chunkxz[1]*16), ypos+(index1*16)), btype, bmeta)
-                                if index1 > self.cuty:
-                                    self.chunks[chunkxz]['blocks'].append(block)
-                    rightcounter += 1
+            for index1 in range(16):
+                
+                if (int(row[3]) & (1 << index1)):
+                    bitsperblock = self.chunkbuffer.unpack('B')
+                    usespalette = True
+                    blocks = []
+                    blocklight = []
+                    skylight = []
+                    if bitsperblock == 0:
+                        bitsperblock = 13
+                        usespalette = False
+
+                    palletelength = self.chunkbuffer.unpack_varint()
+
+                    palette = []
+                    blockdata = []
+                    maxvalue = (1 << bitsperblock) - 1
+                    for palindex in range(palletelength):
+                        palette.append(self.chunkbuffer.unpack_varint())
+
+                    dataarrlength = self.chunkbuffer.unpack_varint()
+                    
+                    for dataind in range(dataarrlength):
+                        blockdata.append(self.chunkbuffer.unpack('Q'))
+
+
+                    unneededlength = (dataarrlength*16)
+                    for notneed in range(unneededlength):
+                       self.chunkbuffer.unpack('B')
+                    
+        self.chunkbuffer.discard()
+
 
 
     def fill_mat_indexes(self):
