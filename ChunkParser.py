@@ -81,28 +81,25 @@ class ChunkParser(object):
         chunkxz = ast.literal_eval(row[1])
         chunkdata = base64.standard_b64decode(row[5])
         self.chunkbuffer.add(chunkdata)
-        
+        blocks = []
         self.chunkbuffer.save()
 
         matsamples = []
         if chunkxz not in self.chunks:
             self.chunks.update({chunkxz:{'blocks':[]}})
 
-
+        rightcounter = 0
         if chunkxz not in chunkposses and chunkxz[0] >= self.topleft[0] and chunkxz[1] >= self.topleft[1] and chunkxz[0] <= self.bottomright[0] and chunkxz[1] <= self.bottomright[1]:
             chunkposses.append(chunkxz)
 
             for index1 in range(16):
                 
-                    # for ypos in xrange(0, 16):
-                    #     for zpos in xrange(0, 16):
-                    #         for xpos in xrange(0, 16):
-                    #             goodindex = (xpos+(zpos*16)+(ypos*256)+(index1*4096))
 
                 if (int(row[3]) & (1 << index1)):
+                    
                     bitsperblock = self.chunkbuffer.unpack('B')
                     usespalette = True
-                    blocks = []
+                    
                     blocklight = []
                     skylight = []
                     if bitsperblock == 0:
@@ -126,9 +123,38 @@ class ChunkParser(object):
                     unneededlength = (dataarrlength*16)
                     for notneed in range(unneededlength):
                        self.chunkbuffer.unpack('B')
+
+                    for ypos in xrange(0, 16):
+                            for zpos in xrange(0, 16):
+                                for xpos in xrange(0, 16):
+                                    goodindex = xpos+(zpos*16)+(ypos*256)
+                                    startlong = (goodindex * bitsperblock) // 64
+                                    startoffset = (goodindex * bitsperblock) % 64
+                                    endlong = ((goodindex + 1) * bitsperblock - 1) // 64
+                                    if startlong == endlong and len(blockdata) > 0:
+                                        block = (blockdata[startlong] >> startoffset) & maxvalue
+                                    elif len(blockdata) > 0:
+                                        endoffset = 64 - startoffset
+                                        block = (blockdata[startlong] >> startoffset
+                                                 | blockdata[endlong] << endoffset
+                                                 ) & maxvalue
+                                    else:
+                                        block = -1
+
+                                    if usespalette and block > -1:  # convert to global palette
+                                        blocks.append(palette[block])
+                                    elif block > -1:
+                                        blocks.append(block)
+                                    else:
+                                        blocks.append(0)
+        
+        print len(blocks)
+                                    # blockpos = goodindex + (rightcounter*4096))
+
+                    # rightcounter =+ 1
                     
         self.chunkbuffer.discard()
-        return blockdata
+        # return blockdata
 
 
 
