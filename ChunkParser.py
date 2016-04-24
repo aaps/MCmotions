@@ -108,19 +108,22 @@ class ChunkParser(object):
                                         btype = palette[temp] >> 4
                                         bmeta = palette[temp] & 15
                                         bbtest = ((xpos + (chunkxz[0]*16), zpos + (chunkxz[1]*16), ypos+(index1*16)), int(btype), int(bmeta))
-                                        blocks.append(bbtest)
+                                        # blocks.append(bbtest)
                                     elif temp > -1:
                                         btype = temp >> 4
                                         bmeta = temp & 15
                                         bbtest = ((xpos + (chunkxz[0]*16), zpos + (chunkxz[1]*16), ypos+(index1*16)), int(btype), int(bmeta))
-                                        blocks.append(bbtest)
+                                        # blocks.append(bbtest)
                                     else:
                                         bbtest = ((xpos + (chunkxz[0]*16), zpos + (chunkxz[1]*16), ypos+(index1*16)), 0, 0)
-                                        blocks.append(bbtest)
+                                        # blocks.append(bbtest)
+                                    
+                                    if index1 > self.cuty:
+                                        self.chunks[chunkxz]['blocks'].append(bbtest)
         
                     
         self.chunkbuffer.discard()
-        return blocks
+        # return blocks
 
 
 

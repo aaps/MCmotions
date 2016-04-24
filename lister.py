@@ -327,11 +327,12 @@ for line in aroflines:
         length = row[3]
         
         if not nochunks:
-            # chunkparser.generate_world_sample(row)
+            chunkparser.get_chunks(row)
 
-            print chunkparser.get_chunks(row)
 
-quit()
+
+
+
 print 'Filtering entitys that are not supposed to be in scene move at all'
 
 allhistory = filterents(allhistory)
