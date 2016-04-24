@@ -37,45 +37,6 @@ class ChunkParser(object):
         self.norenderblocks = norenderblocks
 
 
-    def unpack_chunk(self, abuffer):
-        bitsperblock = abuffer.buff.read(1)[0]
-        usespalette = True
-        blocks = []
-        if bitsperblock == 0:
-            bitsperblock = 13
-            usespalette = False
-
-        palletelength = abuffer.unpack_varint()
-        palette = []
-        blockdata = []
-        maxvalue = (1 << bitsperblock) - 1
-
-        for palindex in range(palletelength):
-            palette.append(abuffer.unpack_varint())
-        dataarrlength = abuffer.unpack_varint()
-        for dataind in range(dataarrlength):
-            blockdata.append(abuffer.unpack('Q'))
-
-
-        for i in range(4096):
-            startlong = (i * bitsperblock) // 64
-            startoffset = (i * bitsperblock) % 64
-            endlong = ((i + 1) * bitsperblock - 1) // 64
-            if startlong == endlong:
-                block = (blockdata[startlong] >> startoffset) & maxvalue
-            else:
-                endoffset = 64 - startoffset
-                block = (blockdata[startlong] >> startoffset
-                         | blockdata[endlong] << endoffset
-                         ) & maxvalue
-
-            if usespalette:  # convert to global palette
-                blocks.append(palette[block])
-            else:
-                blocks.append(block)
-        return blocks
-
-
     def get_chunks(self, row):
         chunkposses = []
         chunkxz = ast.literal_eval(row[1])
@@ -133,32 +94,33 @@ class ChunkParser(object):
                                     endlong = ((goodindex + 1) * bitsperblock - 1) // 64
                                     if startlong == endlong and len(blockdata) > 0:
                                         temp = (blockdata[startlong] >> startoffset) & maxvalue
-                                        btype = temp >> 4
-                                        bmeta = temp & 15
+
                                     elif len(blockdata) > 0:
                                         endoffset = 64 - startoffset
                                         temp = (blockdata[startlong] >> startoffset
                                                  | blockdata[endlong] << endoffset
                                                  ) & maxvalue
+                                    else:
+                                        temp = -1
+
+                                    
+                                    if usespalette and temp > -1:  # convert to global palette
+                                        btype = palette[temp] >> 4
+                                        bmeta = palette[temp] & 15
+                                        bbtest = ((xpos + (chunkxz[0]*16), zpos + (chunkxz[1]*16), ypos+(index1*16)), int(btype), int(bmeta))
+                                        blocks.append(bbtest)
+                                    elif temp > -1:
                                         btype = temp >> 4
                                         bmeta = temp & 15
+                                        bbtest = ((xpos + (chunkxz[0]*16), zpos + (chunkxz[1]*16), ypos+(index1*16)), int(btype), int(bmeta))
+                                        blocks.append(bbtest)
                                     else:
-                                        block = -1
-
-                                    if usespalette and block > -1:  # convert to global palette
-                                        blocks.append(palette[block])
-                                    elif block > -1:
-                                        blocks.append(block)
-                                    else:
-                                        blocks.append(0)
+                                        bbtest = ((xpos + (chunkxz[0]*16), zpos + (chunkxz[1]*16), ypos+(index1*16)), 0, 0)
+                                        blocks.append(bbtest)
         
-        print len(blocks)
-                                    # blockpos = goodindex + (rightcounter*4096))
-
-                    # rightcounter =+ 1
                     
         self.chunkbuffer.discard()
-        # return blockdata
+        return blocks
 
 
 
