@@ -94,6 +94,11 @@ class ChunkParser(object):
 
             for index1 in range(16):
                 
+                    # for ypos in xrange(0, 16):
+                    #     for zpos in xrange(0, 16):
+                    #         for xpos in xrange(0, 16):
+                    #             goodindex = (xpos+(zpos*16)+(ypos*256)+(index1*4096))
+
                 if (int(row[3]) & (1 << index1)):
                     bitsperblock = self.chunkbuffer.unpack('B')
                     usespalette = True
@@ -123,6 +128,7 @@ class ChunkParser(object):
                        self.chunkbuffer.unpack('B')
                     
         self.chunkbuffer.discard()
+        return blockdata
 
 
 
