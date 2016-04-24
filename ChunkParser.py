@@ -61,8 +61,6 @@ class ChunkParser(object):
                     bitsperblock = self.chunkbuffer.unpack('B')
                     usespalette = True
                     
-                    blocklight = []
-                    skylight = []
                     if bitsperblock == 0:
                         bitsperblock = 13
                         usespalette = False
