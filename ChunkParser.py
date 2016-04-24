@@ -132,12 +132,16 @@ class ChunkParser(object):
                                     startoffset = (goodindex * bitsperblock) % 64
                                     endlong = ((goodindex + 1) * bitsperblock - 1) // 64
                                     if startlong == endlong and len(blockdata) > 0:
-                                        block = (blockdata[startlong] >> startoffset) & maxvalue
+                                        temp = (blockdata[startlong] >> startoffset) & maxvalue
+                                        btype = temp >> 4
+                                        bmeta = temp & 15
                                     elif len(blockdata) > 0:
                                         endoffset = 64 - startoffset
-                                        block = (blockdata[startlong] >> startoffset
+                                        temp = (blockdata[startlong] >> startoffset
                                                  | blockdata[endlong] << endoffset
                                                  ) & maxvalue
+                                        btype = temp >> 4
+                                        bmeta = temp & 15
                                     else:
                                         block = -1
 
