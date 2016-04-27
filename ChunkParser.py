@@ -36,6 +36,20 @@ class ChunkParser(object):
     def set_no_render_blocks(self, norenderblocks=["none"]):
         self.norenderblocks = norenderblocks
 
+    def get_mat_count(self):
+        matsandcounts = {}
+        for chunk in self.chunks:
+            # print self.chunks[chunk]['blocks']
+            matsandcounts.update({chunk: {}})
+            for block in self.chunks[chunk]['blocks']:
+                if block[1] not in matsandcounts[chunk]:
+                    matsandcounts[chunk].update({block[1]:0})
+                else:
+                    matsandcounts[chunk][block[1]] += 1
+        print matsandcounts
+
+
+
 
     def get_chunks(self, row):
         chunkposses = []
