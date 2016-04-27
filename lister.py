@@ -247,7 +247,7 @@ for line in aroflines:
             goodpos = (float(goodpos[0])/32, float(goodpos[1])/32, float(goodpos[2])/-32)
             
             mob = {int(row[3]):{'type':row[4],'name':converplayername(row[4]),'positions':[{'time':int(row[1]),'pos':tuple(map(operator.sub, goodpos, offset)), 'yawpichhead': rawyawpichhead,'status':0,'alive':1,'scene':'noscene'}]}}
-            sleep(2)
+            sleep(10)
             print "got player: " + mob[int(row[3])]
             allhistory.update(mob)
 

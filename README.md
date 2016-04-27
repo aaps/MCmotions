@@ -149,19 +149,39 @@ the scene option is important for now, no matter what name, you can test it with
 
 #NEW:
 
+* (first) Implement negative stair corner.
 
-#ToDo:
-1 
+* (second) More cleaning up of the code.
 
-* (first) Implement negative stair corner. (done)
-
-* (second) More cleaning up of the code. (done)
-
-* (third) Add option for more agressive neighbor face removal. (done, more to do but that is for next time)
+* (third) Add option for more agressive neighbor face removal.
 
 * (third and a half) Even more refactoring ! things are getting somewhat messy.
 
-* (forth) Get some of the already implemented textures also on a block !
+* will user the new 1.9 minecraft map format.
+
+#ToDo:
+* more cleaning
+
+* coloborate/dev some on MCprep to get it to do textures, so i dont have to.
+
+* update this readme to include all the changes 
+
+* lets see if i can implement the fences.
+
+* implement wheat type blocks
+
+* implement buttons and lavers
+
+* implement the right doors shapes and positions.
+
+* fix the info.py since it is still usig the old chunkparser.
+
+* implement a better uuid to username resolver.
+
+* getting the recorder proxy to also have a persistent world name/numer
+  to give to every chunk, so we can say what chunk belongs to what world !
+
+* make a fresh branch for all of this. (something that ask for warm weather)
 
 2
 
