@@ -17,9 +17,10 @@ class Point3D(object):
         self.z_coord += point.z_coord
 
     def divide(self, divider):
-        self.x_coord = self.x_coord / divider
-        self.y_coord = self.y_coord / divider
-        self.z_coord = self.z_coord / divider
+        if divider > 0:
+            self.x_coord = self.x_coord / divider
+            self.y_coord = self.y_coord / divider
+            self.z_coord = self.z_coord / divider
 
     def substract_tup(self, point):
         self.x_coord = self.x_coord - point[0]

@@ -75,11 +75,12 @@ class ChunkParser(object):
 
                     dataarrlength = self.chunkbuffer.unpack_varint()
                     
+                    # print "DAlength: " + str(dataarrlength) + " index: " +  str(index1) + " bitsperblock: " + str(bitsperblock)
                     for dataind in range(dataarrlength):
                         blockdata.append(self.chunkbuffer.unpack('Q'))
 
 
-                    unneededlength = (dataarrlength*16)
+                    unneededlength = (256*16)
                     for notneed in range(unneededlength):
                        self.chunkbuffer.unpack('B')
 
