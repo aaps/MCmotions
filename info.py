@@ -5,9 +5,15 @@ import ast
 import base64
 import struct
 import svgwrite
+from ChunkParser import ChunkParser
 
 sourcefile = "default.dump"
 blocksize = 200
+chunkrange = 1
+center = (0,0)
+
+chunkparser = ChunkParser()
+
 
 def getsourcefile():
     try:
@@ -24,87 +30,62 @@ def getsourcefile():
 
 def makeimage(aroflines,matnum):
     dwg = svgwrite.Drawing('test.svg',profile='full')
-    dims = (100,100)
 
-    matcount = []
-    scenelist = []
+    multyplier = 6
 
-    for line in aroflines:
-        row = line.split('|')
-        counter = 0
-        if row[0] in ['entityteleport','entitylookandrelmove','entityheadlook','entitylook','entityrelmove']:
-            scenelist.append(row[2])
-    scenelist =  list(set(scenelist))
-    
     for line in aroflines:
         btype = -1
         row = line.split('|')
         counter = 0
         if 'chunkdata' == row[0]:
-            chunkdata = base64.standard_b64decode(row[5])
-            xzpos = ast.literal_eval(row[1])
-            for index1 in xrange(0, 16):
-                        if int(row[3]) & (1 << index1):
-                            for y in xrange(0,16):
-                                for z in xrange(0,16):
-                                    for x in xrange(0,16):
-                                        goodindex = (x+(z*16)+(y*256)+(index1*4096))
-                                        try:
-                                            temp = struct.unpack('H',chunkdata[goodindex*2:goodindex*2+2])[0]
-                                            btype = temp >> 4
-                                            error = False
-                                        except Exception as e:
-                                            error = True
-                                        if btype == matnum:
-                                            counter += 1
-            matcount.append( (counter, row[1], error))
-
-    matcount = sorted(matcount,key=lambda x: x[0], reverse = False)
-    matcount = list(set(matcount))
-
-    multyplier = 6
-    colormult = 3
-    incorrect = 0
-    if matcount[0][0] != 0:
-        colormult = 256/float(matcount[0][0])
+            chunkparser.get_chunks(row)
+        elif 'changedim' == row[0]:
+            chunkparser.set_world_num(int(row[1]))
 
 
-    
+    planes = {}
     counta = 0
-    for mat in matcount:
-        positions = ast.literal_eval(mat[1])
-        position = positions[0]*multyplier , positions[1]*multyplier
+    maxval = 0
+    mats = chunkparser.get_mat_count()
+    print "got all the mats !"
+    for mat in mats:
+        if matnum in mats[mat]:
+            position = mat[0]*multyplier , mat[1]*multyplier
+            color = mats[mat][matnum]
+            planes.update( {position: color} )
+            if maxval < color:
+                maxval = color
 
-        dwg.add(dwg.rect(position, (multyplier, multyplier), fill=svgwrite.rgb(mat[0]*colormult, 0, incorrect, '%')))
+    for plane in planes:
+        rightcolor = (planes[plane] / float(maxval)*256)
+
+        dwg.add(dwg.rect(plane, (multyplier, multyplier), fill=svgwrite.rgb(rightcolor, 0, 0, '%')))
 
         if counta % 8 == 0:
             coloro = 'black'
             
-            if mat[0]*colormult < 50:
+            if rightcolor < 50:
                 coloro = 'white'
-            if mat[2]:
-                incorrect = 255
 
-            textpos = position[0]+0.1 ,position[1] + 2
+
+            textpos = plane[0]+0.1 ,plane[1] + 2
             text_style = "font-size:%ipx; font-family:%s" % (1, "Courier New") 
-            dwg.add(dwg.text(str(mat[1]), insert=textpos, fill=coloro, style=text_style))
+            dwg.add(dwg.text(str(plane[0]) + '*' + str(plane[1]), insert=textpos, fill=coloro, style=text_style))
 
         counta += 1
     dwg.save()
 
 
-
-
 try:
-    opts, args = getopt.getopt(sys.argv[1:],"",["chunkmaxmin=","sourcefile=","image=" ])
+    opts, args = getopt.getopt(sys.argv[1:],"",["chunkmaxmin=","sourcefile=","image=","center=", "range=" ])
         
 except getopt.GetoptError:
 
-    print 'error: info.py -h --chunkmaxmin --sourcefile --image'
+    print 'error: info.py -h --chunkmaxmin --sourcefile --image --center --range'
     sys.exit(2)
 for opt, arg in opts:
     if opt == '-h':
-        print 'info.py -h --chunkmaxmin --sourcefile --image'
+        print 'info.py -h --chunkmaxmin --sourcefile --image --center --range'
         sys.exit()
     if opt == '--sourcefile':
 
@@ -123,13 +104,7 @@ for opt, arg in opts:
     #         print scene
 
     if opt == "--image":
-        
         matnum = int(arg)
-        
 
-# print matnum 
-# print aroflines
-
-
-
+chunkparser.get_counts()
 makeimage(aroflines, matnum)

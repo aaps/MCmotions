@@ -285,6 +285,27 @@ class QuietBridge(Bridge):
             buff.restore()
         self.downstream.send_packet("disconnect", buff.read())
 
+    def packet_downstream_join_game(self, buff):
+        buff.save()
+        if self.recording:
+            buff.unpack('i')
+            buff.unpack('B')
+            
+            towrite = 'changedim|' + str(buff.unpack('B'))  + '\n'
+            self.dumpsize += len(towrite)
+            self.dumpfile.write(towrite)
+            buff.restore()
+        self.downstream.send_packet("join_game", buff.read())
+
+    def packet_downstream_respawn(self, buff):
+        buff.save()
+        if self.recording:
+            towrite = 'changedim|' + str(buff.unpack('i')) + '\n'
+            self.dumpsize += len(towrite)
+            self.dumpfile.write(towrite)
+            buff.restore()
+        self.downstream.send_packet("respawn", buff.read())
+
     def packet_downstream_keep_alive(self, buff):
         buff.save()
         if self.recording:
@@ -296,7 +317,6 @@ class QuietBridge(Bridge):
 
     # block and chunk stuff
 
-    # notyet doing this since i cant decode chunk data yet and it is a lot of data to record
 
     def packet_downstream_chunk_data(self, buff):
         buff.save()
@@ -314,28 +334,6 @@ class QuietBridge(Bridge):
             
             buff.restore()
         self.downstream.send_packet("chunk_data", buff.read())
-
-
-
-
-    # def packet_downstream_multi_block_change(self, buff):
-    #     buff.save()
-    #     if self.recording:
-    #         chunkxz = buff.unpack('ii')
-    #         reccount = buff.unpack_varint()
-    #         for index in xrange(0,reccount):
-    #             xz = buff.unpack('B')
-                
-    #             x = ((xz >> 4) & 0xF) + (chunkxz[0] * 16)
-    #             z = (xz & 0xF) + (chunkxz[1] * 16)
-    #             y = buff.unpack('B')
-    #             newid = buff.unpack_varint() >> 4
-    #             towrite = 'blockchange|' + str( self.worldtime - self.begintime) + '|' + self.scenename + '|' + str((x,z,y)) + '|' + str(newid)+ '\n'
-    #             self.dumpsize += len(towrite)
-    #             self.dumpfile.write(towrite)
-    #         buff.restore()
-            
-    #     self.downstream.send_packet("multi_block_change", buff.read())
         
 
     def packet_downstream_block_change(self, buff):

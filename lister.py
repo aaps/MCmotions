@@ -10,7 +10,7 @@ import json
 from points import *
 from shapes import *
 from materials import *
-from ChunkParser import *
+from ChunkParser import ChunkParser
 from cStringIO import StringIO
 import zlib
 from time import sleep
@@ -322,7 +322,9 @@ for line in aroflines:
             if entid in allhistory:
                 lastlist = allhistory[entid]['positions'][-1]
                 allhistory[entid]['positions'].append({'time':int(row[1]),'pos':lastlist['pos'],'yawpichhead':yawpichhead,'status':0 ,'alive':0,'scene':'noscene'})
-
+    elif row[0] == 'changedim':
+        worldnum = row[1]
+        chunkparser.set_world_num(worldnum)
     elif row[0] == 'chunkdata':
         length = row[3]
         
@@ -346,9 +348,10 @@ print getMaxMinTime(allhistory)
 print 'make a index of possible materials'
 
 
-# materials = {}
-chunkparser.fill_mat_indexes()
+print chunkparser.get_mat_count()
 
+quit()
+chunkparser.fill_mat_indexes()
 
 
 chunkparser.gen_faces_neighbors(agressiveremoval)

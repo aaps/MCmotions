@@ -7,12 +7,13 @@ from quarry.utils.buffer import Buffer
 
 class ChunkParser(object):
 
-    def __init__(self, topleft=(-1000, -1000), bottomright=(1000, 1000), cuty=0, world=1, norenderblocks=["none"], multymatblocks=[35, 43, 44, 95, 97, 98, 125, 126, 139, 155, 159, 160, 171], colormats={}):
+    def __init__(self, topleft=(-300, -300), bottomright=(300, 300), cuty=0, world=0, norenderblocks=["none"], multymatblocks=[35, 43, 44, 95, 97, 98, 125, 126, 139, 155, 159, 160, 171], colormats={}):
         self.colormats = colormats
         self.topleft = topleft
         self.bottomright = bottomright
         self.cuty = cuty
         self.world = world
+        self.getcounts = False
         self.norenderblocks = norenderblocks
         self.multymatblocks = multymatblocks
         self.chunks = {}
@@ -21,16 +22,22 @@ class ChunkParser(object):
         self.worldnum = 0
         self.chunkbuffer = Buffer()
 
-    def set_top_left(self, topleft=(-1000, -1000)):
+    def get_counts(self):
+        self.getcounts = True
+
+    def set_world_num(self, num):
+        self.worldnum = num
+
+    def set_top_left(self, topleft=(-300, -300)):
         self.topleft = topleft
 
-    def set_bottom_right(self, bottomright=(1000, 1000)):
+    def set_bottom_right(self, bottomright=(300, 300)):
         self.bottomright = bottomright
 
     def set_cut_y(self, cuty=0):
         self.cuty = cuty
 
-    def set_world(self, world=1):
+    def set_world(self, world=0):
         self.world = world
 
     def set_no_render_blocks(self, norenderblocks=["none"]):
@@ -38,17 +45,9 @@ class ChunkParser(object):
 
     def get_mat_count(self):
         matsandcounts = {}
-        for chunk in self.chunks:
-            # print self.chunks[chunk]['blocks']
-            matsandcounts.update({chunk: {}})
-            for block in self.chunks[chunk]['blocks']:
-                if block[1] not in matsandcounts[chunk]:
-                    matsandcounts[chunk].update({block[1]:0})
-                else:
-                    matsandcounts[chunk][block[1]] += 1
-        print matsandcounts
-
-
+        for chunk in self.chunks:  
+            matsandcounts.update({chunk: self.chunks[chunk]['counts']})
+        return matsandcounts
 
 
     def get_chunks(self, row):
@@ -60,12 +59,14 @@ class ChunkParser(object):
         self.chunkbuffer.save()
 
         matsamples = []
-        if chunkxz not in self.chunks:
-            self.chunks.update({chunkxz:{'blocks':[]}})
+        if chunkxz not in self.chunks and self.worldnum == self.world:
+            self.chunks.update({chunkxz:{'blocks':[], 'counts':{}}})
+
 
         rightcounter = 0
-        if chunkxz not in chunkposses and chunkxz[0] >= self.topleft[0] and chunkxz[1] >= self.topleft[1] and chunkxz[0] <= self.bottomright[0] and chunkxz[1] <= self.bottomright[1]:
+        if chunkxz not in chunkposses and self.worldnum == self.world and chunkxz[0] >= self.topleft[0] and chunkxz[1] >= self.topleft[1] and chunkxz[0] <= self.bottomright[0] and chunkxz[1] <= self.bottomright[1]:
             chunkposses.append(chunkxz)
+            # print self.topleft, self.bottomright
 
             for index1 in range(16):
                 
@@ -121,22 +122,25 @@ class ChunkParser(object):
                                         btype = palette[temp] >> 4
                                         bmeta = palette[temp] & 15
                                         bbtest = ((xpos + (chunkxz[0]*16), zpos + (chunkxz[1]*16), ypos+(index1*16)), int(btype), int(bmeta))
-                                        # blocks.append(bbtest)
                                     elif temp > -1:
                                         btype = temp >> 4
                                         bmeta = temp & 15
                                         bbtest = ((xpos + (chunkxz[0]*16), zpos + (chunkxz[1]*16), ypos+(index1*16)), int(btype), int(bmeta))
-                                        # blocks.append(bbtest)
                                     else:
                                         bbtest = ((xpos + (chunkxz[0]*16), zpos + (chunkxz[1]*16), ypos+(index1*16)), 0, 0)
-                                        # blocks.append(bbtest)
                                     
-                                    if index1 > self.cuty:
+                                    if self.getcounts and index1 > self.cuty:
+                                        if bbtest[1] not in self.chunks[chunkxz]['counts']:
+                                            self.chunks[chunkxz]['counts'].update({bbtest[1]:1})
+                                        else:
+                                            self.chunks[chunkxz]['counts'][bbtest[1]] += 1
+
+                                    elif index1 > self.cuty:
                                         self.chunks[chunkxz]['blocks'].append(bbtest)
         
                     
         self.chunkbuffer.discard()
-        # return blocks
+
 
 
 
@@ -232,23 +236,23 @@ class ChunkParser(object):
             self.neightbors[mat] = None
         return loneneighbors
 
-    def world_from_sample(self, sample):
-        overworldblocks = [1, 2, 3, 4, 6, 8, 9, 12, 13, 15, 16, 17, 18, 37, 38, 39, 40]
-        netherblocks = [10, 11, 87, 88, 112, 113, 114, 115, 153]
-        theendblocks = [121]
-        overscore = 0
-        endscore = 0
-        netherscore = 0
-        for block in sample:
-            if block in overworldblocks:
-                overscore += 1
-            if block in netherblocks:
-                netherscore += 1
-            if block in theendblocks:
-                endscore += 1
-        if endscore > overscore and endscore > netherscore:
-            return 3
-        elif netherscore > endscore and netherscore > overscore:
-            return 2
-        else:
-            return 1
+    # def world_from_sample(self, sample):
+    #     overworldblocks = [1, 2, 3, 4, 6, 8, 9, 12, 13, 15, 16, 17, 18, 37, 38, 39, 40]
+    #     netherblocks = [10, 11, 87, 88, 112, 113, 114, 115, 153]
+    #     theendblocks = [121]
+    #     overscore = 0
+    #     endscore = 0
+    #     netherscore = 0
+    #     for block in sample:
+    #         if block in overworldblocks:
+    #             overscore += 1
+    #         if block in netherblocks:
+    #             netherscore += 1
+    #         if block in theendblocks:
+    #             endscore += 1
+    #     if endscore > overscore and endscore > netherscore:
+    #         return 3
+    #     elif netherscore > endscore and netherscore > overscore:
+    #         return 2
+    #     else:
+    #         return 1
