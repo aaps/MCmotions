@@ -149,37 +149,37 @@ the scene option is important for now, no matter what name, you can test it with
 
 #NEW:
 
-* (first) Implement negative stair corner.
+* Implement negative stair corner.
 
-* (second) More cleaning up of the code.
+* More cleaning up of the code.
 
-* (third) Add option for more agressive neighbor face removal.
+* Add option for more agressive neighbor face removal.
 
-* (third and a half) Even more refactoring ! things are getting somewhat messy.
+* Even more refactoring ! things are getting somewhat messy.
 
-* will user the new 1.9 minecraft map format.
+* will use the new 1.9 minecraft map format.
 
 #ToDo:
 * more cleaning
 
 * coloborate/dev some on MCprep to get it to do textures, so i dont have to.
 
-* update this readme to include all the changes 
+* update this readme to include all the changes ##
 
 * lets see if i can implement the fences.
 
-* implement wheat type blocks
+* implement wheat type blocks #
 
 * implement buttons and lavers
 
 * implement the right doors shapes and positions.
 
-* fix the info.py since it is still usig the old chunkparser.
+* fix the info.py since it is still usig the old chunkparser. (done)
 
-* implement a better uuid to username resolver.
+* implement a better uuid to username resolver. ###
 
 * getting the recorder proxy to also have a persistent world name/numer
-  to give to every chunk, so we can say what chunk belongs to what world !
+  to give to every chunk, so we can say what chunk belongs to what world ! (done)
 
 * make a fresh branch for all of this. (something that ask for warm weather)
 
@@ -201,10 +201,6 @@ sync with theduckcow on how to replace my very basic mob/entity models to someth
 
 more block shapes for map import
 
-a option for proxy to only record chunks once, to speed up recording
-
-a option for the proxy to relay those recorded chunks to client for huge bandwith save
-
 adding cams that where imported by proxy commands
 
 importing block changes via blender masks and makeing that mask visible on keyframes (hope that works)
@@ -220,7 +216,7 @@ recording the details, animations of blocks, particles, lightning, rain, etc
 
 #PERFORMANCE
 
-When recording players and moving around alot, be sure to have enough bandwith, when player movement in minecraft is choppy movement will also be recorded choppy !, soon there will be some options to save bandwith !
+When recording players and moving around alot, be sure to have enough bandwith, when player movement in minecraft is choppy movement will also be recorded choppy !
 
 
 #WARNING 
