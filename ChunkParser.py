@@ -59,14 +59,15 @@ class ChunkParser(object):
         self.chunkbuffer.save()
 
         matsamples = []
-        if chunkxz not in self.chunks and self.worldnum == self.world:
+        # print self.chunks, int(self.worldnum) == self.world
+        if chunkxz not in self.chunks and int(self.worldnum) == self.world:
             self.chunks.update({chunkxz:{'blocks':[], 'counts':{}}})
-
+            print chunkxz
 
         rightcounter = 0
-        if chunkxz not in chunkposses and self.worldnum == self.world and chunkxz[0] >= self.topleft[0] and chunkxz[1] >= self.topleft[1] and chunkxz[0] <= self.bottomright[0] and chunkxz[1] <= self.bottomright[1]:
-            chunkposses.append(chunkxz)
-            # print self.topleft, self.bottomright
+        if int(self.worldnum) == self.world and chunkxz[0] >= self.topleft[0] and chunkxz[1] >= self.topleft[1] and chunkxz[0] <= self.bottomright[0] and chunkxz[1] <= self.bottomright[1]:
+            
+
 
             for index1 in range(16):
                 
@@ -236,23 +237,3 @@ class ChunkParser(object):
             self.neightbors[mat] = None
         return loneneighbors
 
-    # def world_from_sample(self, sample):
-    #     overworldblocks = [1, 2, 3, 4, 6, 8, 9, 12, 13, 15, 16, 17, 18, 37, 38, 39, 40]
-    #     netherblocks = [10, 11, 87, 88, 112, 113, 114, 115, 153]
-    #     theendblocks = [121]
-    #     overscore = 0
-    #     endscore = 0
-    #     netherscore = 0
-    #     for block in sample:
-    #         if block in overworldblocks:
-    #             overscore += 1
-    #         if block in netherblocks:
-    #             netherscore += 1
-    #         if block in theendblocks:
-    #             endscore += 1
-    #     if endscore > overscore and endscore > netherscore:
-    #         return 3
-    #     elif netherscore > endscore and netherscore > overscore:
-    #         return 2
-    #     else:
-    #         return 1

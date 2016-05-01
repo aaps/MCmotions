@@ -52,14 +52,14 @@ def makeimage(aroflines,matnum):
         if matnum in mats[mat]:
             position = mat[0]*multyplier , mat[1]*multyplier
             color = mats[mat][matnum]
-            planes.update( {position: color} )
+            planes.update( {mat: {'color':color, 'position':position}} )
             if maxval < color:
                 maxval = color
 
     for plane in planes:
-        rightcolor = (planes[plane] / float(maxval)*256)
+        rightcolor = (planes[plane]['color'] / float(maxval)*256)
 
-        dwg.add(dwg.rect(plane, (multyplier, multyplier), fill=svgwrite.rgb(rightcolor, 0, 0, '%')))
+        dwg.add(dwg.rect(planes[plane]['position'], (multyplier, multyplier), fill=svgwrite.rgb(rightcolor, 0, 0, '%')))
 
         if counta % 8 == 0:
             coloro = 'black'
@@ -68,7 +68,8 @@ def makeimage(aroflines,matnum):
                 coloro = 'white'
 
 
-            textpos = plane[0]+0.1 ,plane[1] + 2
+            textpos = planes[plane]['position'][0]+0.1 ,planes[plane]['position'][1] + 2
+            # textpos = planes[plane]['position']
             text_style = "font-size:%ipx; font-family:%s" % (1, "Courier New") 
             dwg.add(dwg.text(str(plane[0]) + '*' + str(plane[1]), insert=textpos, fill=coloro, style=text_style))
 

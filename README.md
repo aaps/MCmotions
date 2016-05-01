@@ -74,7 +74,9 @@ in the format of: -2,4 or 4,8
 
 --onlyplayerents (only player entity data, also chunks)
 
---materialsfile "../MCtricky/materials.json"
+--materialsfile "../MCtricky/materials.json" (the file that mctricky makes and that contains al the materials)
+
+--agressiveremoval (removes as manny verts and blocks from the destination file as possible, will result in much faster rendering)
 
 Example ussage:
 
@@ -176,7 +178,7 @@ the scene option is important for now, no matter what name, you can test it with
 
 * fix the info.py since it is still usig the old chunkparser. (done)
 
-* implement a better uuid to username resolver. ###
+* implement a better uuid to username resolver. (done)
 
 * getting the recorder proxy to also have a persistent world name/numer
   to give to every chunk, so we can say what chunk belongs to what world ! (done)

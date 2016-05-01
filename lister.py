@@ -23,6 +23,11 @@ except:
 
 sourcefile = "default.dump"
 destfile = "default.mcmo"
+playernamecache = open('./cache/playercache.json','r+')
+plnanc = json.loads(playernamecache.read())
+playernamecache.seek(0)
+
+
 
 avgmiddle = False
 norenderents = ["none"]
@@ -33,7 +38,7 @@ nochunks = False
 onlyplayerents = False
 agressiveremoval = False
 curscene = "noscene"
-world = 1
+world = 0
 cuty = 0
 topleft = (-1000,-1000)
 bottomright = (1000,1000)
@@ -186,11 +191,26 @@ def getMaxMinTime(allhistory):
 
 def converplayername(uuid):
 
+        playername = "player: UNKNOWN"
+        accountdata = {}
+        if uuid in plnanc:
+            return "player: " + plnanc[uuid]
+
         mobtype = uuid.replace('-','')
         request = urllib.urlopen('https://sessionserver.mojang.com/session/minecraft/profile/' + mobtype)
         data = request.read().decode("utf8")
-        data = json.loads(data)
-        return "player: " + data['name']
+        try:
+            accountdata = json.loads(data)
+        except Exception, e:
+            print e, data
+
+        if 'name' in accountdata:
+            playername = "player: " + accountdata['name'].decode("utf8")
+        
+        sleep(3)
+        plnanc.update({uuid:playername})
+        return playername
+
 
 
 
@@ -225,7 +245,9 @@ for line in aroflines:
     row = line.split('|') 
     if not noentitys and 'spawn' in row[0] and row[4] not in norenderents and not noentitys:
 
-        if not onlyplayerents:
+        # print "SPAWN: " + row[0] + " - " + str(onlyplayerents) + "="
+
+        if not onlyplayerents and 'player' not in row[0]:
             
             goodpos = ast.literal_eval(row[5])
             rawyawpichhead = ast.literal_eval(row[6])
@@ -237,7 +259,7 @@ for line in aroflines:
             mob = {int(row[3]):{'type':row[4],'positions':[{'time':int(row[1]),'pos':tuple(map(operator.sub, goodpos, offset)), 'yawpichhead': rawyawpichhead,'status':0,'alive':1,'scene':'noscene'}]}}
             allhistory.update(mob)
 
-        elif 'player' in row[0]:
+        if 'player' in row[0]:
             goodpos = ast.literal_eval(row[5])
             rawyawpichhead = ast.literal_eval(row[6])
             if len(rawyawpichhead) > 2:
@@ -247,8 +269,8 @@ for line in aroflines:
             goodpos = (float(goodpos[0])/32, float(goodpos[1])/32, float(goodpos[2])/-32)
             
             mob = {int(row[3]):{'type':row[4],'name':converplayername(row[4]),'positions':[{'time':int(row[1]),'pos':tuple(map(operator.sub, goodpos, offset)), 'yawpichhead': rawyawpichhead,'status':0,'alive':1,'scene':'noscene'}]}}
-            sleep(10)
-            print "got player: " + mob[int(row[3])]
+            
+            # print "got player: " + str(mob[int(row[3])])
             allhistory.update(mob)
 
     elif row[0] == 'playerpos' and not noentitys:
@@ -334,7 +356,6 @@ for line in aroflines:
 
 
 
-
 print 'Filtering entitys that are not supposed to be in scene move at all'
 
 allhistory = filterents(allhistory)
@@ -348,15 +369,14 @@ print getMaxMinTime(allhistory)
 print 'make a index of possible materials'
 
 
-print chunkparser.get_mat_count()
-
-quit()
 chunkparser.fill_mat_indexes()
 
 
 chunkparser.gen_faces_neighbors(agressiveremoval)
 
 loneneighbors = chunkparser.remove_super_cosy()
+
+
 
 print 'generating face positions ' + str(len(loneneighbors)) + ' materials'
 faces = {}
@@ -442,6 +462,8 @@ faces = newfaces
 newface = None
 loneneighbors = None
 
+playernamecache.write(json.dumps(plnanc))
+playernamecache.close()
 
 for mat in colormaterials:
     if mat in colormaterials and 'model' in colormaterials[mat]:
