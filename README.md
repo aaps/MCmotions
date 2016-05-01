@@ -161,31 +161,38 @@ the scene option is important for now, no matter what name, you can test it with
 
 * will use the new 1.9 minecraft map format.
 
+* fix the info.py since it is still usig the old chunkparser.
+
+* implement a better uuid to username resolver.
+
+* getting the recorder proxy to also have a persistent world name/numer
+  to give to every chunk, so we can say what chunk belongs to what world !
+
+* make a fresh branch for all of this. (something that ask for warm weather)
+
 #ToDo:
 * more cleaning
 
 * coloborate/dev some on MCprep to get it to do textures, so i dont have to.
 
-* update this readme to include all the changes ##
+* update this readme to include all the changes ###
 
 * lets see if i can implement the fences.
 
-* implement wheat type blocks #
+* implement wheat type blocks ##
 
-* implement buttons and lavers
+* implement buttons and leavers #
 
 * implement the right doors shapes and positions.
 
-* fix the info.py since it is still usig the old chunkparser. (done)
-
-* implement a better uuid to username resolver. (done)
-
-* getting the recorder proxy to also have a persistent world name/numer
-  to give to every chunk, so we can say what chunk belongs to what world ! (done)
-
-* make a fresh branch for all of this. (something that ask for warm weather)
 
 2
+
+have a look at: https://github.com/WARP-LAB/Blender-Network-Render-Additions, lets c if we can make the netrender somewhat better.
+make it so that the master can be just a server that doesnt include blender perse.
+
+parhaps make somekingd of p2p thing. (eventualy)
+
 
 explain the mctricky role in the steps to run this !
 
