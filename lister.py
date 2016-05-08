@@ -404,6 +404,13 @@ for mat in loneneighbors:
         faces[mat], origins[mat] = shapes.maketorch(loneneighbors, mat)
     elif mat[0] in [78, 80]:
         faces[mat], origins[mat] = shapes.makesnow(loneneighbors, mat)
+    elif mat[0] in [77, 143]:
+        faces[mat], origins[mat] = shapes.makebuton(loneneighbors, mat)
+    elif mat[0] in [69]:
+        faces[mat], origins[mat] = shapes.makeleaver(loneneighbors, mat)
+
+
+    #   
     else:
         faces[mat], origins[mat] = shapes.makeblock(loneneighbors, mat)
 

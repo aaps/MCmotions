@@ -146,7 +146,7 @@ the scene option is important for now, no matter what name, you can test it with
 
 10 now it is time to do: file->import->mcmo import and select the mcmo file you have generated. (wait for some time)
 
-11 if all of this is too much work or if need some more convintion before trusting your password to some strange script, try the examples map for all kinds of example files, like dump files and mcmo files, also nice pictures and blend files generated.
+11 if all of this is too much work or if need some more convincing before trusting your password to some strange script, try the examples map for all kinds of example files, like dump files and mcmo files, also nice pictures and blend files generated.
 
 
 #NEW:
@@ -170,29 +170,35 @@ the scene option is important for now, no matter what name, you can test it with
 
 * make a fresh branch for all of this. (something that ask for warm weather)
 
+* implement wheat type blocks (done coudnt test it)
+
+* implement buttons and leavers (yes, out of scale bad rotation, etc, will improve later)
+
+* update this readme to include all the changes  (already in there, so good)
+
 #ToDo:
 * more cleaning
 
 * coloborate/dev some on MCprep to get it to do textures, so i dont have to.
 
-* update this readme to include all the changes ###
+* posibility to render world in different scales ###
 
-* lets see if i can implement the fences.
+* posibility to give world mats different names like: the mat number or matnumber:meta ##
 
-* implement wheat type blocks ##
+* lets see if i can implement the fences. ##
 
-* implement buttons and leavers #
+* there is a bug in the stairs placement in case of corner stairs
 
-* implement the right doors shapes and positions.
+* implement the right doors shapes and positions. #
 
+* the chunkparser is using far more mem than i guess is needed, this was after the refactoring so i guess im saving double info, this should go
 
+* build me a calibration/testing world on a pi3, with all blocks and configs. ####
+
+* perhaps check the spelling in the code, it will work but loos sloppy.
+
+* split out the placement of mobs/entitys and the movement of them in a seperate class !
 2
-
-have a look at: https://github.com/WARP-LAB/Blender-Network-Render-Additions, lets c if we can make the netrender somewhat better.
-make it so that the master can be just a server that doesnt include blender perse.
-
-parhaps make somekingd of p2p thing. (eventualy)
-
 
 explain the mctricky role in the steps to run this !
 
@@ -253,6 +259,8 @@ you want a super good minecraft recording in Blender and are willing to code
 For software:
 https://github.com/barneygale/quarry (making all of this possible)
 https://github.com/TheDuckCow/MCprep (this will pe compatible with that)
+
+https://www.sheepit-renderfarm.com (it is what i use now for distributed rendering, and it is working)
 
 Realy checkout the above software, goooood stuff !
 

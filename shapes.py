@@ -348,6 +348,66 @@ class Shapes(object):
             tempfaces += pointops
         return tempfaces, self.getavgorigins(temporigin)
 
+    def makeleaver(self, loneneighbors, mat):
+        temporigin = []
+        tempfaces = []
+
+        for block in loneneighbors[mat]:
+            listoffaces = loneneighbors[mat][block]['faces']
+            pointops = self.fromfileordefault(mat, 0, self.defshapes.make_default_block_shape)
+            direction = loneneighbors[mat][block]['meta'] & 3
+
+            if direction == 0:
+                pointops.rotate_points_x(90)
+            elif direction == 1:
+                pointops.rotate_points_z(90)
+            elif direction == 2:
+                pointops.rotate_points_z(180)
+            elif direction == 3:
+                pointops.rotate_points_z(270)
+            elif direction == 4:
+                pointops.rotate_points_z(0)
+            elif direction == 5:
+                pointops.rotate_points_x(270)
+            elif direction == 6:
+                pointops.rotate_points_x(270)
+            elif direction == 7:
+                pointops.rotate_points_x(270)
+
+            temporigin.append(pointops.get_avg_point().as_tuple())
+            self.appendto3dlist(pointops, block)
+            tempfaces += pointops
+        return tempfaces, self.getavgorigins(temporigin)
+
+    def makebuton(self, loneneighbors, mat):
+        temporigin = []
+        tempfaces = []
+
+        for block in loneneighbors[mat]:
+            listoffaces = loneneighbors[mat][block]['faces']
+            pointops = self.fromfileordefault(mat, 0, self.defshapes.make_default_block_shape)
+            direction = loneneighbors[mat][block]['meta'] & 3
+
+            if direction == 0:
+                pointops.rotate_points_x(90)
+            elif direction == 1:
+                pointops.rotate_points_z(90)
+            elif direction == 2:
+                pointops.rotate_points_z(180)
+            elif direction == 3:
+                pointops.rotate_points_z(270)
+            elif direction == 4:
+                pointops.rotate_points_z(0)
+            elif direction == 5:
+                pointops.rotate_points_x(270)
+
+            self.defshapes.remove_neibors(pointops, listoffaces)
+            self.appendto3dlist(pointops, block)
+            temporigin.append(pointops.get_avg_point().as_tuple())
+            tempfaces += pointops
+        return tempfaces, self.getavgorigins(temporigin)
+
+
     def makefence(self, loneneighbors, mat):
         temporigin = []
         tempfaces = []
