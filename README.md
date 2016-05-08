@@ -176,36 +176,37 @@ the scene option is important for now, no matter what name, you can test it with
 
 * update this readme to include all the changes  (already in there, so good)
 
+* in minecraft import is the functionality that will translate uuid to player name etc.
+this should be done in the lister and will have to be done in sutch a way that it wont 
+send to many requests to the mojang server !
+
 #ToDo:
+
+* build me a calibration/testing world on a pi3, with all blocks and configs. ####
+
+* posibility to render world in different scales ###
+
+* lets see if i can implement the fences. ##
+
+* posibility to give world mats different names like: the mat number or matnumber:meta ##
+
+* implement the right doors shapes and positions. #
+
+* there is a bug in the stairs placement in case of corner stairs #
+
+* the addon for blender MCsimple to make models, needs some love as well. #
+
 * more cleaning
 
 * coloborate/dev some on MCprep to get it to do textures, so i dont have to.
 
-* posibility to render world in different scales ###
-
-* posibility to give world mats different names like: the mat number or matnumber:meta ##
-
-* lets see if i can implement the fences. ##
-
-* there is a bug in the stairs placement in case of corner stairs
-
-* implement the right doors shapes and positions. #
-
-* the chunkparser is using far more mem than i guess is needed, this was after the refactoring so i guess im saving double info, this should go
-
-* build me a calibration/testing world on a pi3, with all blocks and configs. ####
-
 * perhaps check the spelling in the code, it will work but loos sloppy.
 
 * split out the placement of mobs/entitys and the movement of them in a seperate class !
+
 2
 
 explain the mctricky role in the steps to run this !
-
-in minecraft import is the functionality that will translate uuid to player name etc.
-this should be done in the lister and will have to be done in sutch a way that it wont 
-send to many requests to the mojang server !
-
 
 See that the minecraftimport users will have some usefull text messages
 avalable like current version and a github release, etc
@@ -221,8 +222,8 @@ adding cams that where imported by proxy commands
 importing block changes via blender masks and makeing that mask visible on keyframes (hope that works)
 
 block textures
-
-the ability to record plugin messages like multyworld
+ 
+the ability to record plugin messages like multyworld (not sure anymore)
 
 
 3
